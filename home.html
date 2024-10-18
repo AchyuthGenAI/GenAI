@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url('https://img.lovepik.com/photo/50073/4183.jpg_wh860.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        header {
+            background-color: rgba(30, 30, 30, 0.95);
+            padding: 15px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        header h1 {
+            color: #00f2ff;
+            font-size: 32px;
+            margin: 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .menu-icon {
+            display: none;
+            cursor: pointer;
+            font-size: 30px;
+            color: #fff;
+            transition: color 0.3s;
+        }
+        .menu-icon:hover {
+            color: #00f2ff;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin: 0 20px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 18px;
+            text-transform: uppercase;
+            padding: 8px 16px;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+        nav ul li a:hover {
+            color: #00f2ff;
+            border-bottom: 2px solid #00f2ff;
+        }
+        .menu-active {
+            display: block;
+        }
+        .menu-active ul {
+            display: block;
+            text-align: center;
+        }
+        .menu-active ul li {
+            margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                width: 100%;
+                background-color: rgba(30, 30, 30, 0.9);
+                position: absolute;
+                top: 50px;
+                left: 0;
+                right: 0;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            .menu-icon {
+                display: block;
+            }
+        }
+        .hero {
+            height: 85vh;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        .hero h2 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #00f2ff;
+        }
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #fff;
+        }
+        .cta-button {
+            background-color: #00f2ff;
+            padding: 15px 40px;
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .cta-button:hover {
+            background-color: #00b7cc;
+        }
+        .features, .about-ai, .use-cases {
+            padding: 50px 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .features h3, .about-ai h3, .use-cases h3 {
+            font-size: 34px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            color: #00f2ff;
+        }
+        .features p, .about-ai p, .use-cases p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            color: #ddd;
+        }
+        .features .feature-item {
+            display: inline-block;
+            width: 30%;
+            margin: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .features .feature-item h4 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #00f2ff;
+        }
+        .features .feature-item img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+        .use-cases {
+            background-color: rgba(20, 20, 20, 0.9);
+        }
+        .use-cases h3 {
+            color: #ffcc00;
+        }
+        .use-cases .case-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .use-cases .case-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 20px;
+            padding: 30px;
+            border-radius: 10px;
+            width: 250px;
+            text-align: left;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .use-cases .case-item:hover {
+            transform: translateY(-10px);
+            background-color: rgba(0, 255, 255, 0.1);
+        }
+        .use-cases .case-item h4 {
+            font-size: 22px;
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+        .use-cases .case-item p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #fff;
+        }
+        footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+        }
+        footer h4 {
+            font-size: 24px;
+            color: #00f2ff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        footer p {
+            font-size: 16px;
+            color: #ddd;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 50px;
+        }
+        .footer-bottom {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI TECH</h1>
+        <div class="menu-icon" onclick="toggleMenu()">&#8942;</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#chatbot">Chatbot</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <h2>Explore the Future of AI</h2>
+        <p>Our AI chatbot is designed to provide you with seamless and intelligent conversations. Whether it's for business, learning, or support, we're here to assist!</p>
+        <a href="index.html" class="cta-button">Start Chatting <span> &#8594;</span></a>
+    </section>
+
+    <section id="about" class="about-ai">
+        <h3>About AI Chatbot</h3>
+        <p>This chatbot is powered by the latest advancements in artificial intelligence. It's built to understand and respond to your questions, making your interactions more efficient and enjoyable.</p>
+    </section>
+
+    <section id="chatbot" class="features">
+        <h3>Chatbot Features</h3>
+        <div class="feature-item">
+            <h4>Natural Language Understanding</h4>
+            <p>Our AI understands natural language inputs, making your communication feel effortless.</p>
+        </div>
+        <div class="feature-item">
+            <h4>Real-Time Responses</h4>
+            <p>Get instant responses that make the conversation flow naturally and intelligently.</p>
+        </div>
+        <div class="feature-item">
+            <h4>Multilingual Support</h4>
+            <p>Our chatbot can chat in multiple languages, breaking down language barriers.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="use-cases">
+        <h3>Contact Us</h3>
+        <div class="case-grid">
+            <div class="case-item">
+                <h4>Email</h4>
+                <p>achyuthinsrirama@gamil.com</p>
+            </div>
+            <div class="case-item">
+                <h4>Phone</h4>
+                <p>+91 6303440058</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <h4>AI Chatbot</h4>
+        <p>Explore, interact, and embrace the future of AI technology.</p>
+        <div class="footer-bottom">
+            &copy; 2024 AI Tech. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.querySelector('nav');
+            nav.classList.toggle('menu-active');
+        }
+    </script>
+</body>
+</html>
