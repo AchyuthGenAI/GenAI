@@ -3,418 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot - Enhanced with Voice</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>AI Chatbot Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #1e1e2f;
-            color: #fff;
-            font-family: 'Roboto', sans-serif;
-            background-image: url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTYtYy0wOF8xLWtzaDZtemEzLmpwZw.jpg');
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url('https://img.lovepik.com/photo/50073/4183.jpg_wh860.jpg') no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            transition: background-color 0.3s ease;
-            overflow-x: hidden;
+            color: #fff;
         }
-
-        .navbar {
-            background-color: transparent;
-            padding: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-brand {
-            font-size: 24px;
-            font-weight: bold;
-            color: #00adb5;
-            transition: color 0.3s ease;
-        }
-
-        .navbar-brand:hover {
-            color: #00bcd4;
-        }
-
-        .header-section {
+        header {
+            background-color: rgba(30, 30, 30, 0.95);
+            padding: 15px 0;
             text-align: center;
-            margin-top: 30px;
-            animation: fadeIn 1s ease;
-        }
-
-        /* Updated heading design with your given color scheme */
-        .header-section h1 {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #273DB4, #C50900, #F95CA4, #ED7845);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .header-section p {
-            font-size: 18px;
-            color: #ddd;
-            margin-bottom: 50px;
-        }
-
-        .chat-container {
-            max-width: 850px;
-            height: 600px; /* Fixed height */
-            margin: 50px auto;
-            padding: 20px;
-            background: rgba(45, 47, 59, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(216, 111, 111, 0.3);
-            border: 4px solid #00adb5;
-            transition: all 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: flex;
-            flex-direction: column;
-        }
-
-        .chat-box {
-            background-color: #2e333f;
-            border-radius: 12px;
-            padding: 20px;
-            flex-grow: 1; /* Take up available space */
-            overflow-y: auto; /* Enable scrolling */
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            border: 2px solid #00adb5;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message {
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 10px;
-            width: fit-content;
-            max-width: 70%;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message.user {
-            background-color: #007bff;
-            color: #fff;
-            align-self: flex-end;
-        }
-
-        .message.bot {
-            background-color: #454860;
-            color: #fff;
-            align-self: flex-start;
-        }
-
-        .input-group {
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
+            padding: 10px 20px;
         }
-
-        .input-group input {
-            border-radius: 50px;
-            padding: 15px;
-            background-color: #444;
-            color: #fff;
-            border: none;
-            height: 50px;
-            flex-grow: 1;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.7);
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, #28a745, #218838);
-            border: none;
-            color: white;
-            font-size: 24px;
-            padding: 15px;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 171, 255, 0.2);
-            transition: all 0.3s ease;
-            margin-left: 10px;
-        }
-
-        .send-btn i {
+        header h1 {
+            color: #00f2ff;
+            font-size: 32px;
             margin: 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-
-        .send-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 0 15px rgba(0, 171, 255, 0.4);
-        }
-
-        .voice-btn {
-            background: linear-gradient(135deg, #ff5722, #ff3d00);
-            border: none;
-            color: white;
-            font-size: 24px;
-            padding: 15px;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .menu-icon {
+            display: none;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 171, 255, 0.2);
-            transition: all 0.3s ease;
-            margin-left: 10px;
+            font-size: 30px;
+            color: #fff;
+            transition: color 0.3s;
         }
-
-        .voice-btn i {
+        .menu-icon:hover {
+            color: #00f2ff;
+        }
+        nav ul {
+            list-style: none;
             margin: 0;
-            font-size: 28px;
+            padding: 0;
+            display: flex;
         }
-
-        .voice-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 0 15px rgba(0, 171, 255, 0.4);
+        nav ul li {
+            margin: 0 20px;
         }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            background-color: transparent;
-            color: #ddd;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            font-size: 14px;
-        }
-
-        footer a {
-            color: #00adb5;
+        nav ul li a {
+            color: #fff;
             text-decoration: none;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 18px;
+            text-transform: uppercase;
+            padding: 8px 16px;
+            transition: color 0.3s, border-bottom 0.3s;
         }
-
-        footer a:hover {
-            text-decoration: underline;
-            color: #00bcd4;
+        nav ul li a:hover {
+            color: #00f2ff;
+            border-bottom: 2px solid #00f2ff;
         }
-
-        footer p {
-            margin: 5px 0;
+        .menu-active {
+            display: block;
         }
-
-        footer .footer-link {
-            margin-left: 10px;
+        .menu-active ul {
+            display: block;
+            text-align: center;
         }
-
-        /* Three-dot wave loader */
-        .loader {
+        .menu-active ul li {
+            margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                width: 100%;
+                background-color: rgba(30, 30, 30, 0.9);
+                position: absolute;
+                top: 50px;
+                left: 0;
+                right: 0;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            .menu-icon {
+                display: block;
+            }
+        }
+        .hero {
+            height: 85vh;
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto;
+            text-align: center;
+            flex-direction: column;
         }
-
-        .loader div {
-            width: 10px;
-            height: 10px;
-            margin: 0 5px;
-            border-radius: 50%;
-            background-color: #3498db;
-            animation: wave 1.5s infinite ease-in-out;
+        .hero h2 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #00f2ff;
         }
-
-        .loader div:nth-child(1) {
-            animation-delay: -0.3s;
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #fff;
         }
-
-        .loader div:nth-child(2) {
-            animation-delay: -0.15s;
+        .cta-button {
+            background-color: #00f2ff;
+            padding: 15px 40px;
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
         }
-
-        .loader div:nth-child(3) {
-            animation-delay: 0s;
+        .cta-button:hover {
+            background-color: #00b7cc;
         }
-
-        @keyframes wave {
-            50%, 100% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1);
-            }
+        .features, .about-ai, .use-cases {
+            padding: 50px 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .features h3, .about-ai h3, .use-cases h3 {
+            font-size: 34px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            color: #00f2ff;
+        }
+        .features p, .about-ai p, .use-cases p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            color: #ddd;
+        }
+        .features .feature-item {
+            display: inline-block;
+            width: 30%;
+            margin: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .features .feature-item h4 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #00f2ff;
+        }
+        .features .feature-item img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+        .use-cases {
+            background-color: rgba(20, 20, 20, 0.9);
+        }
+        .use-cases h3 {
+            color: #ffcc00;
+        }
+        .use-cases .case-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .use-cases .case-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 20px;
+            padding: 30px;
+            border-radius: 10px;
+            width: 250px;
+            text-align: left;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .use-cases .case-item:hover {
+            transform: translateY(-10px);
+            background-color: rgba(0, 255, 255, 0.1);
+        }
+        .use-cases .case-item h4 {
+            font-size: 22px;
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+        .use-cases .case-item p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #fff;
+        }
+        footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+        }
+        footer h4 {
+            font-size: 24px;
+            color: #00f2ff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        footer p {
+            font-size: 16px;
+            color: #ddd;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 50px;
+        }
+        .footer-bottom {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">AI Chatbot</a>
-        </div>
-    </nav>
+    <header>
+        <h1>AI TECH</h1>
+        <div class="menu-icon" onclick="toggleMenu()">&#8942;</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#chatbot">Chatbot</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Header Section -->
-    <section class="header-section">
-        <h1>Welcome to AI Chatbot</h1>
-        <p>Your intelligent assistant at your service!</p>
+    <section id="home" class="hero">
+        <h2>Explore the Future of AI</h2>
+        <p>Our AI chatbot is designed to provide you with seamless and intelligent conversations. Whether it's for business, learning, or support, we're here to assist!</p>
+        <a href="index.html" class="cta-button">Start Chatting <span> &#8594;</span></a>
     </section>
 
-    <!-- Chat Section -->
-    <div class="chat-container">
-        <div class="chat-box" id="chatBox">
-            <!-- Messages will appear here -->
-        </div>
-        <div class="input-group">
-            <input type="text" class="form-control" id="userInput" placeholder="Type your message...">
-            <button class="btn btn-primary send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
-            <button class="btn btn-danger voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
-        </div>
-    </div>
+    <section id="about" class="about-ai">
+        <h3>About AI Chatbot</h3>
+        <p>This chatbot is powered by the latest advancements in artificial intelligence. It's built to understand and respond to your questions, making your interactions more efficient and enjoyable.</p>
+    </section>
 
-    <!-- Footer -->
+    <section id="chatbot" class="features">
+        <h3>Chatbot Features</h3>
+        <div class="feature-item">
+            <h4>Natural Language Understanding</h4>
+            <p>Our AI understands natural language inputs, making your communication feel effortless.</p>
+        </div>
+        <div class="feature-item">
+            <h4>Real-Time Responses</h4>
+            <p>Get instant responses that make the conversation flow naturally and intelligently.</p>
+        </div>
+        <div class="feature-item">
+            <h4>Multilingual Support</h4>
+            <p>Our chatbot can chat in multiple languages, breaking down language barriers.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="use-cases">
+        <h3>Contact Us</h3>
+        <div class="case-grid">
+            <div class="case-item">
+                <h4>Email</h4>
+                <p>achyuthinsrirama@gamil.com</p>
+            </div>
+            <div class="case-item">
+                <h4>Phone</h4>
+                <p>+91 6303440058</p>
+            </div>
+        </div>
+    </section>
+
     <footer>
-        <p>&copy; 2024 AI Chatbot | <a href="#" class="footer-link">Privacy Policy</a> | <a href="#" class="footer-link">Terms of Service</a></p>
+        <h4>AI Chatbot</h4>
+        <p>Explore, interact, and embrace the future of AI technology.</p>
+        <div class="footer-bottom">
+            &copy; 2024 AI Tech. All Rights Reserved.
+        </div>
     </footer>
+
     <script>
-      const baseUrl = 'https://api.aimlapi.com/chat/completions'; // Replace with your API URL
-      const apiKey = 'cc2d8a7a189948be901cc38fb8bddc8e'; // Replace with your API key
-      const chatBox = document.getElementById('chatBox');
-      const userInput = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
-      const voiceBtn = document.getElementById('voiceBtn');
-      let recognizing = false;
-
-      // Function to append messages to chat
-      function appendMessage(content, sender) {
-          const messageDiv = document.createElement('div');
-          messageDiv.classList.add('message', sender);
-          messageDiv.innerHTML = content;
-          chatBox.appendChild(messageDiv);
-          chatBox.scrollTop = chatBox.scrollHeight;
-      }
-
-      // Function to structure the response
-      function formatResponse(responseText) {
-          const sections = responseText.split("\n\n"); // Assume paragraphs are separated by two newlines
-          let formattedResponse = '';
-
-          sections.forEach(section => {
-              if (section.includes("Overview")) {
-                  formattedResponse += `<h3>Overview:</h3><p>${section.replace('Overview:', '')}</p>`;
-              } else if (section.includes("Key Features")) {
-                  formattedResponse += `<h4>Key Features:</h4><ul><li>${section.replace('Key Features:', '').split('\n').join('</li><li>')}</li></ul>`;
-              } else {
-                  formattedResponse += `<p>${section}</p>`;
-              }
-          });
-
-          return formattedResponse;
-      }
-
-      // Send message function
-      function sendMessage() {
-          const message = userInput.value.trim();
-          if (message !== '') {
-              appendMessage(`<strong>You:</strong> ${message}`, 'user');
-              userInput.value = '';
-              userInput.focus();  // Ensure the input field stays focused
-
-              // Display loading spinner
-              const loader = document.createElement('div');
-              loader.classList.add('loader');
-              
-              // Create the three-dot loader
-              for (let i = 0; i < 3; i++) {
-                  const dot = document.createElement('div');
-                  loader.appendChild(dot);
-              }
-
-              chatBox.appendChild(loader);
-
-              fetch(baseUrl, {
-                  method: 'POST',
-                  headers: {
-                      'Authorization': `Bearer ${apiKey}`,
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      model: "gpt-3.5-turbo",
-                      messages: [{ role: "user", content: message }],
-                  }),
-              })
-              .then(response => response.json())
-              .then(data => {
-                  // Remove loading spinner
-                  chatBox.removeChild(loader);
-
-                  if (data && data.choices && data.choices.length > 0) {
-                      let botResponse = data.choices[0].message.content;
-
-                      // Format the bot's response before appending
-                      const structuredResponse = formatResponse(botResponse);
-                      appendMessage(`<strong>Bot:</strong><br>${structuredResponse}`, 'bot');
-                  } else {
-                      appendMessage("No response received from the server.", 'bot');
-                  }
-              })
-              .catch(error => {
-                  console.error('Error:', error);
-                  appendMessage("Sorry, something went wrong. Please try again.", 'bot');
-              });
-          }
-      }
-
-      // Speech recognition setup
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      // Handle speech recognition result
-      recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          userInput.value = transcript;
-          sendMessage();  // Automatically send the voice input as a message
-      };
-
-      recognition.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
-          appendMessage("Sorry, couldn't recognize your voice. Please try again.", 'bot');
-      };
-
-      // Toggle voice recognition
-      voiceBtn.addEventListener('click', () => {
-          if (!recognizing) {
-              recognition.start();
-              recognizing = true;
-              voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';  // Change icon to show recording is in progress
-          } else {
-              recognition.stop();
-              recognizing = false;
-              voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';  // Revert icon after stopping
-          }
-      });
-
-      // Event listener for send button
-      sendBtn.addEventListener('click', sendMessage);
-
-      // Event listener for Enter key
-      userInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-              sendMessage();
-          }
-      });
+        function toggleMenu() {
+            const nav = document.querySelector('nav');
+            nav.classList.toggle('menu-active');
+        }
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
