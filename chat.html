@@ -8,15 +8,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #1e1e2f;
+            background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #fff;
             font-family: 'Roboto', sans-serif;
-            background-image: url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTYtYy0wOF8xLWtzaDZtemEzLmpwZw.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            transition: background-color 0.3s ease;
             overflow-x: hidden;
+        }
+
+        /* Smooth gradient background animation */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .navbar {
@@ -25,6 +29,79 @@
             transition: all 0.3s ease;
         }
 
+        .navbar-nav .nav-link {
+            color: #00adb5;
+            font-weight: bold;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00adb5;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #00bcd4;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #FF8C00, #FF4500); /* Gradient background for icon button */
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        .home-btn:hover {
+            background: linear-gradient(135deg, #FF4500, #FF8C00);
+            transform: translateY(-2px);
+            box-shadow: 0px 5px 15px rgba(255, 69, 0, 0.3);
+        }
+
+        .home-btn i {
+            color: white;
+        }
+        .header-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Main layout styling */
+        .container {
+            margin-top: -50px;
+        }
+
+        .side-content {
+            background: rgba(45, 47, 59, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: -250px;
+            color: #ddd;
+            box-shadow: 0 4px 12px rgba(216, 111, 111, 0.3);
+        }
+
+        .side-content h3 {
+            color: #00adb5;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .side-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .side-content ul li {
+            margin-bottom: 10px;
+            color: #ddd;
+        }
         .navbar-brand {
             font-size: 24px;
             font-weight: bold;
@@ -47,10 +124,23 @@
             font-size: 48px;
             font-weight: bold;
             margin-bottom: 20px;
-            background: linear-gradient(90deg, #273DB4, #C50900, #F95CA4, #ED7845);
+            background: linear-gradient(90deg, #001ec7, #0bd415, #F95CA4, #ED7845);
+            background-size: 200%;
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
+            animation: gradientAnimation 5s ease-in-out infinite;
+        }
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .header-section p {
@@ -258,7 +348,18 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">AI Chatbot</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-comments"></i> AI Chatbot</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <!-- Home button as an icon with specific styling -->
+                        <a class="nav-link home-btn" href="home.html" aria-label="Home"><i class="fas fa-home"></i></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -268,15 +369,48 @@
         <p>Your intelligent assistant at your service!</p>
     </section>
 
-    <!-- Chat Section -->
-    <div class="chat-container">
-        <div class="chat-box" id="chatBox">
-            <!-- Messages will appear here -->
-        </div>
-        <div class="input-group">
-            <input type="text" class="form-control" id="userInput" placeholder="Type your message...">
-            <button class="btn btn-primary send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
-            <button class="btn btn-danger voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
+    <div class="container">
+        <div class="row">
+            <!-- Left Side Content -->
+            <div class="col-lg-3 col-md-4">
+                <div class="side-content">
+                    <h3>Quick Tips</h3>
+                    <ul>
+                        <li>Ask specific questions for better responses.</li>
+                        <li>Use the voice feature for hands-free chatting.</li>
+                        <li>Try asking for summaries or explanations.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="col-lg-6 col-md-8">
+                <div class="chat-container">
+                    <div class="chat-box" id="chatBox">
+                        <!-- Messages will appear here -->
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="userInput" placeholder="Type your message...">
+                        <button class="btn btn-primary send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                        <button class="btn btn-danger voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side Content -->
+            <div class="col-lg-3 col-md-4">
+                <div class="side-content">
+                    <h3>About the Chatbot</h3>
+                    <p>This AI Chatbot is powered by advanced NLP models to assist you in various tasks, answer questions, and provide useful information. Enjoy exploring!</p>
+                    <h3>Popular Topics</h3>
+                    <ul>
+                        <li>Technology</li>
+                        <li>Science</li>
+                        <li>Health</li>
+                        <li>Entertainment</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -290,7 +424,7 @@
       const chatBox = document.getElementById('chatBox');
       const userInput = document.getElementById('userInput');
       const sendBtn = document.getElementById('sendBtn');
-      const voiceBtn = document.getElementById('voiceBtn');
+      const voiceBtn =document.getElementById('voiceBtn');
       let recognizing = false;
 
       // Function to append messages to chat
