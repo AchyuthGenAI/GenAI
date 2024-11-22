@@ -37,10 +37,15 @@
         }
 
         .navbar-brand {
-            font-size: 28px;
-            font-weight: bold;
-            color: #00adb5;
-            transition: color 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: geminiGradient 6s infinite linear;
         }
 
         .navbar-brand:hover {
@@ -156,8 +161,7 @@
             padding: 20px;
             background: rgba(45, 47, 59, 0.9);
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(216, 111, 111, 0.3);
-            border: 4px solid #00adb5;
+            box-shadow: 0 10px 20px rgba(216, 111, 111, 0.3);
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
@@ -172,7 +176,6 @@
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            border: 2px solid #00adb5;
             animation: fadeIn 0.3s ease;
         }
 
@@ -186,14 +189,14 @@
         }
 
         .message.user {
-            background-color: #007bff;
-            color: #fff;
+            background-color: white;
+            color: black;
             align-self: flex-end;
         }
 
         .message.bot {
-            background-color: #454860;
-            color: #fff;
+            background-color: white;
+            color: black;
             align-self: flex-start;
         }
 
@@ -221,12 +224,12 @@
         }
 
         .send-btn {
-            background: linear-gradient(135deg, #28a745, #218838);
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
             border: none;
-            color: white;
+            color: black;
             font-size: 24px;
             padding: 15px;
-            border-radius: 50%;
+            border-radius: 100%;
             width: 50px;
             height: 50px;
             display: flex;
@@ -237,23 +240,13 @@
             transition: all 0.3s ease;
             margin-left: 10px;
         }
-
-        .send-btn i {
-            margin: 0;
-        }
-
-        .send-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 0 15px rgba(0, 171, 255, 0.4);
-        }
-
         .voice-btn {
-            background: linear-gradient(135deg, #ff5722, #ff3d00);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             border: none;
-            color: white;
+            color: black;
             font-size: 24px;
             padding: 15px;
-            border-radius: 50%;
+            border-radius: 100%;
             width: 50px;
             height: 50px;
             display: flex;
@@ -264,17 +257,6 @@
             transition: all 0.3s ease;
             margin-left: 10px;
         }
-
-        .voice-btn i {
-            margin: 0;
-            font-size: 28px;
-        }
-
-        .voice-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 0 15px rgba(0, 171, 255, 0.4);
-        }
-
         footer {
             text-align: center;
             padding: 15px;
@@ -365,8 +347,8 @@
 
     <!-- Header Section -->
     <section class="header-section">
-        <h1>Welcome to AI Chatbot</h1>
-        <p>Your intelligent assistant at your service!</p>
+        <h1>Curious? Ask Me Anything!</h1>
+        <p>I’m here to make your life easier. Whether you have questions, need help with tasks, or just want to chat, I’ve got you covered. Let’s get started!</p>
     </section>
 
     <div class="container">
@@ -418,6 +400,23 @@
     <footer>
         <p>&copy; 2024 AI Chatbot | <a href="#" class="footer-link">Privacy Policy</a> | <a href="#" class="footer-link">Terms of Service</a></p>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        // Apply Vanta.NET effect
+        VANTA.NET({
+            el: "body", // Attach to the body element
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x3498db,
+            backgroundColor: 0x0f2027
+        });
+    </script>
     <script>
       const baseUrl = 'https://api.aimlapi.com/chat/completions'; // Replace with your API URL
       const apiKey = 'cc2d8a7a189948be901cc38fb8bddc8e'; // Replace with your API key
@@ -515,28 +514,28 @@
 
       // Handle speech recognition result
       recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          userInput.value = transcript;
-          sendMessage();  // Automatically send the voice input as a message
-      };
-
-      recognition.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
-          appendMessage("Sorry, couldn't recognize your voice. Please try again.", 'bot');
-      };
-
-      // Toggle voice recognition
-      voiceBtn.addEventListener('click', () => {
-          if (!recognizing) {
-              recognition.start();
-              recognizing = true;
-              voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';  // Change icon to show recording is in progress
-          } else {
-              recognition.stop();
-              recognizing = false;
-              voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';  // Revert icon after stopping
-          }
-      });
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript;
+            sendMessage();  // Automatically send the voice input as a message
+        };
+  
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            appendMessage("Sorry, couldn't recognize your voice. Please try again.", 'bot');
+        };
+  
+        // Toggle voice recognition
+        voiceBtn.addEventListener('click', () => {
+            if (!recognizing) {
+                recognition.start();
+                recognizing = true;
+                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';  // Change icon to show recording is in progress
+            } else {
+                recognition.stop();
+                recognizing = false;
+                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';  // Revert icon after stopping
+            }
+        });
 
       // Event listener for send button
       sendBtn.addEventListener('click', sendMessage);
