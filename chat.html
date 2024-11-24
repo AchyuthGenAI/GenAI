@@ -105,29 +105,20 @@
             font-size: 48px;
             font-weight: bold;
             margin-bottom: 20px;
-            background: linear-gradient(90deg, #001ec7, #0bd415, #F95CA4, #ED7845);
             background-size: 200%;
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            animation: gradientAnimation 5s ease-in-out infinite;
-        }
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
         }
 
         .header-section p {
-            font-size: 18px;
-            color: #ddd;
+            background-size: 200%;
+            font-size: 20px;
+            color:#00adb5;
+            font-weight: bold;
             margin-bottom: 50px;
+            margin-right: -250px;
+            animation: gradientAnimation 5s ease-in-out infinite;
         }
 
         .chat-container {
@@ -141,6 +132,10 @@
             display: flex;
             flex-direction: column;
             margin-left: 20px;
+            margin-top: -50px;
+            display: auto;
+            position:absolute;
+        
         }
 
 
@@ -234,6 +229,80 @@
             transition: all 0.3s ease;
             margin-left: 10px;
         }
+
+        .sidebar {
+            background-color: #2e333f; /* Dark background for sidebar */
+            width: 300px; /* Fixed width for the sidebar */
+            height: 100vh; /* Full height of the viewport */
+            position: fixed; /* Stays fixed on the left */
+            top: 0; /* Start from the top of the viewport */
+            left: 0; /* Align to the left of the viewport */
+            overflow-y: auto; /* Add vertical scrolling for long content */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000; /* Ensure it stays above other content */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for better visibility */
+        }
+
+        .sidebar h3 {
+            color: #ffffff; /* White text for the heading */
+            margin-bottom: 15px; /* Space below the heading */
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #444; /* Slightly lighter background for history items */
+            color: #ffffff; /* White text for readability */
+            border-radius: 5px; /* Rounded corners for a modern look */
+            cursor: pointer; /* Pointer cursor to indicate interactivity */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .history-item:hover {
+            background-color: #555; /* Slightly darker background on hover */
+        }
+
+        .search-bar {
+            margin-bottom: 20px; /* Space below the search bar */
+        }
+
+        .search-bar input {
+            width: 100%; /* Full width of the sidebar */
+            padding: 10px; /* Internal padding for better appearance */
+            border: 1px solid #444; /* Border matching the sidebar theme */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #3a3f4b; /* Input field background */
+            color: #ffffff; /* White text */
+            outline: none; /* Remove the default outline */
+        }
+
+        .search-bar input::placeholder {
+            color: #aaa; /* Light placeholder text */
+        }
+
+        .search-bar input:focus {
+            border-color: #555; /* Border color on focus */
+            background-color: #4a4f5d; /* Slightly lighter background on focus */
+        }
+
+        /* Responsive Adjustments */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 250px; /* Reduce width for smaller screens */
+            }
+
+            .history-item {
+                font-size: 14px; /* Smaller text for smaller screens */
+            }
+
+            .search-bar input {
+                font-size: 14px; /* Adjust input text size */
+            }
+        }
         footer {
             text-align: center;
             padding: 15px;
@@ -304,7 +373,7 @@
         .circular-icon {
             width: 100px; /* Adjust size as needed */
             height: 100px; /* Adjust size as needed */
-            border-radius: 100%; /* Makes the element circular */
+            border-radius: 50%; /* Makes the element circular */
             overflow: hidden;
         }
 
@@ -339,9 +408,15 @@
     <!-- Header Section -->
      
     <section class="header-section">
-        <h1>Curious? Ask Me Anything!</h1>
+        <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Bot Icon" style="width: 100px; height: 100px; border-radius: 100%; margin-bottom: 10px; margin-left: 250px; object-fit: cover;">
         <p>I’m here to make your life easier. Whether you have questions, need help with tasks, or just want to chat, I’ve got you covered. Let’s get started!</p>
     </section>
+    <div class="d-flex">
+        <aside class="sidebar">
+            <input type="text" class="form-control search-bar" id="searchBar" placeholder="Search chat history">
+            <h3>Chat History</h3>
+            <div id="chatHistory"></div>
+        </aside>
             <!-- Chat Section -->
             <div class="container mt-5">
                 <div class="chat-container">
@@ -378,163 +453,204 @@
         });
     </script>
     <script>
-      const baseUrl = 'https://api.aimlapi.com/chat/completions'; // Replace with your API URL
-      const apiKey = 'cc2d8a7a189948be901cc38fb8bddc8e'; // Replace with your API key
-      const chatBox = document.getElementById('chatBox');
-      const userInput = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
-      const voiceBtn =document.getElementById('voiceBtn');
-      let recognizing = false;
-
-      // Function to append messages to chat
-      function appendMessage(content, sender) {
-          const messageDiv = document.createElement('div');
-          messageDiv.classList.add('message', sender);
-          chatBox.scrollTop = chatBox.scrollHeight;
-          
-          if (sender === 'bot') {
-            // Add the app icon beside the bot message
-            const iconImg = document.createElement('img');
-            iconImg.src = 'https://i.ibb.co/MCLkk0y/icon-png.webp'; // Your image URL
-            iconImg.alt = 'CoreIntelli Bot';
-            iconImg.style.width = '50px'; // Adjust the size as needed
-            iconImg.style.height = '40px';
-            iconImg.style.marginRight = '10px';
-            iconImg.style.borderRadius = '50%'; // Optional: makes the image circular
-            iconImg.style.objectFit = 'cover'; // Ensures the image fits nicely
-            iconImg.style.position = 'relative'; // Fixes the position
-
-            // Create a container for the icon and the message
-            const messageContainer = document.createElement('div');
-            messageContainer.style.display = 'flex';
-            messageContainer.style.alignItems = 'center';
-
-            // Append the icon and message content
-            messageContainer.appendChild(iconImg);
-            messageContainer.innerHTML += `<div>${content}</div>`;
-            messageDiv.appendChild(messageContainer);
-        } else {
-            messageDiv.innerHTML = content;
+        const baseUrl = 'https://api.aimlapi.com/chat/completions'; // Replace with your API URL
+        const apiKey = 'cc2d8a7a189948be901cc38fb8bddc8e'; // Replace with your API key
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const chatHistory = document.getElementById('chatHistory');
+        const searchBar = document.getElementById('searchBar');
+        let recognizing = false;
+    
+        // Function to append messages to chat
+        function appendMessage(content, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+    
+            if (sender === 'bot') {
+                // Add bot icon beside the message
+                const iconImg = document.createElement('img');
+                iconImg.src = 'https://i.ibb.co/MCLkk0y/icon-png.webp'; // Your image URL
+                iconImg.alt = 'CoreIntelli Bot';
+                iconImg.style.width = '50px';
+                iconImg.style.height = '40px';
+                iconImg.style.marginRight = '10px';
+                iconImg.style.borderRadius = '50%';
+                iconImg.style.objectFit = 'cover';
+    
+                const messageContainer = document.createElement('div');
+                messageContainer.style.display = 'flex';
+                messageContainer.style.alignItems = 'center';
+    
+                messageContainer.appendChild(iconImg);
+                messageContainer.innerHTML += `<div>${content}</div>`;
+                messageDiv.appendChild(messageContainer);
+            } else {
+                messageDiv.innerHTML = content;
+            }
+    
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
+    
+        // Chat History
+        function addToHistory(message) {
+            const historyItem = document.createElement('div');
+            historyItem.classList.add('history-item');
+    
+            // Get the current date and time
+            const now = new Date();
+            const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const formattedDate = now.toLocaleDateString();
+    
+            historyItem.innerHTML = `
+                <div><strong>${message}</strong></div>
+                <small>${formattedDate} ${formattedTime}</small>
+            `;
+    
+            // Add click event to locate the message in the chatBox
+            historyItem.addEventListener('click', () => {
+                const messages = Array.from(chatBox.getElementsByClassName('message'));
+                const matchingMessage = messages.find(m => m.textContent.includes(message));
+                if (matchingMessage) {
+                    matchingMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+    
+            chatHistory.appendChild(historyItem);
+        }
+    
+        // Format chatbot response
+        function formatResponse(responseText) {
+            const sections = responseText.split("\n\n");
+            let formattedResponse = '';
+    
+            sections.forEach(section => {
+                if (section.includes("Overview")) {
+                    formattedResponse += `<h3>Overview:</h3><p>${section.replace('Overview:', '')}</p>`;
+                } else if (section.includes("Key Features")) {
+                    formattedResponse += `<h4>Key Features:</h4><ul><li>${section.replace('Key Features:', '').split('\n').join('</li><li>')}</li></ul>`;
+                } else {
+                    formattedResponse += `<p>${section}</p>`;
+                }
+            });
+    
+            return formattedResponse;
+        }
+    
+        // Send message function
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message !== '') {
+                appendMessage(`${message}`, 'user');
+                addToHistory(message);
+                userInput.value = '';
+                userInput.focus();
+    
+                // Display loading spinner
+                const loader = document.createElement('div');
+                loader.classList.add('loader');
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    loader.appendChild(dot);
+                }
+                chatBox.appendChild(loader);
+    
+                // API call to chatbot
+                fetch(baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{ role: "user", content: message }],
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    chatBox.removeChild(loader);
 
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-      
+                    if (data && data.choices && data.choices.length > 0) {
+                        let botResponse = data.choices[0].message.content;
 
-      // Function to structure the response
-      function formatResponse(responseText) {
-          const sections = responseText.split("\n\n"); // Assume paragraphs are separated by two newlines
-          let formattedResponse = '';
+                        // Replace "Subscription" with a clickable link
+                        const subscriptionLink = '<a href="https://aimlapi.com/app/billing/plans" target="_blank" style="color: #4CAF50; text-decoration: none;">Subscription</a>';
+                        botResponse = botResponse.replace("Subscription", subscriptionLink);
 
-          sections.forEach(section => {
-              if (section.includes("Overview")) {
-                  formattedResponse += `<h3>Overview:</h3><p>${section.replace('Overview:', '')}</p>`;
-              } else if (section.includes("Key Features")) {
-                  formattedResponse += `<h4>Key Features:</h4><ul><li>${section.replace('Key Features:', '').split('\n').join('</li><li>')}</li></ul>`;
-              } else {
-                  formattedResponse += `<p>${section}</p>`;
-              }
-          });
-
-          return formattedResponse;
-      }
-
-      // Send message function
-      function sendMessage() {
-          const message = userInput.value.trim();
-          if (message !== '') {
-              appendMessage(`${message}`, 'user');
-              userInput.value = '';
-              userInput.focus();  // Ensure the input field stays focused
-
-              // Display loading spinner
-              const loader = document.createElement('div');
-              loader.classList.add('loader');
-              
-              // Create the three-dot loader
-              for (let i = 0; i < 3; i++) {
-                  const dot = document.createElement('div');
-                  loader.appendChild(dot);
-              }
-
-              chatBox.appendChild(loader);
-
-              fetch(baseUrl, {
-                  method: 'POST',
-                  headers: {
-                      'Authorization': `Bearer ${apiKey}`,
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      model: "gpt-3.5-turbo",
-                      messages: [{ role: "user", content: message }],
-                  }),
-              })
-              .then(response => response.json())
-              .then(data => {
-                  // Remove loading spinner
-                  chatBox.removeChild(loader);
-
-                  if (data && data.choices && data.choices.length > 0) {
-                      let botResponse = data.choices[0].message.content;
-
-                      // Format the bot's response before appending
-                      const structuredResponse = formatResponse(botResponse);
-                      appendMessage(`<br> ${structuredResponse}`, 'bot');
-                  } else {
-                      appendMessage("Oops Something Went Wrong! May be you've reached the chat limit for now. 😅", 'bot');
-                  }
-              })
-              .catch(error => {
-                  console.error('Error:', error);
-                  appendMessage("Sorry, something went wrong. Please try again.", 'bot');
-              });
-          }
-      }
-
-      // Speech recognition setup
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      // Handle speech recognition result
-      recognition.onresult = (event) => {
+                        const structuredResponse = formatResponse(botResponse);
+                        appendMessage(`<br>${structuredResponse}`, 'bot');
+                    } else {
+                        appendMessage("Oops! Something went wrong. Please try again Later Or Take the " +
+                            `<a href="https://aimlapi.com/app/billing/plans" target="_blank" style="color: #4CAF50; text-decoration: none;">Subscription</a>`, 'bot');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    chatBox.removeChild(loader);
+                    appendMessage("Sorry, something went wrong. Please try again.", 'bot');
+                });
+            }
+        }
+    
+        // Speech recognition setup
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+    
+        recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
             userInput.value = transcript;
-            sendMessage();  // Automatically send the voice input as a message
+            sendMessage();
         };
-  
+    
         recognition.onerror = (event) => {
             console.error('Speech recognition error:', event.error);
             appendMessage("Sorry, couldn't recognize your voice. Please try again.", 'bot');
         };
-  
+    
         // Toggle voice recognition
         voiceBtn.addEventListener('click', () => {
             if (!recognizing) {
                 recognition.start();
                 recognizing = true;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';  // Change icon to show recording is in progress
+                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
             } else {
                 recognition.stop();
                 recognizing = false;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';  // Revert icon after stopping
+                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
             }
         });
-
-      // Event listener for send button
-      sendBtn.addEventListener('click', sendMessage);
-
-      // Event listener for Enter key
-      userInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-              sendMessage();
-          }
-      });
+    
+        // Event listener for Send button
+        sendBtn.addEventListener('click', sendMessage);
+    
+        // Event listener for Enter key
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    
+        // Search chat history
+        searchBar.addEventListener('input', (e) => {
+            const searchText = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.history-item');
+            items.forEach(item => {
+                if (item.textContent.toLowerCase().includes(searchText)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
     </script>
-
+    
+    
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
