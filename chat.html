@@ -462,12 +462,12 @@
         const chatHistory = document.getElementById('chatHistory');
         const searchBar = document.getElementById('searchBar');
         let recognizing = false;
-    
+
         // Function to append messages to chat
         function appendMessage(content, sender) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender);
-    
+
             if (sender === 'bot') {
                 // Add bot icon beside the message
                 const iconImg = document.createElement('img');
@@ -478,24 +478,101 @@
                 iconImg.style.marginRight = '10px';
                 iconImg.style.borderRadius = '50%';
                 iconImg.style.objectFit = 'cover';
-    
+
                 const messageContainer = document.createElement('div');
                 messageContainer.style.display = 'flex';
-                messageContainer.style.alignItems = 'center';
-    
+                messageContainer.style.alignItems = 'flex-start';
+
+                const formattedContent = formatResponse(content);
+                const messageContent = document.createElement('div');
+                messageContent.innerHTML = formattedContent;
+
+                // Append icon and message content to container
                 messageContainer.appendChild(iconImg);
-                messageContainer.innerHTML += `<div>${content}</div>`;
+                messageContainer.appendChild(messageContent);
+
                 messageDiv.appendChild(messageContainer);
             } else {
+                // For user messages, directly add content
                 messageDiv.innerHTML = content;
             }
-    
+
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
+
+        // Format plain text responses
+        function formatTextResponse(response) {
+            return `<p style="margin: 0; padding: 0;">${response}</p>`;
+        }
+
+        // Format bullet list responses
+        function formatListResponse(response) {
+            const items = response.split('\n').map(item => `<li style="list-style-type: none;">${item}</li>`).join('');
+            return `<ul style="padding-left: 0; margin: 0;">${items}</ul>`;
+        }
+
+        // Format code snippet responses
+        function formatCodeResponse(response) {
+            return `<pre><code style="white-space: pre-wrap; word-wrap: break-word;">${response}</code></pre>`;
+        }
+
+        // Format image responses
+        function formatImageResponse(response) {
+            return `<img src="${response}" alt="Bot-suggested image" style="max-width: 100%; border-radius: 5px;">`;
+        }
+
+        // Format links in responses
+        function formatLinkResponse(response) {
+            return response.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+        }
+
+        // Format table responses
+        function formatTableResponse(response) {
+            const rows = response.split('\n').map(row => {
+                const cells = row.split('|').map(cell => `<td style="padding: 8px; border: 1px solid #ddd;">${cell.trim()}</td>`).join('');
+                return `<tr>${cells}</tr>`;
+            }).join('');
+            return `<table border="1" style="width: 100%; border-collapse: collapse;">${rows}</table>`;
+        }
+
+        // Parse JSON responses
+        function formatJsonResponse(response) {
+            try {
+                const data = JSON.parse(response);
+                if (data.type === 'image') {
+                    return formatImageResponse(data.url);
+                } else if (data.type === 'list') {
+                    return formatListResponse(data.items.join('\n'));
+                } else if (data.type === 'text') {
+                    return formatTextResponse(data.content);
+                }
+                return formatTextResponse('Unknown response type.');
+            } catch (error) {
+                console.error('Error parsing JSON response:', error);
+                return formatTextResponse(response);
+            }
+        }
+
+        // Dynamic response formatting based on content
+        function formatResponse(response) {
+            if (response.startsWith('{') && response.endsWith('}')) {
+                return formatJsonResponse(response); // JSON response
+            } else if (response.includes('|')) {
+                return formatTableResponse(response); // Detect table
+            } else if (response.includes('http')) {
+                return formatLinkResponse(response); // Detect links
+            } else if (response.includes('\n')) {
+                return formatListResponse(response); // Detect list
+            } else {
+                return formatTextResponse(response); // Default to text
+            }
+        }
+
+
     
         // Chat History
-        function addToHistory(message) {
+        function addToHistory(question, response) {
             const historyItem = document.createElement('div');
             historyItem.classList.add('history-item');
             historyItem.style.display = 'flex';
@@ -503,16 +580,16 @@
             historyItem.style.alignItems = 'center';
             historyItem.style.marginBottom = '10px';
     
-            // Get the current date and time
             const now = new Date();
             const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const formattedDate = now.toLocaleDateString();
     
-            // Message container
+            const keyword = summarizeResponse(response);
+    
             const messageContainer = document.createElement('div');
             messageContainer.innerHTML = `
-                <div><strong>${message}</strong></div>
-                <small>${formattedDate} ${formattedTime}</small>
+                <div><strong>${question}</strong></div>
+                <small>${formattedDate} ${formattedTime} | ${keyword}</small>
             `;
     
             const deleteBtn = document.createElement('img');
@@ -521,84 +598,61 @@
             deleteBtn.style.width = '20px';
             deleteBtn.style.height = '20px';
             deleteBtn.style.cursor = 'pointer';
-
-            // Delete functionality
+    
             deleteBtn.addEventListener('click', () => {
-                // Remove the item from the UI
                 chatHistory.removeChild(historyItem);
-
-                // Get all current history items from localStorage
                 const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-
-                // Filter out the item being deleted
-                const updatedHistory = savedHistory.filter(savedItem => savedItem.message !== message);
-
-                // Save the updated history back to localStorage
+                const updatedHistory = savedHistory.filter(
+                    item => item.question !== question && item.response !== response
+                );
                 localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
             });
     
-            // Add click event to locate the message in the chatBox
             messageContainer.addEventListener('click', () => {
-                const messages = Array.from(chatBox.getElementsByClassName('message'));
-                const matchingMessage = messages.find(m => m.textContent.includes(message));
-                if (matchingMessage) {
-                    matchingMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                appendMessage(`<strong>Context:</strong> ${question}<br>${response}`, 'bot');
             });
     
-            // Append message container and delete button to the history item
             historyItem.appendChild(messageContainer);
             historyItem.appendChild(deleteBtn);
-    
-            // Append the history item to the chat history container
             chatHistory.appendChild(historyItem);
-
-            saveHistoryToLocalStorage(); // Save updated history
+    
+            saveHistoryToLocalStorage();
         }
-
-        // Save all chat history to local storage
+    
+        function summarizeResponse(response) {
+            return response.split(' ').slice(0, 5).join(' ') + '...';
+        }
+    
         function saveHistoryToLocalStorage() {
             const historyItems = Array.from(chatHistory.getElementsByClassName('history-item')).map(item => {
-                const message = item.querySelector('strong').innerText; // Get the message text
-                const dateTime = item.querySelector('small').innerText; // Get the date and time
-                return { message, dateTime }; // Save each message and time as an object
+                const question = item.querySelector('strong').innerText;
+                const keyword = item.querySelector('small').innerText.split('|')[1].trim();
+                return { question, keyword };
             });
-            localStorage.setItem('chatHistory', JSON.stringify(historyItems)); // Save full history array
+            localStorage.setItem('chatHistory', JSON.stringify(historyItems));
         }
-
-        // Load all chat history from local storage
-        function loadHistoryFromLocalStorage() {
-            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]'); // Get saved history or empty array
-            savedHistory.forEach(({ message, dateTime }) => addToHistory(message, dateTime)); // Add each history item to the UI
-        }
-        // Format chatbot response
-        function formatResponse(responseText) {
-            const sections = responseText.split("\n\n");
-            let formattedResponse = '';
     
-            sections.forEach(section => {
-                if (section.includes("Overview")) {
-                    formattedResponse += `<h3>Overview:</h3><p>${section.replace('Overview:', '')}</p>`;
-                } else if (section.includes("Key Features")) {
-                    formattedResponse += `<h4>Key Features:</h4><ul><li>${section.replace('Key Features:', '').split('\n').join('</li><li>')}</li></ul>`;
-                } else {
-                    formattedResponse += `<p>${section}</p>`;
+        function loadHistoryFromLocalStorage() {
+            // Clear existing chat history to prevent duplication
+            chatHistory.innerHTML = '';
+
+            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            savedHistory.forEach(({ question, keyword }) => {
+                const response = localStorage.getItem(`response_${question}`);
+                if (response) {
+                    // Add the history item if the response exists in localStorage
+                    addToHistory(question, response);
                 }
             });
-    
-            return formattedResponse;
         }
     
-        // Send message function
         function sendMessage() {
-            const message = userInput.value.trim();
-            if (message !== '') {
-                appendMessage(`${message}`, 'user');
-                addToHistory(message);
+            const question = userInput.value.trim();
+            if (question !== '') {
+                appendMessage(`${question}`, 'user');
                 userInput.value = '';
                 userInput.focus();
     
-                // Display loading spinner
                 const loader = document.createElement('div');
                 loader.classList.add('loader');
                 for (let i = 0; i < 3; i++) {
@@ -607,7 +661,6 @@
                 }
                 chatBox.appendChild(loader);
     
-                // API call to chatbot
                 fetch(baseUrl, {
                     method: 'POST',
                     headers: {
@@ -616,36 +669,37 @@
                     },
                     body: JSON.stringify({
                         model: "gpt-3.5-turbo",
-                        messages: [{ role: "user", content: message }],
+                        messages: [{ role: "user", content: question }],
                     }),
                 })
-                .then(response => response.json())
+                .then(response => response.json()) // Parse the JSON response
                 .then(data => {
-                    chatBox.removeChild(loader);
-    
+                    chatBox.removeChild(loader); // Remove the loader once the response is received
+
                     if (data && data.choices && data.choices.length > 0) {
                         let botResponse = data.choices[0].message.content;
-    
+
                         // Replace "Subscription" with a clickable link
                         const subscriptionLink = '<a href="https://aimlapi.com/app/billing/plans" target="_blank" style="color: #4CAF50; text-decoration: none;">Subscription</a>';
                         botResponse = botResponse.replace("Subscription", subscriptionLink);
-    
-                        const structuredResponse = formatResponse(botResponse);
-                        appendMessage(`<br>${structuredResponse}`, 'bot');
+
+                        appendMessage(botResponse, 'bot'); // Function to append the bot's response to the chat
+                        addToHistory(question, botResponse); // Function to store the chat history
+                        localStorage.setItem(`response_${question}`, botResponse); // Store the response in localStorage
                     } else {
-                        appendMessage("Oops! Something went wrong. Please try again Later Or Take the " +
-                            `<a href="https://aimlapi.com/app/billing/plans" target="_blank" style="color: #4CAF50; text-decoration: none;">Subscription</a>`, 'bot');
+                        // Handle case when no response or choices are returned
+                        appendMessage("Oops! Something went wrong. Please try again later or take the " + "https://aimlapi.com/app/billing/plans", 'bot'); 
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     chatBox.removeChild(loader);
-                    appendMessage("Sorry, something went wrong. Please try again.", 'bot');
+                    appendMessage("Error occurred. Try again later.", 'bot');
                 });
             }
         }
-    
-        // Speech recognition setup
+
+          // Speech recognition setup
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'en-US';
         recognition.interimResults = false;
@@ -700,7 +754,6 @@
             }
         });
     
-        // Search chat history
         searchBar.addEventListener('input', (e) => {
             const searchText = e.target.value.toLowerCase();
             const items = document.querySelectorAll('.history-item');
@@ -712,10 +765,9 @@
                 }
             });
         });
-    </script>    
     
-    
-    
+        document.addEventListener('DOMContentLoaded', loadHistoryFromLocalStorage);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
