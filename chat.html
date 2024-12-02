@@ -124,7 +124,7 @@
             background-color: white;
             color: black;
             align-self: flex-end;
-            border-radius: 200px;
+            border-radius: 15px;
         }
 
         .message.bot {
@@ -133,35 +133,45 @@
             font-size: 17px;
         }
 
-        .input-group {
+         /* Container for the input area */
+         .input-group {
             display: flex;
             padding: 10px 20px;
             background-color: #2e333f;
             position: relative;
             top: -40px; /* Move it up by 10px */
+            border-radius: 50px;
+            align-items: center;
         }
 
-        .input-group input {
+        /* Style for the input field */
+        .input-group textarea {
             flex-grow: 1;
-            padding: 20px 20px; /* Adjusted padding for better spacing */
+            padding: 15px;
             border: none;
-            border-radius: 50px; /* Fully rounded corners */
+            border-radius: 15px; /* Fully rounded corners */
             background-color: #444; /* Dark gray background */
             color: #fff; /* White text */
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional inner shadow for effect */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional inner shadow */
+            font-size: 16px;
+            resize: none;
+            overflow-y: hidden; /* Prevent scrollbar for now */
+            min-height: 40px; /* Minimum height for the input field */
+            max-height: 150px; /* Maximum height for the input field */
+            width: 45%;
             transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+            outline: none; /* Remove default outline */
         }
 
-        .input-group input:focus {
-            outline: none;
+        .input-group textarea:focus {
             background-color: #555; /* Lighter background on focus */
             box-shadow: 0 0 5px rgba(0, 198, 255, 0.5); /* Subtle glow effect */
         }
 
         .send-btn,
         .voice-btn {
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -402,7 +412,7 @@
                 <!-- Messages will be dynamically added here -->
             </div>
             <div class="input-group">
-                <input type="text" id="userInput" placeholder="Ask Anything...">
+                 <textarea id="userInput" placeholder="Ask Anything..." rows="1"></textarea>
                 <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
                 <button class="voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
             </div>
@@ -441,10 +451,19 @@
         // Add event listener to the button
         newChatBtn.addEventListener('click', resetChat);
 
-         // Auto-resize the textarea based on content
-        userInput.addEventListener("input", () => {
-            userInput.style.height = "auto"; // Reset height to calculate new height
-            userInput.style.height = userInput.scrollHeight + "px"; // Adjust height to content
+        // Auto resize the textarea dynamically
+        userInput.addEventListener('input', () => {
+            // Reset the height to auto so it can shrink if needed
+            userInput.style.height = 'auto';
+            // Set the new height based on scroll height (content height)
+            userInput.style.height = `${userInput.scrollHeight}px`;
+
+            // Ensure the scrollbar is visible when the text exceeds the max height
+            if (userInput.scrollHeight > userInput.clientHeight) {
+                userInput.style.overflowY = 'auto';
+            } else {
+                userInput.style.overflowY = 'hidden';
+            }
         });
 
         // Optional: Reset height when input is cleared
