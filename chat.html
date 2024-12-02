@@ -326,6 +326,45 @@
             transform: scale(0.95); /* Slight zoom-out effect on click */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Reduced shadow */
         }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .home-button {
+            background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
+            color: white; /* Text color */
+            padding: 8px 20px; /* Spacing inside the button */
+            font-size: 16px; /* Font size */
+            font-weight: bold; /* Bold text */
+            border: none; /* Remove border */
+            border-radius: 25px; /* Rounded corners */
+            text-decoration: none; /* Remove underline */
+            display: flex;
+            align-items: center; /* Center icon and text */
+            gap: 10px; /* Space between icon and text */
+            transition: all 0.3s ease; /* Smooth transitions */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06); /* Shadow effect */
+        }
+
+        .home-button:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb); /* Reverse gradient */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Elevated shadow */
+            transform: scale(1.05); /* Slight zoom-in effect */
+            color:red;
+        }
+
+        .home-button:active {
+            transform: scale(0.95); /* Slight zoom-out effect */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Push items to the edges */
+        }
     </style>
 </head>
 
@@ -333,6 +372,11 @@
     <!-- Navbar -->
     <nav class="navbar navbar-dark">
         <a class="navbar-brand"><i class="fas fa-comments"></i> CoreIntelli</a>
+        <div class="nav-right">
+            <a href="index.html" class="home-button">
+                <i class="fas fa-home"></i>
+            </a>
+        </div>
     </nav>
 
     <div class="container">
@@ -358,7 +402,7 @@
                 <!-- Messages will be dynamically added here -->
             </div>
             <div class="input-group">
-                <input type="text" id="userInput" placeholder="Type your message...">
+                <input type="text" id="userInput" placeholder="Ask Anything...">
                 <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
                 <button class="voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
             </div>
@@ -563,6 +607,14 @@
         deleteBtn.style.width = '20px';
         deleteBtn.style.height = '20px';
         deleteBtn.style.cursor = 'pointer';
+        // Add hover effect for red color
+        deleteBtn.addEventListener('mouseenter', () => {
+            deleteBtn.style.filter = 'invert(16%) sepia(84%) saturate(7486%) hue-rotate(0deg) brightness(102%) contrast(116%)'; // Red color
+        });
+
+        deleteBtn.addEventListener('mouseleave', () => {
+            deleteBtn.style.filter = ''; // Reset to original
+        });
 
         deleteBtn.addEventListener('click', () => {
             chatHistory.removeChild(historyItem);
