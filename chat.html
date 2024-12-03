@@ -47,7 +47,7 @@
         /* Sidebar Styling */
         .sidebar {
             width: 300px;
-            background-color: #14141470;
+            background-color: rgba(20, 20, 20, 0.7); /* Semi-transparent black */
             color: #fff;
             overflow-y: auto;
             padding: 20px;
@@ -57,8 +57,32 @@
             bottom: 0;
             z-index: 1000;
             border-radius: 50px;
+            box-sizing: border-box; /* Ensure padding is included in dimensions */
+            overflow: hidden; /* Prevent content from spilling */
         }
 
+        /* Add scrolling functionality inside the sidebar */
+        .sidebar-content {
+            height: 100%; /* Ensure content fills sidebar */
+            overflow-y: auto; /* Allow scrolling */
+            padding: 20px; /* Padding for content inside the scroll area */
+            border-radius: 50px; /* Ensure rounded corners for scrollable content */
+        }
+
+        /* Customize scrollbar for aesthetic alignment */
+        .sidebar::-webkit-scrollbar {
+            width: 8px; /* Adjust scrollbar width */
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #555; /* Scrollbar color */
+            border-radius: 50px; /* Match sidebar's border-radius */
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(20, 20, 20, 0.7); /* Match sidebar's background */
+            border-radius: 50px; /* Match sidebar's border-radius */
+        }
         .sidebar h3 {
             font-size: 18px;
             font-weight: bold;
@@ -109,6 +133,22 @@
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        /* Ensure border-radius applies to scrolling content */
+        .chat-box::-webkit-scrollbar {
+            width: 8px; /* Adjust scrollbar width */
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: #555; /* Scrollbar color */
+            border-radius: 12px; /* Match container's border-radius */
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: #2e333f; /* Background of the scrollbar track */
+            border-radius: 12px; /* Match container's border-radius */
         }
 
         .message {
@@ -375,6 +415,73 @@
             align-items: center;
             justify-content: space-between; /* Push items to the edges */
         }
+        /* Navbar User Profile Icon */
+        /* Style for user icon */
+        .user-icon {
+            font-size: 24px; /* Size of the user icon */
+            color: white; /* White color for the icon */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+
+        .user-avatar {
+            width: 40px; /* Size of the avatar */
+            height: 40px; /* Make it square */
+            border-radius: 50%; /* Circular avatar */
+            object-fit: cover; /* Ensure image scales properly */
+            border: 2px solid #fff; /* Optional border for contrast */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1); /* Slight zoom-in effect */
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2); /* Subtle shadow on hover */
+        }
+
+        /* Dropdown Menu Customization */
+        .dropdown-menu {
+            background-color: #2e333f; /* Match theme background */
+            border-radius: 12px; /* Rounded edges */
+            border: none; /* Remove default border */
+            padding: 10px 0; /* Adjust spacing */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .dropdown-menu .dropdown-item {
+            color: #fff; /* White text */
+            padding: 10px 15px; /* Adjust spacing */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Spacing between icon and text */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #444; /* Slightly lighter background on hover */
+            transform: scale(1.02); /* Subtle zoom effect */
+            color: #00c6ff; /* Highlight text */
+        }
+
+        .dropdown-divider {
+            border-color: #555; /* Subtle divider color */
+        }
+
+        .dropdown-menu .text-danger {
+            color: #ff4d4f !important; /* Highlight logout with red */
+        }
+
+        /* Dropdown Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 
@@ -383,9 +490,49 @@
     <nav class="navbar navbar-dark">
         <a class="navbar-brand"><i class="fas fa-comments"></i> CoreIntelli</a>
         <div class="nav-right">
+            <!-- Home Button -->
             <a href="index.html" class="home-button">
                 <i class="fas fa-home"></i>
             </a>
+    
+            <!-- User Dropdown -->
+            <div class="dropdown ms-3">
+                <a 
+                    class="dropdown-toggle user-profile" 
+                    href="#" 
+                    role="button" 
+                    id="userDropdown" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                >
+                    <img src="https://media-hosting.imagekit.io//f3cc16384cf043f7/user%20(1).png?Expires=1733375050&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=E2voMBgW5kCoJF6Cq1nYAKthS0~KqXbQlCXXahcc~FmlymLWW-1EhuVWJY1zmGpg-OPqm6LMNbG0Br0Wul1S4nSHXcmRAV3JViB~axjkHjdR7DZq~rfJc2wVk48N~xFrfkzYap1cexc8xbhZraSiihfGrDhOiST5GBVJXGg0TPydNqjobYDhfWBLwhPKagQ4Y6DuhNNZPnV~dt9z26saO4WVs-VK-s~BcN0CdqTPlkyZdNUWxDXvWnkE62pCYsOEp5yHgu3Hs0Qj0F5CjLl7-IIIRKVz9YPDvqpjKHyFl98BdOuQeuIMe3NYUcE8ryJwbBDzXlby5pa5BgfX1XXPkg__" alt="User" class="user-avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="userDropdown">
+                    <li>
+                        <a class="dropdown-item" href="profile.html">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="login.html">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="signup.html">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="logout.html">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -435,7 +582,6 @@
         const searchBar = document.getElementById('searchBar');
         const newChatBtn = document.getElementById('newChatBtn');
         let recognizing = false;
-
         
         // Function to reset the chat box
         function resetChat() {
@@ -819,5 +965,6 @@
         document.addEventListener('DOMContentLoaded', loadHistoryFromLocalStorage);
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
