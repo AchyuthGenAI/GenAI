@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoreIntelli</title>
+    <title>Chat-AI</title>
     <link rel="icon" type="image/webp" href="https://i.ibb.co/MCLkk0y/icon-png.webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -27,6 +27,9 @@
             background-color: #2e333f;
             color: white;
             padding: 10px 20px;
+            position: relative;
+            margin-left: 300px; /* Shift the navbar to the right by 50px */
+
         }
 
         .navbar-brand {
@@ -37,6 +40,8 @@
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-left: 50px; /* Adjust this value as needed */
+
         }
 
         .container {
@@ -45,21 +50,46 @@
             overflow: hidden;
         }
 
-        /* Sidebar Styling */
+         /* Sidebar styles */
         .sidebar {
-            width: 300px;
-            background-color: rgba(20, 20, 20, 0.7); /* Semi-transparent black */
-            color: #fff;
-            overflow-y: auto;
-            padding: 20px;
             position: fixed;
-            left: 0;
-            top: 70px;
-            bottom: 0;
+            top: 70px; /* Below the navbar */
+            left: -300px; /* Initially hidden */
+            width: 300px;
+            height: calc(100vh - 70px);
+            background-color: rgba(20, 20, 20, 0.7);
+            color: #fff;
+            padding: 20px;
             z-index: 1000;
-            border-radius: 50px;
-            box-sizing: border-box; /* Ensure padding is included in dimensions */
-            overflow: hidden; /* Prevent content from spilling */
+            transition: left 0.3s ease;
+            overflow-y: auto;
+        }
+         /* Show sidebar when active */
+        .sidebar.active {
+            left: 0;
+        }
+
+        /* Toggle button styles */
+        .toggle-sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .toggle-sidebar:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
         }
 
         /* Add scrolling functionality inside the sidebar */
@@ -130,7 +160,7 @@
             padding: 20px;
             flex-grow: 1; /* Take up available space */
             overflow-y: auto; /* Enable scrolling */
-            margin-bottom: 20px;
+            margin-bottom: 60px;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.3s ease;
@@ -175,73 +205,113 @@
         }
 
          /* Container for the input area */
-         .input-group {
+        .input-group {
             display: flex;
-            padding: 10px 20px;
-            background-color: #2e333f;
-            position: relative;
-            top: -40px; /* Move it up by 10px */
+            position: relative; /* Needed for icon positioning */
+            background-color: #444; /* Dark gray background */
             border-radius: 50px;
+            padding: 10px 20px;
             align-items: center;
+            top: -60px; /* Adjust position if needed */
         }
 
-        /* Style for the input field */
+        /* Style for the input field (textarea) */
         .input-group textarea {
-            flex-grow: 1;
-            padding: 15px;
+            padding: 15px 60px 15px 60px; /* Add padding for icons */
             border: none;
-            border-radius: 15px; /* Fully rounded corners */
+            border-radius: 50px; /* Fully rounded corners */
             background-color: #444; /* Dark gray background */
             color: #fff; /* White text */
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional inner shadow */
             font-size: 16px;
             resize: none;
             overflow-y: hidden; /* Prevent scrollbar for now */
-            min-height: 40px; /* Minimum height for the input field */
+            min-height: 50px; /* Minimum height for the input field */
             max-height: 150px; /* Maximum height for the input field */
-            width: 45%;
+            width: 100%; /* Take full width */
             transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
             outline: none; /* Remove default outline */
+            scrollbar-width: thin; /* Thin scrollbar for Firefox */
+            scrollbar-color: #00c6ff #333; /* Color for scrollbar (Firefox) */
         }
 
+        /* Custom Scrollbar for Webkit Browsers */
+        .input-group textarea::-webkit-scrollbar {
+            width: 8px; /* Width of the vertical scrollbar */
+        }
+
+        .input-group textarea::-webkit-scrollbar-track {
+            background: #333; /* Scrollbar track color */
+            border-radius: 10px; /* Rounded corners for the track */
+        }
+
+        .input-group textarea::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00c6ff, #0072ff); /* Gradient thumb color */
+            border-radius: 10px; /* Rounded corners for the thumb */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow on the thumb */
+        }
+
+        /* Scrollbar Thumb Hover Effect */
+        .input-group textarea::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #00a6dd, #005fcc); /* Slightly darker gradient on hover */
+        }
+
+        /* Scrollbar Corner (Optional) */
+        .input-group textarea::-webkit-scrollbar-corner {
+            background: #444; /* Matches the textarea background */
+        }
+
+        /* Optional Focus Styling */
         .input-group textarea:focus {
-            background-color: #555; /* Lighter background on focus */
             box-shadow: 0 0 5px rgba(0, 198, 255, 0.5); /* Subtle glow effect */
         }
 
-        .send-btn,
-        .voice-btn {
-            width: 55px;
-            height: 55px;
+        /* Focus effect for textarea */
+        .input-group textarea:focus {
+            box-shadow: 0 0 5px rgba(0, 198, 255, 0.5); /* Subtle glow effect */
+        }
+
+        /* Send button inside textarea */
+        .send-btn {
+            position: absolute;
+            right: 40px; /* Position to the right inside the container */
+            bottom: 50%;
+            transform: translateY(50%); /* Center vertically */
+            width: 40px;
+            height: 40px;
+            background: #444;
             display: flex;
             justify-content: center;
             align-items: center;
             border: none;
-            border-radius: 50%;
+            border-radius: 50%; /* Round button */
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
         }
 
-        .send-btn {
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
+        /* Voice button inside textarea */
+        .voice-btn {
+            position: absolute;
+            left: 30px; /* Position to the left inside the container */
+            bottom: 50%;
+            transform: translateY(50%); /* Center vertically */
+            width: 40px;
+            height: 40px;
+            background: #444;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 50%; /* Round button */
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
         }
 
-        .voice-btn {
-            background: linear-gradient(45deg, #ff00ff, #ff6f61);
-            margin-left: 10px;
-        }
-        /* Hover effect */
+        /* Hover effect for buttons */
         .send-btn:hover,
         .voice-btn:hover {
-            color: black; /* Change the icon color to black on hover */
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Elevated shadow on hover */
-            transform: scale(1.05); /* Slight zoom-in effect */
-        }
-        .send-btn:active,
-        .voice-btn:hover:active {
-            transform: scale(0.95); /* Slight zoom-out effect on click */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+            color: black; /* Change icon color on hover */
         }
 
         /* Three-dot wave loader */
@@ -312,48 +382,6 @@
         footer .footer-link {
             margin-left: 10px;
         }
-        /* Media Queries for Mobile and Tablet Screens */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-            }
-            .chat-container {
-                margin-left: 0;
-            }
-            .input-group input {
-                width: 80%;
-            }
-            .send-btn, .voice-btn {
-                width: 40px;
-                height: 40px;
-            }
-            footer {
-                margin-left: 0;
-            }
-        }
-
-        /* Media Queries for Smaller Mobile Devices */
-        @media (max-width: 480px) {
-            .navbar-brand {
-                font-size: 1.2rem;
-            }
-            .container {
-                flex-direction: column;
-            }
-            .chat-box {
-                padding: 10px;
-            }
-            .send-btn, .voice-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-        }
         .fancy-button {
             background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
             color: white; /* Button text color */
@@ -423,7 +451,7 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-dark">
-        <a class="navbar-brand"><i class="fas fa-comments"></i> CoreIntelli</a>
+        <a class="navbar-brand"><i class="fas fa-comments"></i> Chat @AI</a>
         <div class="nav-right">
             <!-- Home Button -->
             <a href="index.html" class="home-button">
@@ -435,7 +463,7 @@
 
     <div class="container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="search-bar">
                 <input type="text" id="searchBar" placeholder="Search chat history">
             </div>
@@ -446,6 +474,11 @@
                 <div class="history-item">Chat 2</div>
             </div>
         </aside>
+        
+        <!-- Sidebar toggle button -->
+        <button class="toggle-sidebar" id="toggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
 
         <!-- Chat Section -->
         <div class="chat-container">
@@ -470,7 +503,7 @@
     
     <script>
         const baseUrl = 'https://api.aimlapi.com/chat/completions'; // Replace with your API URL
-        const apiKey = 'cc2d8a7a189948be901cc38fb8bddc8e'; // Replace with your API key
+        const apiKey = '9a3810ede4bc435582195e1d558ba145'; // Replace with your API key
         const chatBox = document.getElementById('chatBox');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -478,7 +511,13 @@
         const chatHistory = document.getElementById('chatHistory');
         const searchBar = document.getElementById('searchBar');
         const newChatBtn = document.getElementById('newChatBtn');
+        const sidebar = document.getElementById('sidebar');
+        const toggleButton = document.getElementById('toggleSidebar');
         let recognizing = false;
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
         
         // Function to reset the chat box
         function resetChat() {
