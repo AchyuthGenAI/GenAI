@@ -1,906 +1,591 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat-AI</title>
     <link rel="icon" type="image/webp" href="https://i.ibb.co/MCLkk0y/icon-png.webp">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Home-AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
+        /* Reset and Basic Styles */
+        * {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100vh; /* Set the body height to 100% of the viewport */
-            overflow-x: hidden; /* Prevent scrolling and any overflow */
-            overflow-y: auto;
-            background-color: #2e333f;
-            font-family: Arial, sans-serif;
-            position: fixed; /* Fix the body in place */
-            top: 0; /* Ensure it starts from the top */
-            left: 0; /* Ensure it starts from the left */
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
         }
 
-        .navbar {
-            background-color: #2e333f;
-            color: white;
-            padding: 10px 20px;
-            position: relative;
-            margin-left: 300px; /* Shift the navbar to the right by 50px */
-
+        /* Header */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .navbar-brand {
+        header h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 600;
+            color: transparent;
             background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-left: 50px; /* Adjust this value as needed */
-
+            animation: geminiGradient 6s infinite linear;
         }
-
-        .container {
+        nav ul {
+            list-style: none;
             display: flex;
-            height: calc(100vh - 70px);
-            overflow: hidden;
+            gap: 30px;
         }
-
-         /* Sidebar styles */
-        .sidebar {
-            position: fixed;
-            top: 70px; /* Below the navbar */
-            left: -300px; /* Initially hidden */
-            width: 300px;
-            height: calc(100vh - 70px);
-            background-color: rgba(20, 20, 20, 0.7);
-            color: #fff;
-            padding: 20px;
-            z-index: 1000;
-            transition: left 0.3s ease;
-            overflow-y: auto;
+        nav ul li {
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
-         /* Show sidebar when active */
-        .sidebar.active {
-            left: 0;
-        }
-
-        /* Toggle button styles */
-        .toggle-sidebar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
-            border: none;
+        nav ul li a {
+            font-size: 1.1rem;
+            color: #555;
+            padding: 10px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        /* Navigation Colors */
+        nav ul li:nth-child(1) a {
+            background-color: #ff6f61; /* Home */
+        }
+
+        nav ul li:nth-child(2) a {
+            background-color: #6f61ff; /* Features */
+        }
+
+        nav ul li:nth-child(3) a {
+            background-color: #61ff6f; /* About */
+        }
+
+        nav ul li:nth-child(4) a {
+            background-color: #ffa500; /* Testimonials */
+        }
+
+        nav ul li a:hover {
+            background-color: #333; /* Dark background on hover */
+            color: white; /* White text on hover */
+            transform: translateY(-5px);
+        }
+
+        nav ul li a i {
+            font-size: 1.3rem;
+        }
+
+        /* Tooltip for Labels */
+        nav ul li span {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        nav ul li:hover span {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(to bottom right, #0078d4, #005bb5);
+            color: white;
+        }
+        .hero h2 {
+            font-size: 3rem;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+            animation: typing 3s steps(30) 1s 1 normal both;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Typing animation */
+        @keyframes typing {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background: #ffffff;
+            color: #0078d4;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 15px 30px;
+            border: 2px solid #0078d4;
+            border-radius: 100px;
+            text-transform: uppercase;
             cursor: pointer;
-            z-index: 1100;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease-in-out;
         }
 
-        .toggle-sidebar:hover {
-            background: linear-gradient(135deg, #2575fc, #6a11cb);
+        .cta-button:hover {
+            background: #0078d4;
+            color: #ffffff;
+            border-color: #005bb5;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            animation: glowing 1.5s ease-in-out infinite alternate;
         }
 
-        /* Add scrolling functionality inside the sidebar */
-        .sidebar-content {
-            height: 100%; /* Ensure content fills sidebar */
-            overflow-y: auto; /* Allow scrolling */
-            padding: 20px; /* Padding for content inside the scroll area */
-            border-radius: 50px; /* Ensure rounded corners for scrollable content */
+        @keyframes glowing {
+            0% {
+                box-shadow: 0 0 5px #0078d4, 0 0 10px #0078d4, 0 0 15px #0078d4;
+            }
+            100% {
+                box-shadow: 0 0 20px #00c8ff, 0 0 30px #00c8ff, 0 0 40px #00c8ff;
+            }
         }
 
-        /* Customize scrollbar for aesthetic alignment */
-        .sidebar::-webkit-scrollbar {
-            width: 8px; /* Adjust scrollbar width */
+        /* Hover Icon animation */
+        .cta-button:hover span {
+            transform: translateX(5px);
         }
 
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #555; /* Scrollbar color */
-            border-radius: 50px; /* Match sidebar's border-radius */
+        .cta-button span {
+            font-size: 1.3rem;
+            transition: transform 0.3s ease;
         }
 
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(20, 20, 20, 0.7); /* Match sidebar's background */
-            border-radius: 50px; /* Match sidebar's border-radius */
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
+            background: white;
         }
-        .sidebar h3 {
-            font-size: 18px;
+        .feature-item {
+            background: #f9f9f9;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .feature-item h4 {
+            font-size: 1.2rem;
+            color: #0078d4;
+            margin-bottom: 10px;
+        }
+        .feature-item p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 60px 20px;
+            background: #f0f4f8;
+            text-align: center;
+        }
+        .how-it-works h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .how-it-works p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .step {
+            background: white;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 300px;
+            text-align: center;
+        }
+        .step h4 {
+            color: #0078d4;
+            margin-bottom: 10px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 60px 20px;
+            background: white;
+        }
+        .testimonials h3 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .testimonial-item {
+            background: #f9f9f9;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px auto;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .testimonial-item p {
+            font-style: italic;
+        }
+        .testimonial-item .author {
+            text-align: right;
             font-weight: bold;
         }
 
-        .history-item {
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color:#2e333f;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .history-item:hover {
-            background-color: #555;
-        }
-
-        .search-bar {
-            margin-bottom: 20px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 50px;
-            background-color: #3a3f4b;
-            color: #fff;
-        }
-
-        .chat-container {
-            margin-left: 300px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #2e333f;
-            height: 100%;
-        }
-
-        .chat-box {
-            background-color: #2e333f;
-            border-radius: 12px;
-            padding: 20px;
-            flex-grow: 1; /* Take up available space */
-            overflow-y: auto; /* Enable scrolling */
-            margin-bottom: 60px;
-            display: flex;
-            flex-direction: column;
-            animation: fadeIn 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        /* Ensure border-radius applies to scrolling content */
-        .chat-box::-webkit-scrollbar {
-            width: 8px; /* Adjust scrollbar width */
-        }
-
-        .chat-box::-webkit-scrollbar-thumb {
-            background: #555; /* Scrollbar color */
-            border-radius: 12px; /* Match container's border-radius */
-        }
-
-        .chat-box::-webkit-scrollbar-track {
-            background: #2e333f; /* Background of the scrollbar track */
-            border-radius: 12px; /* Match container's border-radius */
-        }
-
-        .message {
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 10px;
-            width: fit-content;
-            max-width: 70%;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message.user {
-            background-color: white;
-            color: black;
-            align-self: flex-end;
-            border-radius: 15px;
-        }
-
-        .message.bot {
-            color: white;
-            align-self: flex-start;
-            font-size: 17px;
-        }
-
-         /* Container for the input area */
-        .input-group {
-            display: flex;
-            position: relative; /* Needed for icon positioning */
-            background-color: #444; /* Dark gray background */
-            border-radius: 50px;
-            padding: 10px 20px;
-            align-items: center;
-            top: -60px; /* Adjust position if needed */
-        }
-
-        /* Style for the input field (textarea) */
-        .input-group textarea {
-            padding: 15px 60px 15px 60px; /* Add padding for icons */
-            border: none;
-            border-radius: 50px; /* Fully rounded corners */
-            background-color: #444; /* Dark gray background */
-            color: #fff; /* White text */
-            font-size: 16px;
-            resize: none;
-            overflow-y: hidden; /* Prevent scrollbar for now */
-            min-height: 50px; /* Minimum height for the input field */
-            max-height: 150px; /* Maximum height for the input field */
-            width: 100%; /* Take full width */
-            transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
-            outline: none; /* Remove default outline */
-            scrollbar-width: thin; /* Thin scrollbar for Firefox */
-            scrollbar-color: #00c6ff #333; /* Color for scrollbar (Firefox) */
-        }
-
-        /* Custom Scrollbar for Webkit Browsers */
-        .input-group textarea::-webkit-scrollbar {
-            width: 8px; /* Width of the vertical scrollbar */
-        }
-
-        .input-group textarea::-webkit-scrollbar-track {
-            background: #333; /* Scrollbar track color */
-            border-radius: 10px; /* Rounded corners for the track */
-        }
-
-        .input-group textarea::-webkit-scrollbar-thumb {
-            background: linear-gradient(45deg, #00c6ff, #0072ff); /* Gradient thumb color */
-            border-radius: 10px; /* Rounded corners for the thumb */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow on the thumb */
-        }
-
-        /* Scrollbar Thumb Hover Effect */
-        .input-group textarea::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(45deg, #00a6dd, #005fcc); /* Slightly darker gradient on hover */
-        }
-
-        /* Scrollbar Corner (Optional) */
-        .input-group textarea::-webkit-scrollbar-corner {
-            background: #444; /* Matches the textarea background */
-        }
-
-        /* Optional Focus Styling */
-        .input-group textarea:focus {
-            box-shadow: 0 0 5px rgba(0, 198, 255, 0.5); /* Subtle glow effect */
-        }
-
-        /* Focus effect for textarea */
-        .input-group textarea:focus {
-            box-shadow: 0 0 5px rgba(0, 198, 255, 0.5); /* Subtle glow effect */
-        }
-
-        /* Send button inside textarea */
-        .send-btn {
-            position: absolute;
-            right: 40px; /* Position to the right inside the container */
-            bottom: 50%;
-            transform: translateY(50%); /* Center vertically */
-            width: 40px;
-            height: 40px;
-            background: #444;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: none;
-            border-radius: 50%; /* Round button */
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        /* Voice button inside textarea */
-        .voice-btn {
-            position: absolute;
-            left: 30px; /* Position to the left inside the container */
-            bottom: 50%;
-            transform: translateY(50%); /* Center vertically */
-            width: 40px;
-            height: 40px;
-            background: #444;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: none;
-            border-radius: 50%; /* Round button */
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        /* Hover effect for buttons */
-        .send-btn:hover,
-        .voice-btn:hover {
-            color: black; /* Change icon color on hover */
-        }
-
-        /* Three-dot wave loader */
-        .loader {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto;
-        }
-
-        .loader div {
-            width: 10px;
-            height: 10px;
-            margin: 0 5px;
-            border-radius: 50%;
-            background-color: #3498db;
-            animation: wave 1.5s infinite ease-in-out;
-        }
-
-        .loader div:nth-child(1) {
-            animation-delay: -0.3s;
-        }
-
-        .loader div:nth-child(2) {
-            animation-delay: -0.15s;
-        }
-
-        .loader div:nth-child(3) {
-            animation-delay: 0s;
-        }
-
-        @keyframes wave {
-            50%, 100% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1);
-            }
-        }
-
+        /* Footer */
         footer {
+            background: #222;
+            color: white;
             text-align: center;
-            padding: 15px;
-            background-color: transparent;
-            color: #ddd;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            font-size: 14px;
-            margin-left: 150px;
+            padding: 20px;
+            font-size: 0.9rem;
         }
-
         footer a {
-            color: #00adb5;
-            text-decoration: none;
+            color: #0078d4;
+        }
+        .auth-btn {
+            position: relative;
+            z-index: 1;
+            color: #0078d4; /* Button text color */
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 200px;
+            padding: 10px 20px;
+            background: none; /* Transparent button background */
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        footer a:hover {
-            text-decoration: underline;
-            color: #00bcd4;
+        .auth-btn:hover {
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61); /* Fill with gradient on hover */
+            color: white; /* White text on hover */
         }
 
-        footer p {
-            margin: 5px 0;
+        .auth-btn.signup {
+            color: #0078d4; /* Specific text color for signup button */
         }
 
-        footer .footer-link {
-            margin-left: 10px;
+        .auth-btn.signup:hover {
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61); /* Same hover gradient */
+            color: white;
         }
-        .fancy-button {
-            background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
-            color: white; /* Button text color */
-            padding: 12px 24px; /* Spacing inside the button */
-            font-size: 16px; /* Font size */
-            font-weight: bold; /* Bold text */
-            border: none; /* Remove border */
-            border-radius: 25px; /* Rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06); /* Subtle shadow */
-            cursor: pointer; /* Pointer cursor */
-            transition: all 0.3s ease; /* Smooth transition effect */
+        /* Scroll Animations */
+        .scroll-fade {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s ease-out;
         }
 
-        .fancy-button:hover {
-            background: linear-gradient(135deg, #2575fc, #6a11cb); /* Reverse gradient on hover */
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Elevated shadow on hover */
-            transform: scale(1.05); /* Slight zoom-in effect */
+        .scroll-fade.in-view {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .fancy-button:active {
-            transform: scale(0.95); /* Slight zoom-out effect on click */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+        .scroll-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s ease-out;
         }
-        .nav-right {
+
+        .scroll-slide-up.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .logo-container {
             display: flex;
             align-items: center;
-            margin-left: auto;
         }
 
-        .home-button {
-            background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
-            color: white; /* Text color */
-            padding: 8px 20px; /* Spacing inside the button */
-            font-size: 16px; /* Font size */
-            font-weight: bold; /* Bold text */
-            border: none; /* Remove border */
-            border-radius: 25px; /* Rounded corners */
-            text-decoration: none; /* Remove underline */
+        .logo {
+            width: 40px; /* Adjust size as needed */
+            height: 40px;
+            border-radius: 50%; /* Make the logo circular */
+            margin-right: 10px; /* Space between logo and text */
+        }
+        /* Voice Button Styles */
+        .voice-btn {
+            background-color: #0078d4; /* Blue background */
+            color: white; /* White text */
+            border: none;
+            border-radius: 50px; /* Rounded border */
+            padding: 10px 20px; /* Padding for better spacing */
             display: flex;
-            align-items: center; /* Center icon and text */
+            align-items: center;
             gap: 10px; /* Space between icon and text */
-            transition: all 0.3s ease; /* Smooth transitions */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06); /* Shadow effect */
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .home-button:hover {
-            background: linear-gradient(135deg, #2575fc, #6a11cb); /* Reverse gradient */
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Elevated shadow */
-            transform: scale(1.05); /* Slight zoom-in effect */
-            color:red;
+        .voice-btn:hover {
+            background-color: #005bb5; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .home-button:active {
-            transform: scale(0.95); /* Slight zoom-out effect */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+        .voice-btn i {
+            font-size: 1.2rem; /* Icon size */
         }
 
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Push items to the edges */
+        .voice-btn span {
+            font-size: 0.9rem; /* Text size */
         }
-
+        
     </style>
 </head>
-
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark">
-        <a class="navbar-brand"><i class="fas fa-comments"></i> Chat @AI</a>
-        <div class="nav-right">
-            <!-- Home Button -->
-            <a href="index.html" class="home-button">
-                <i class="fas fa-home"></i>
-            </a>
-            </div>
-        </div>
+
+<header>
+    <div class="logo-container">
+        <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="CoreIntelli Logo" class="logo">
+        <h1>Chat @AI</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#home"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="#features"><i class="fas fa-cogs"></i><span>Features</span></a></li>
+            <li><a href="#how-it-works"><i class="fas fa-info-circle"></i><span>About</span></a></li>
+            <li><a href="#testimonials"><i class="fas fa-comments"></i><span>Testimonials</span></a></li>
+            <li>
+                <button id="voice-btn" class="voice-btn">
+                    <i class="fas fa-microphone"></i>
+                    <span>Voice Navigation</span>
+                </button>
+            </li>
+        </ul>
     </nav>
+    <div class="auth-buttons">
+        <button class="auth-btn" onclick="openLoginModal()">Login</button>
+        <button class="auth-btn signup" onclick="openSignupModal()">Signup</button>
+    </div>
+</header>
 
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="search-bar">
-                <input type="text" id="searchBar" placeholder="Search chat history">
-            </div>
-            <h3>Chat History</h3>
-            <div id="chatHistory">
-                <!-- Chat history items -->
-                <div class="history-item">Chat 1</div>
-                <div class="history-item">Chat 2</div>
-            </div>
-        </aside>
-        
-        <!-- Sidebar toggle button -->
-        <button class="toggle-sidebar" id="toggleSidebar">
-            <i class="fas fa-bars"></i>
-        </button>
+<section id="vanta-background" class="hero scroll-fade">
+    <h2>Empower your business with the smartest AI assistant!</h2>
+    <p>Our AI-powered chatbot is designed to engage, inform, and provide seamless communication with your customers. Simplify workflows and enhance user experiences with our smart and scalable solution.</p>
+    <a href="chat.html" class="cta-button">Get Started <span><i class="fas fa-robot"></i></span></a>
+</section>
 
-        <!-- Chat Section -->
-        <div class="chat-container">
-            <div id="controls" style="text-align: left; margin: 20px;">
-                <button id="newChatBtn" class="fancy-button">New Chat</button>
-            </div>
-            <div class="chat-box" id="chatBox">
-                <!-- Messages will be dynamically added here -->
-            </div>
-            <div class="input-group">
-                 <textarea id="userInput" placeholder="Ask Anything..." rows="1"></textarea>
-                <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
-                <button class="voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
-            </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+<script>
+    VANTA.WAVES({
+        el: "#vanta-background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00
+    })
+</script>
+
+<section id="features" class="features">
+    <div class="feature-item scroll-slide-up">
+        <h4>Personalized Responses</h4>
+        <p>Engages in meaningful, context-aware conversations tailored to your needs.</p>
+    </div>
+    <div class="feature-item scroll-slide-up">
+        <h4>24/7 Availability</h4>
+        <p>Access the chatbot anytime, from anywhere.</p>
+    </div>
+    <div class="feature-item scroll-slide-up">
+        <h4>Smart Integration</h4>
+        <p>Seamlessly connects with multiple platforms and services.</p>
+    </div>
+</section>
+
+<section id="how-it-works" class="how-it-works">
+    <h3>How It Works</h3>
+    <p>Our chatbot leverages powerful AI algorithms to provide personalized interactions based on your input. Here's how it works:</p>
+    <div class="steps">
+        <div class="step">
+            <h4>Step 1</h4>
+            <p>Type your question or request in the chat window.</p>
+        </div>
+        <div class="step">
+            <h4>Step 2</h4>
+            <p>Our AI processes your input and generates a relevant response.</p>
+        </div>
+        <div class="step">
+            <h4>Step 3</h4>
+            <p>Enjoy a meaningful conversation and get the answers you need.</p>
         </div>
     </div>
+</section>
+<script>
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 AI Chatbot | <a href="#" class="footer-link">Privacy Policy</a> | <a href="#" class="footer-link">Terms of Service</a></p>
-    </footer>
-    
-    <script>
-        const baseUrl = 'https://api.aimlapi.com/chat/completions'; // Replace with your API URL
-        const apiKey = '9a3810ede4bc435582195e1d558ba145'; // Replace with your API key
-        const chatBox = document.getElementById('chatBox');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const voiceBtn = document.getElementById('voiceBtn');
-        const chatHistory = document.getElementById('chatHistory');
-        const searchBar = document.getElementById('searchBar');
-        const newChatBtn = document.getElementById('newChatBtn');
-        const sidebar = document.getElementById('sidebar');
-        const toggleButton = document.getElementById('toggleSidebar');
-        let recognizing = false;
+    recognition.onresult = function(event) {
+        let transcript = event.results[0][0].transcript.toLowerCase();
+        console.log("Voice Command: ", transcript);
 
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-        
-        // Function to reset the chat box
-        function resetChat() {
-            // Clear the chat box content
-            chatBox.innerHTML = '';
-            // Optionally, scroll to the top of the chat box
-            chatBox.scrollTop = 0;
-            // Optionally, reset any other variables or UI elements
-            userInput.value = ''; // Clear the input field
-            localStorage.clear(); // Clear saved chat history if applicable
+        if (transcript.includes("home")) {
+            document.querySelector('a[href="#home"]').click();
+        } else if (transcript.includes("features")) {
+            document.querySelector('a[href="#features"]').click();
+        } else if (transcript.includes("about")) {
+            document.querySelector('a[href="#how-it-works"]').click();
+        } else if (transcript.includes("testimonials")) {
+            document.querySelector('a[href="#testimonials"]').click();
+        } else if (transcript.includes("login")) {
+            document.querySelector('a[href="#login"]').click();
+        } else if (transcript.includes("sign up") || transcript.includes("signup")) {
+            document.querySelector('a[href="#signup"]').click();
+        } else if (transcript.includes("start chat") || transcript.includes("get started")) {
+            window.location.href = "chat.html";
+        } else {
+            alert("Command not recognized. Try 'Go to Home' or 'Open Features'.");
         }
+    };
 
-        // Add event listener to the button
-        newChatBtn.addEventListener('click', resetChat);
+    recognition.onerror = function(event) {
+        console.log("Speech recognition error: ", event.error);
+    };
 
-        // Auto resize the textarea dynamically
-        userInput.addEventListener('input', () => {
-            // Reset the height to auto so it can shrink if needed
-            userInput.style.height = 'auto';
-            // Set the new height based on scroll height (content height)
-            userInput.style.height = `${userInput.scrollHeight}px`;
+    document.getElementById("voice-btn").addEventListener("click", function() {
+        recognition.start();
+    });
+</script>
 
-            // Ensure the scrollbar is visible when the text exceeds the max height
-            if (userInput.scrollHeight > userInput.clientHeight) {
-                userInput.style.overflowY = 'auto';
-            } else {
-                userInput.style.overflowY = 'hidden';
-            }
-        });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+<script>
+    VANTA.FOG({
+        el: "#how-it-works",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00
+    });
+</script>
 
-        // Optional: Reset height when input is cleared
-        userInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault(); // Prevent newline on Enter
-                document.getElementById("sendBtn").click(); // Trigger the send button click
-                userInput.style.height = "auto"; // Reset height after sending
-            }
-        });
-    
-        // Function to append messages to chat
-        function appendMessage(content, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
+<section id="testimonials" class="testimonials scroll-slide-up">
+    <h3>What Our Users Say</h3>
+    <div class="testimonial-item">
+        <p>"The AI chatbot has been incredibly helpful in my daily tasks!"</p>
+        <div class="author">John Doe</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"I love how it understands complex requests and provides instant answers!"</p>
+        <div class="author">Jane Smith</div>
+    </div>
+</section>
 
-            if (sender === 'bot') {
-                // Add bot icon beside the message
-                const iconImg = document.createElement('img');
-                iconImg.src = 'https://i.ibb.co/MCLkk0y/icon-png.webp'; // Your image URL
-                iconImg.alt = 'CoreIntelli Bot';
-                iconImg.style.width = '50px';
-                iconImg.style.height = '40px';
-                iconImg.style.marginRight = '10px';
-                iconImg.style.borderRadius = '50%';
-                iconImg.style.objectFit = 'cover';
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+<script>
+    VANTA.BIRDS({
+        el: "#testimonials",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00
+    })
+</script>
 
-                const messageContainer = document.createElement('div');
-                messageContainer.style.display = 'flex';
-                messageContainer.style.alignItems = 'flex-start';
-
-                // Format the bot's response content
-                const formattedContent = formatResponse(content);
-                const messageContent = document.createElement('div');
-                messageContent.innerHTML = formattedContent;
-
-                // Append icon and message content to container
-                messageContainer.appendChild(iconImg);
-                messageContainer.appendChild(messageContent);
-
-                messageDiv.appendChild(messageContainer);
-            } else {
-                // For user messages, directly add content
-                const formattedContent = content; // No formatting for user messages
-                messageDiv.innerHTML = formattedContent;
-            }
-
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // Format plain text responses
-        function formatTextResponse(response) {
-            return `<p>${response}</p>`;
-        }
-
-        // Format bullet list responses without bullet dots
-        function formatListResponse(response) {
-            const items = response.split('\n').map(item => `<div>${item}</div>`).join('');
-            return `<div>${items}</div>`;
-        }
-
-        function formatCodeResponse(response) {
-            return `<pre style="padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-width: 100%;">${response}</pre>`;
-        }
-
-
-        // Format image responses
-        function formatImageResponse(response) {
-            return `<img src="${response}" alt="Bot-suggested image" style="max-width: 100%; border-radius: 5px;">`;
-        }
-
-        // Format links in responses
-        function formatLinkResponse(response) {
-            return response.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
-        }
-
-        // Format table responses
-        function formatTableResponse(response) {
-            const rows = response.split('\n').map(row => {
-                const cells = row.split('|').map(cell => `<td>${cell.trim()}</td>`).join('');
-                return `<tr>${cells}</tr>`;
-            }).join('');
-            return `<table border="1" style="width: 100%; border-collapse: collapse;">${rows}</table>`;
-        }
-
-        function formatJsonResponse(response) {
-            try {
-                const data = JSON.parse(response);
-
-                // Dynamically handle different types
-                switch (data.type) {
-                    case 'image':
-                        return formatImageResponse(data.url);
-                    case 'list':
-                        return formatListResponse(data.items.join('\n'));
-                    case 'text':
-                        return formatTextResponse(data.content);
-                    case 'code':
-                        return formatCodeResponse(data.content);
-                    case 'table':
-                        return formatTableResponse(data.content);
-                    case 'link':
-                        return formatLinkResponse(data.url);
-                    default:
-                        console.warn('Unknown response type:', data.type);
-                        return formatTextResponse('Unsupported response type: ' + data.type);
-                }
-            } catch (error) {
-                console.error('Error parsing JSON response:', error);
-
-                // Fallback: Return the response as plain text or try to format it
-                return formatTextResponse(
-                    typeof response === 'string' ? response : 'Invalid response format.'
-                );
-            }
-        }
-
-        // Format Dynamic Response
-        function formatResponse(response) {
-            if (response.startsWith('{') && response.endsWith('}')) {
-                return formatJsonResponse(response); // JSON response
-            } else if (response.includes('|')) {
-                return formatTableResponse(response); // Detect table
-            } else if (response.includes('http')) {
-                return formatLinkResponse(response); // Detect links
-            } else if (response.includes('\n')) {
-                return formatCodeResponse(response); // Detect Python code
-            } else if (response.includes('\n')) {
-                return formatListResponse(response); // Detect list
-            } else {
-                return formatTextResponse(response); // Default to text
-            }
-        }
-    
-       // Chat History
-    function addToHistory(question, response) {
-        const historyItem = document.createElement('div');
-        historyItem.classList.add('history-item');
-        historyItem.style.display = 'flex';
-        historyItem.style.justifyContent = 'space-between';
-        historyItem.style.alignItems = 'center';
-        historyItem.style.marginBottom = '10px';
-
-        const now = new Date();
-        const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const formattedDate = now.toLocaleDateString();
-
-        const keyword = summarizeResponse(response);
-
-        const messageContainer = document.createElement('div');
-        messageContainer.innerHTML = `
-            <div><strong>${question}</strong></div>
-            <small>${formattedDate} ${formattedTime} | ${keyword}</small>
-        `;
-
-        const deleteBtn = document.createElement('img');
-        deleteBtn.src = 'data:image/png;base64,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'; // Use a direct link to the image file
-        deleteBtn.alt = 'Delete';
-        deleteBtn.style.width = '20px';
-        deleteBtn.style.height = '20px';
-        deleteBtn.style.cursor = 'pointer';
-        // Add hover effect for red color
-        deleteBtn.addEventListener('mouseenter', () => {
-            deleteBtn.style.filter = 'invert(16%) sepia(84%) saturate(7486%) hue-rotate(0deg) brightness(102%) contrast(116%)'; // Red color
-        });
-
-        deleteBtn.addEventListener('mouseleave', () => {
-            deleteBtn.style.filter = ''; // Reset to original
-        });
-
-        deleteBtn.addEventListener('click', () => {
-            chatHistory.removeChild(historyItem);
-            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            const updatedHistory = savedHistory.filter(
-                item => item.question !== question && item.response !== response
-            );
-            localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
-        });
-
-        messageContainer.addEventListener('click', () => {
-            appendMessage(`<strong>Context:</strong> ${question}<br>${response}`, 'bot');
-        });
-
-        historyItem.appendChild(messageContainer);
-        historyItem.appendChild(deleteBtn);
-        chatHistory.appendChild(historyItem);
-
-        saveHistoryToLocalStorage();
+<script>
+    // Function to check if an element is in the viewport
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
     }
 
-    function summarizeResponse(response) {
-        return response.split(' ').slice(0, 5).join(' ') + '...';
-    }
+    // Function to add 'in-view' class when element comes into view
+    function handleScroll() {
+        const elements = document.querySelectorAll('.scroll-fade, .scroll-slide-up');
 
-    function saveHistoryToLocalStorage() {
-        const historyItems = Array.from(chatHistory.getElementsByClassName('history-item')).map(item => {
-            const question = item.querySelector('strong').innerText;
-            const keyword = item.querySelector('small').innerText.split('|')[1].trim();
-            return { question, keyword };
-        });
-        localStorage.setItem('chatHistory', JSON.stringify(historyItems));
-    }
-
-    function loadHistoryFromLocalStorage() {
-        // Clear existing chat history to prevent duplication
-        chatHistory.innerHTML = '';
-
-        const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-        savedHistory.forEach(({ question, keyword }) => {
-            const response = localStorage.getItem(`response_${question}`);
-            if (response) {
-                // Add the history item if the response exists in localStorage
-                addToHistory(question, response);
+        elements.forEach((element) => {
+            if (isInViewport(element)) {
+                element.classList.add('in-view');
             }
         });
     }
 
-    // Function to generate response with context
-    function sendMessage() {
-        const question = userInput.value.trim();
-        if (question !== '') {
-            appendMessage(`${question}`, 'user');
-            userInput.value = '';
-            userInput.focus();
+    // Event listener for scroll events
+    window.addEventListener('scroll', handleScroll);
 
-            const loader = document.createElement('div');
-            loader.classList.add('loader');
-            for (let i = 0; i < 3; i++) {
-                const dot = document.createElement('div');
-                loader.appendChild(dot);
-            }
-            chatBox.appendChild(loader);
+    // Initial check when page loads
+    document.addEventListener('DOMContentLoaded', handleScroll);
+</script>
 
-            // Get chat history from local storage to maintain context
-            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            const contextMessages = savedHistory.map(item => ({
-                role: "user",
-                content: item.question
-            }));
-
-            // Add the current user question to the context
-            contextMessages.push({
-                role: "user",
-                content: question
-            });
-
-            fetch(baseUrl, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: contextMessages,
-                }),
-            })
-                .then(response => response.json()) // Parse the JSON response
-                .then(data => {
-                    chatBox.removeChild(loader); // Remove the loader once the response is received
-
-                    if (data && data.choices && data.choices.length > 0) {
-                        let botResponse = data.choices[0].message.content;
-
-                        // Replace "Subscription" with a clickable link
-                        const subscriptionLink = '<a href="https://aimlapi.com/app/billing/plans" target="_blank" style="color: #4CAF50; text-decoration: none;">Subscription</a>';
-                        botResponse = botResponse.replace("Subscription", subscriptionLink);
-
-                        appendMessage(botResponse, 'bot'); // Function to append the bot's response to the chat
-                        addToHistory(question, botResponse); // Function to store the chat history
-                        localStorage.setItem(`response_${question}`, botResponse); // Store the response in localStorage
-                    } else {
-                        // Handle case when no response or choices are returned
-                        appendMessage("Oops! Something went wrong. Please try again later or Click on the Given Link which is Provided " + "https://aimlapi.com/app/billing/plans", 'bot'); 
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    chatBox.removeChild(loader);
-                    appendMessage("Error occurred. Try again later.", 'bot');
-                });
-            }
-        }
-
-          // Speech recognition setup
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-US';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-    
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            userInput.value = transcript;
-            sendMessage();
-        };
-    
-        recognition.onerror = (event) => {
-            console.error('Speech recognition error:', event.error);
-            appendMessage("Sorry, couldn't recognize your voice. Please try again.", 'bot');
-        };
-    
-        // Toggle voice recognition
-        voiceBtn.addEventListener('click', () => {
-            if (!recognizing) {
-                recognition.start();
-                recognizing = true;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            } else {
-                recognition.stop();
-                recognizing = false;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            }
-        });
-    
-        // Event listener for Send button
-        sendBtn.addEventListener('click', sendMessage);
-    
-        // Event listener for Enter key
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // Initialize chat history on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            loadHistoryFromLocalStorage();
-        });
-
-        // Event listener for Send button
-        sendBtn.addEventListener('click', sendMessage);
-
-        // Event listener for Enter key
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    
-        searchBar.addEventListener('input', (e) => {
-            const searchText = e.target.value.toLowerCase();
-            const items = document.querySelectorAll('.history-item');
-            items.forEach(item => {
-                if (item.textContent.toLowerCase().includes(searchText)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    
-        document.addEventListener('DOMContentLoaded', loadHistoryFromLocalStorage);
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<footer>
+    <p>&copy; 2024 AI Chatbot. All rights reserved.</p>
+    <p>Contact us at <a href="mailto:achyuthinsrirama@gmail.com">achyuthinsrirama@gmail.com</a></p>
+</footer>
 
 </body>
 </html>
