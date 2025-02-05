@@ -358,6 +358,36 @@
             border-radius: 50%; /* Make the logo circular */
             margin-right: 10px; /* Space between logo and text */
         }
+        /* Voice Button Styles */
+        .voice-btn {
+            background-color: #0078d4; /* Blue background */
+            color: white; /* White text */
+            border: none;
+            border-radius: 50px; /* Rounded border */
+            padding: 10px 20px; /* Padding for better spacing */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icon and text */
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .voice-btn:hover {
+            background-color: #005bb5; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .voice-btn i {
+            font-size: 1.2rem; /* Icon size */
+        }
+
+        .voice-btn span {
+            font-size: 0.9rem; /* Text size */
+        }
         
     </style>
 </head>
@@ -374,6 +404,12 @@
             <li><a href="#features"><i class="fas fa-cogs"></i><span>Features</span></a></li>
             <li><a href="#how-it-works"><i class="fas fa-info-circle"></i><span>About</span></a></li>
             <li><a href="#testimonials"><i class="fas fa-comments"></i><span>Testimonials</span></a></li>
+            <li>
+                <button id="voice-btn" class="voice-btn">
+                    <i class="fas fa-microphone"></i>
+                    <span>Voice Navigation</span>
+                </button>
+            </li>
         </ul>
     </nav>
     <div class="auth-buttons">
@@ -387,6 +423,7 @@
     <p>Our AI-powered chatbot is designed to engage, inform, and provide seamless communication with your customers. Simplify workflows and enhance user experiences with our smart and scalable solution.</p>
     <a href="chat.html" class="cta-button">Get Started <span><i class="fas fa-robot"></i></span></a>
 </section>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
@@ -436,6 +473,44 @@
         </div>
     </div>
 </section>
+<script>
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event) {
+        let transcript = event.results[0][0].transcript.toLowerCase();
+        console.log("Voice Command: ", transcript);
+
+        if (transcript.includes("home")) {
+            document.querySelector('a[href="#home"]').click();
+        } else if (transcript.includes("features")) {
+            document.querySelector('a[href="#features"]').click();
+        } else if (transcript.includes("about")) {
+            document.querySelector('a[href="#how-it-works"]').click();
+        } else if (transcript.includes("testimonials")) {
+            document.querySelector('a[href="#testimonials"]').click();
+        } else if (transcript.includes("login")) {
+            document.querySelector('a[href="#login"]').click();
+        } else if (transcript.includes("sign up") || transcript.includes("signup")) {
+            document.querySelector('a[href="#signup"]').click();
+        } else if (transcript.includes("start chat") || transcript.includes("get started")) {
+            window.location.href = "chat.html";
+        } else {
+            alert("Command not recognized. Try 'Go to Home' or 'Open Features'.");
+        }
+    };
+
+    recognition.onerror = function(event) {
+        console.log("Speech recognition error: ", event.error);
+    };
+
+    document.getElementById("voice-btn").addEventListener("click", function() {
+        recognition.start();
+    });
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
