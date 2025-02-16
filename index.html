@@ -358,35 +358,32 @@
             border-radius: 50%; /* Make the logo circular */
             margin-right: 10px; /* Space between logo and text */
         }
-        /* Voice Button Styles */
-        .voice-btn {
-            background-color: #0078d4; /* Blue background */
-            color: white; /* White text */
-            border: none;
-            border-radius: 50px; /* Rounded border */
-            padding: 10px 20px; /* Padding for better spacing */
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Space between icon and text */
+         /* Voice Navigation Button */
+        .voice-nav-btn {
+            background-color: #0078d4;
+            color: white;
             font-size: 1rem;
             font-weight: 600;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px; /* Rounded button */
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .voice-btn:hover {
-            background-color: #005bb5; /* Darker blue on hover */
-            transform: translateY(-2px); /* Slight lift on hover */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        .voice-nav-btn i {
+            font-size: 1.2rem;
         }
 
-        .voice-btn i {
-            font-size: 1.2rem; /* Icon size */
+        .voice-nav-btn:hover {
+            background-color: #005bb5;
         }
 
-        .voice-btn span {
-            font-size: 0.9rem; /* Text size */
+        .voice-nav-btn.active {
+            background-color: #ff4d4d;
         }
         
     </style>
@@ -405,9 +402,8 @@
             <li><a href="#how-it-works"><i class="fas fa-info-circle"></i><span>About</span></a></li>
             <li><a href="#testimonials"><i class="fas fa-comments"></i><span>Testimonials</span></a></li>
             <li>
-                <button id="voice-btn" class="voice-btn">
-                    <i class="fas fa-microphone"></i>
-                    <span>Voice Navigation</span>
+                <button id="voice-btn" class="voice-nav-btn">
+                    <i class="fas fa-microphone"></i> Voice Navigation
                 </button>
             </li>
         </ul>
@@ -474,42 +470,68 @@
     </div>
 </section>
 <script>
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
+    let recognition;
+    let isListening = false;
 
-    recognition.onresult = function(event) {
-        let transcript = event.results[0][0].transcript.toLowerCase();
-        console.log("Voice Command: ", transcript);
+    // Check if the browser supports Speech Recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        
+        recognition.continuous = true;  // Keep listening until stopped
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-        if (transcript.includes("home")) {
-            document.querySelector('a[href="#home"]').click();
-        } else if (transcript.includes("features")) {
-            document.querySelector('a[href="#features"]').click();
-        } else if (transcript.includes("about")) {
-            document.querySelector('a[href="#how-it-works"]').click();
-        } else if (transcript.includes("testimonials")) {
-            document.querySelector('a[href="#testimonials"]').click();
-        } else if (transcript.includes("login")) {
-            document.querySelector('a[href="#login"]').click();
-        } else if (transcript.includes("sign up") || transcript.includes("signup")) {
-            document.querySelector('a[href="#signup"]').click();
-        } else if (transcript.includes("start chat") || transcript.includes("get started")) {
+        // Function to start or stop listening
+        document.getElementById('voice-btn').addEventListener('click', function () {
+            if (!isListening) {
+                recognition.start();
+                isListening = true;
+                this.classList.add('active');  // Change button style
+                this.innerHTML = '<i class="fas fa-microphone-slash"></i> Stop Voice Navigation';
+            } else {
+                recognition.stop();
+                isListening = false;
+                this.classList.remove('active');
+                this.innerHTML = '<i class="fas fa-microphone"></i> Voice Navigation';
+            }
+        });
+
+        // Process recognized voice commands
+        recognition.onresult = function (event) {
+            const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+            console.log('Voice Command:', command);
+            handleVoiceCommand(command);
+        };
+
+        recognition.onerror = function (event) {
+            console.error('Speech Recognition Error:', event.error);
+        };
+
+    } else {
+        alert('Sorry, your browser does not support Speech Recognition.');
+    }
+
+    // Function to handle different voice commands
+    function handleVoiceCommand(command) {
+        if (command.includes('home')) {
+            window.location.href = '#home';
+        } else if (command.includes('features')) {
+            window.location.href = '#features';
+        } else if (command.includes('about')) {
+            window.location.href = '#how-it-works';
+        } else if (command.includes('testimonials')) {
+            window.location.href = '#testimonials';
+        } else if (command.includes('login')) {
+            openLoginModal();
+        } else if (command.includes('sign up') || command.includes('register')) {
+            openSignupModal();
+        } else if (command.includes("start chat") || command.includes("get started")) {
             window.location.href = "chat.html";
         } else {
-            alert("Command not recognized. Try 'Go to Home' or 'Open Features'.");
+            alert('Command not recognized. Try saying "Home", "Features", "About", or "Testimonials".');
         }
-    };
-
-    recognition.onerror = function(event) {
-        console.log("Speech recognition error: ", event.error);
-    };
-
-    document.getElementById("voice-btn").addEventListener("click", function() {
-        recognition.start();
-    });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
