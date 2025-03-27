@@ -29,17 +29,18 @@
         header {
             background: #ffffff;
             border-bottom: 1px solid #eaeaea;
-            padding: 15px 20px;
+            padding: 10px 15px; /* Reduced padding for mobile */
             position: sticky;
             top: 0;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
         header h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1.5rem; /* Slightly smaller for mobile */
             font-weight: 600;
             color: transparent;
             background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
@@ -51,7 +52,8 @@
         nav ul {
             list-style: none;
             display: flex;
-            gap: 30px;
+            gap: 15px; /* Reduced gap for mobile */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
         nav ul li {
             display: flex;
@@ -60,50 +62,41 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
         nav ul li a {
-            font-size: 1.1rem;
+            font-size: 1rem; /* Adjusted for mobile */
             color: #555;
-            padding: 10px;
+            padding: 8px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 50px;
-            height: 50px;
+            width: 40px; /* Smaller for mobile */
+            height: 40px;
             background-color: #f0f0f0;
             transition: all 0.3s ease;
         }
         /* Navigation Colors */
-        nav ul li:nth-child(1) a {
-            background-color: #ff6f61; /* Home */
-        }
-        nav ul li:nth-child(2) a {
-            background-color: #6f61ff; /* Features */
-        }
-        nav ul li:nth-child(3) a {
-            background-color: #61ff6f; /* About */
-        }
-        nav ul li:nth-child(4) a {
-            background-color: #ffa500; /* Testimonials */
-        }
+        nav ul li:nth-child(1) a { background-color: #ff6f61; }
+        nav ul li:nth-child(2) a { background-color: #6f61ff; }
+        nav ul li:nth-child(3) a { background-color: #61ff6f; }
+        nav ul li:nth-child(4) a { background-color: #ffa500; }
         nav ul li a:hover {
-            background-color: #333; /* Dark background on hover */
-            color: white; /* White text on hover */
+            background-color: #333;
+            color: white;
             transform: translateY(-5px);
         }
         nav ul li a i {
-            font-size: 1.3rem;
+            font-size: 1.2rem; /* Slightly smaller for mobile */
         }
-        /* Tooltip for Labels */
         nav ul li span {
             position: absolute;
-            bottom: -40px;
+            bottom: -35px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #333;
             color: white;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 5px;
-            font-size: 0.9rem;
+            font-size: 0.8rem; /* Smaller tooltip for mobile */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
@@ -120,34 +113,33 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 80px 20px;
+            padding: 40px 15px; /* Reduced padding for mobile */
             background: linear-gradient(to bottom right, #0078d4, #005bb5);
             color: white;
         }
         .hero h2 {
-            font-size: 3rem;
+            font-size: 2rem; /* Smaller for mobile */
             font-family: 'Orbitron', sans-serif;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             animation: typing 3s steps(30) 1s 1 normal both;
             overflow: hidden;
             white-space: nowrap;
         }
-        /* Typing animation */
         @keyframes typing {
             0% { width: 0; }
             100% { width: 100%; }
         }
         .hero p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin-bottom: 30px;
+            font-size: 1rem; /* Adjusted for mobile */
+            max-width: 90%; /* Wider for mobile readability */
+            margin-bottom: 20px;
         }
         .cta-button {
             background: #ffffff;
             color: #0078d4;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            padding: 15px 30px;
+            padding: 12px 24px; /* Slightly smaller for mobile */
             border: 2px solid #0078d4;
             border-radius: 100px;
             text-transform: uppercase;
@@ -156,8 +148,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.3s ease-in-out;
+            min-width: 120px; /* Ensures tap target size */
         }
         .cta-button:hover {
             background: #0078d4;
@@ -168,34 +161,28 @@
             animation: glowing 1.5s ease-in-out infinite alternate;
         }
         @keyframes glowing {
-            0% {
-                box-shadow: 0 0 5px #0078d4, 0 0 10px #0078d4, 0 0 15px #0078d4;
-            }
-            100% {
-                box-shadow: 0 0 20px #00c8ff, 0 0 30px #00c8ff, 0 0 40px #00c8ff;
-            }
+            0% { box-shadow: 0 0 5px #0078d4, 0 0 10px #0078d4, 0 0 15px #0078d4; }
+            100% { box-shadow: 0 0 20px #00c8ff, 0 0 30px #00c8ff, 0 0 40px #00c8ff; }
         }
-        .cta-button:hover span {
-            transform: translateX(5px);
-        }
+        .cta-button:hover span { transform: translateX(5px); }
         .cta-button span {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             transition: transform 0.3s ease;
         }
 
         /* Features Section */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 40px 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted for mobile */
+            gap: 15px;
+            padding: 30px 15px; /* Reduced padding */
             background: white;
         }
         .feature-item {
             background: #f9f9f9;
             border: 1px solid #eaeaea;
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
         }
@@ -204,75 +191,107 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .feature-item h4 {
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Slightly smaller */
             color: #0078d4;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .feature-item p {
-            font-size: 1rem;
+            font-size: 0.9rem; /* Adjusted for mobile */
             color: #555;
         }
 
         /* How It Works Section */
         .how-it-works {
-            padding: 60px 20px;
+            padding: 30px 15px; /* Reduced padding */
             background: #f0f4f8;
             text-align: center;
         }
         .how-it-works h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 1.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
         }
         .how-it-works p {
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto 40px;
+            font-size: 1rem; /* Adjusted */
+            max-width: 90%;
+            margin: 0 auto 20px;
         }
         .steps {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
         }
         .step {
             background: white;
             border: 1px solid #eaeaea;
             border-radius: 8px;
-            padding: 20px;
-            max-width: 300px;
+            padding: 15px;
+            max-width: 250px; /* Smaller for mobile */
             text-align: center;
+            flex: 1 1 100%; /* Stack on very small screens */
         }
         .step h4 {
             color: #0078d4;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
         /* Testimonials */
         .testimonials {
-            padding: 60px 20px;
+            padding: 30px 15px; /* Reduced padding */
             background: white;
         }
         .testimonials h3 {
             text-align: center;
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 1.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
             color: white;
         }
         .testimonial-item {
             background: #f9f9f9;
             border: 1px solid #eaeaea;
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             margin: 10px auto;
-            max-width: 600px;
+            max-width: 90%; /* Adjusted for mobile */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
         .testimonial-item p {
             font-style: italic;
+            font-size: 0.9rem; /* Smaller for mobile */
         }
         .testimonial-item .author {
             text-align: right;
             font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* FAQ Section Styles */
+        .faq {
+            padding: 0 15px 30px 15px; /* Adjusted for mobile, no top padding */
+            background: #f9f9f9;
+            text-align: center;
+        }
+        .faq h3 {
+            font-size: 1.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
+        }
+        .faq-item {
+            max-width: 90%; /* Adjusted for mobile */
+            margin: 15px auto;
+            text-align: left;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .faq-item h4 {
+            color: #0078d4;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .faq-item p {
+            font-size: 0.9rem; /* Smaller for mobile */
         }
 
         /* Footer */
@@ -280,8 +299,8 @@
             background: #222;
             color: white;
             text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
+            padding: 15px;
+            font-size: 0.8rem; /* Smaller for mobile */
         }
         footer a {
             color: #0078d4;
@@ -290,26 +309,24 @@
             position: relative;
             z-index: 1;
             color: #0078d4;
-            font-size: 1rem;
+            font-size: 0.9rem; /* Adjusted */
             font-weight: 600;
             border-radius: 200px;
-            padding: 10px 20px;
+            padding: 8px 16px; /* Smaller for mobile */
             background: none;
             cursor: pointer;
             transition: all 0.3s ease;
+            min-width: 80px; /* Ensures tap target size */
         }
         .auth-btn:hover {
             background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
             color: white;
         }
-        .auth-btn.signup {
-            color: #0078d4;
-        }
+        .auth-btn.signup { color: #0078d4; }
         .auth-btn.signup:hover {
             background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
             color: white;
         }
-        /* Scroll Animations */
         .scroll-fade {
             opacity: 0;
             transform: translateY(50px);
@@ -333,57 +350,108 @@
             align-items: center;
         }
         .logo {
-            width: 40px;
-            height: 40px;
+            width: 30px; /* Smaller for mobile */
+            height: 30px;
             border-radius: 50%;
-            margin-right: 10px;
+            margin-right: 8px;
         }
-        /* Voice Navigation Button */
         .voice-nav-btn {
             background-color: #0078d4;
             color: white;
-            font-size: 1rem;
+            font-size: 0.9rem; /* Adjusted */
             font-weight: 600;
-            padding: 12px 25px;
+            padding: 10px 20px; /* Smaller for mobile */
             border: none;
             border-radius: 50px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.3s ease;
+            min-width: 120px; /* Ensures tap target size */
         }
         .voice-nav-btn i {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
-        .voice-nav-btn:hover {
-            background-color: #005bb5;
+        .voice-nav-btn:hover { background-color: #005bb5; }
+        .voice-nav-btn.active { background-color: #ff4d4d; }
+
+        /* Media Queries for Mobile Optimization */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 10px;
+            }
+            nav ul {
+                justify-content: center;
+                margin-top: 10px;
+            }
+            .auth-buttons {
+                margin-top: 10px;
+                display: flex;
+                gap: 10px;
+            }
+            .hero {
+                padding: 30px 10px;
+            }
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 0.9rem;
+            }
+            .features {
+                padding: 20px 10px;
+                grid-template-columns: 1fr; /* Stack features on small screens */
+            }
+            .how-it-works {
+                padding: 20px 10px;
+            }
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            .step {
+                max-width: 100%;
+            }
+            .testimonials {
+                padding: 20px 10px;
+            }
+            .faq {
+                padding: 0 10px 20px 10px;
+            }
+            .faq h3 {
+                font-size: 1.6rem;
+            }
+            footer {
+                padding: 10px;
+            }
         }
-        .voice-nav-btn.active {
-            background-color: #ff4d4d;
-        }
-        /* New FAQ Section Styles */
-        .faq {
-            padding: 60px 20px;
-            background: #f9f9f9;
-            text-align: center;
-        }
-        .faq h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-        .faq-item {
-            max-width: 800px;
-            margin: 20px auto;
-            text-align: left;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-        .faq-item h4 {
-            color: #0078d4;
-            margin-bottom: 10px;
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.2rem;
+            }
+            nav ul {
+                gap: 10px;
+            }
+            nav ul li a {
+                width: 35px;
+                height: 35px;
+            }
+            nav ul li a i {
+                font-size: 1rem;
+            }
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+            .cta-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .voice-nav-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -499,6 +567,18 @@
         <p>"The integration was seamless, and the AI’s ability to handle complex queries is impressive."</p>
         <div class="author">Jane Smith, Tech Lead</div>
     </div>
+    <div class="testimonial-item">
+        <p>"It’s like having a personal assistant available 24/7. My productivity has skyrocketed!"</p>
+        <div class="author">Michael Lee, Freelancer</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"The multilingual support helped us reach a global audience effortlessly."</p>
+        <div class="author">Sofia Martinez, Marketing Manager</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"A game-changer for our e-commerce platform—customers love the instant replies!"</p>
+        <div class="author">Alex Patel, E-commerce Entrepreneur</div>
+    </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
@@ -515,20 +595,39 @@
     });
 </script>
 
-<!-- New FAQ Section -->
-<section id="faq" class="faq scroll-slide-up">
+<section id="faq" class="faq">
     <h3>Frequently Asked Questions</h3>
     <div class="faq-item">
         <h4>What is Chat @AI?</h4>
-        <p>Chat @AI is an advanced AI chatbot designed to provide personalized, 24/7 support for businesses and individuals.</p>
+        <p>Chat @AI is an advanced AI chatbot designed to provide personalized, 24/7 support for businesses and individuals, enhancing communication and productivity.</p>
     </div>
     <div class="faq-item">
         <h4>How do I integrate it with my website?</h4>
-        <p>Simply add our provided script to your site, and Chat @AI will be up and running in minutes.</p>
+        <p>Simply add our provided script to your site’s HTML, and Chat @AI will be operational in minutes. No coding expertise required!</p>
     </div>
     <div class="faq-item">
         <h4>Can it handle multiple languages?</h4>
-        <p>Yes, Chat @AI supports multiple languages and can be customized to suit your audience.</p>
+        <p>Yes, Chat @AI supports multiple languages and can be customized to suit your audience, making it ideal for global businesses.</p>
+    </div>
+    <div class="faq-item">
+        <h4>What kind of businesses can benefit from Chat @AI?</h4>
+        <p>From e-commerce and customer service to education and healthcare, any industry needing efficient communication can leverage Chat @AI.</p>
+    </div>
+    <div class="faq-item">
+        <h4>Is it secure and private?</h4>
+        <p>Absolutely. Chat @AI uses advanced encryption and complies with data privacy regulations to keep your information safe.</p>
+    </div>
+    <div class="faq-item">
+        <h4>Can I customize the chatbot’s responses?</h4>
+        <p>Yes, you can train Chat @AI with specific responses, tone, and branding to align with your business needs.</p>
+    </div>
+    <div class="faq-item">
+        <h4>What happens if the AI doesn’t understand a query?</h4>
+        <p>Chat @AI is designed to escalate complex queries to human agents if needed, ensuring no question goes unanswered.</p>
+    </div>
+    <div class="faq-item">
+        <h4>How much does it cost?</h4>
+        <p>We offer flexible pricing plans, including a free tier for basic use and premium options for advanced features. Contact us for details!</p>
     </div>
 </section>
 
