@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/webp" href="https://i.ibb.co/MCLkk0y/icon-png.webp">
     <title>Home-AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Reset and Basic Styles */
@@ -76,29 +76,23 @@
         nav ul li:nth-child(1) a {
             background-color: #ff6f61; /* Home */
         }
-
         nav ul li:nth-child(2) a {
             background-color: #6f61ff; /* Features */
         }
-
         nav ul li:nth-child(3) a {
             background-color: #61ff6f; /* About */
         }
-
         nav ul li:nth-child(4) a {
             background-color: #ffa500; /* Testimonials */
         }
-
         nav ul li a:hover {
             background-color: #333; /* Dark background on hover */
             color: white; /* White text on hover */
             transform: translateY(-5px);
         }
-
         nav ul li a i {
             font-size: 1.3rem;
         }
-
         /* Tooltip for Labels */
         nav ul li span {
             position: absolute;
@@ -138,7 +132,6 @@
             overflow: hidden;
             white-space: nowrap;
         }
-
         /* Typing animation */
         @keyframes typing {
             0% { width: 0; }
@@ -149,7 +142,6 @@
             max-width: 600px;
             margin-bottom: 30px;
         }
-
         .cta-button {
             background: #ffffff;
             color: #0078d4;
@@ -167,7 +159,6 @@
             gap: 10px;
             transition: all 0.3s ease-in-out;
         }
-
         .cta-button:hover {
             background: #0078d4;
             color: #ffffff;
@@ -176,7 +167,6 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
             animation: glowing 1.5s ease-in-out infinite alternate;
         }
-
         @keyframes glowing {
             0% {
                 box-shadow: 0 0 5px #0078d4, 0 0 10px #0078d4, 0 0 15px #0078d4;
@@ -185,12 +175,9 @@
                 box-shadow: 0 0 20px #00c8ff, 0 0 30px #00c8ff, 0 0 40px #00c8ff;
             }
         }
-
-        /* Hover Icon animation */
         .cta-button:hover span {
             transform: translateX(5px);
         }
-
         .cta-button span {
             font-size: 1.3rem;
             transition: transform 0.3s ease;
@@ -302,27 +289,24 @@
         .auth-btn {
             position: relative;
             z-index: 1;
-            color: #0078d4; /* Button text color */
+            color: #0078d4;
             font-size: 1rem;
             font-weight: 600;
             border-radius: 200px;
             padding: 10px 20px;
-            background: none; /* Transparent button background */
+            background: none;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .auth-btn:hover {
-            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61); /* Fill with gradient on hover */
-            color: white; /* White text on hover */
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
+            color: white;
         }
-
         .auth-btn.signup {
-            color: #0078d4; /* Specific text color for signup button */
+            color: #0078d4;
         }
-
         .auth-btn.signup:hover {
-            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61); /* Same hover gradient */
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
             color: white;
         }
         /* Scroll Animations */
@@ -331,18 +315,15 @@
             transform: translateY(50px);
             transition: all 0.5s ease-out;
         }
-
         .scroll-fade.in-view {
             opacity: 1;
             transform: translateY(0);
         }
-
         .scroll-slide-up {
             opacity: 0;
             transform: translateY(50px);
             transition: all 0.5s ease-out;
         }
-
         .scroll-slide-up.in-view {
             opacity: 1;
             transform: translateY(0);
@@ -351,14 +332,13 @@
             display: flex;
             align-items: center;
         }
-
         .logo {
-            width: 40px; /* Adjust size as needed */
+            width: 40px;
             height: 40px;
-            border-radius: 50%; /* Make the logo circular */
-            margin-right: 10px; /* Space between logo and text */
+            border-radius: 50%;
+            margin-right: 10px;
         }
-         /* Voice Navigation Button */
+        /* Voice Navigation Button */
         .voice-nav-btn {
             background-color: #0078d4;
             color: white;
@@ -366,26 +346,45 @@
             font-weight: 600;
             padding: 12px 25px;
             border: none;
-            border-radius: 50px; /* Rounded button */
+            border-radius: 50px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
         }
-
         .voice-nav-btn i {
             font-size: 1.2rem;
         }
-
         .voice-nav-btn:hover {
             background-color: #005bb5;
         }
-
         .voice-nav-btn.active {
             background-color: #ff4d4d;
         }
-        
+        /* New FAQ Section Styles */
+        .faq {
+            padding: 60px 20px;
+            background: #f9f9f9;
+            text-align: center;
+        }
+        .faq h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .faq-item {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .faq-item h4 {
+            color: #0078d4;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -401,6 +400,7 @@
             <li><a href="#features"><i class="fas fa-cogs"></i><span>Features</span></a></li>
             <li><a href="#how-it-works"><i class="fas fa-info-circle"></i><span>About</span></a></li>
             <li><a href="#testimonials"><i class="fas fa-comments"></i><span>Testimonials</span></a></li>
+            <li><a href="#faq"><i class="fas fa-question-circle"></i><span>FAQ</span></a></li>
             <li>
                 <button id="voice-btn" class="voice-nav-btn">
                     <i class="fas fa-microphone"></i> Voice Navigation
@@ -415,11 +415,15 @@
 </header>
 
 <section id="vanta-background" class="hero scroll-fade">
-    <h2>Empower your business with the smartest AI assistant!</h2>
-    <p>Our AI-powered chatbot is designed to engage, inform, and provide seamless communication with your customers. Simplify workflows and enhance user experiences with our smart and scalable solution.</p>
+    <h2>Empower Your Business with Chat @AI</h2>
+    <p>Our AI-powered chatbot delivers personalized, 24/7 support to engage customers, streamline workflows, and boost productivity. Discover the future of smart communication.</p>
+    <ul style="list-style: none; padding: 0; margin: 20px 0;">
+        <li><i class="fas fa-check-circle"></i> Context-aware responses</li>
+        <li><i class="fas fa-check-circle"></i> Seamless integrations</li>
+        <li><i class="fas fa-check-circle"></i> Scalable solutions</li>
+    </ul>
     <a href="chat.html" class="cta-button">Get Started <span><i class="fas fa-robot"></i></span></a>
 </section>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
@@ -433,108 +437,46 @@
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00
-    })
+    });
 </script>
 
 <section id="features" class="features">
     <div class="feature-item scroll-slide-up">
+        <i class="fas fa-comment-dots" style="font-size: 2rem; color: #0078d4;"></i>
         <h4>Personalized Responses</h4>
-        <p>Engages in meaningful, context-aware conversations tailored to your needs.</p>
+        <p>Our AI understands context and delivers tailored answers, making every interaction meaningful. Perfect for customer support, FAQs, and more.</p>
     </div>
     <div class="feature-item scroll-slide-up">
+        <i class="fas fa-clock" style="font-size: 2rem; color: #0078d4;"></i>
         <h4>24/7 Availability</h4>
-        <p>Access the chatbot anytime, from anywhere.</p>
+        <p>Never miss a query with round-the-clock assistance, ensuring your customers are always supported.</p>
     </div>
     <div class="feature-item scroll-slide-up">
+        <i class="fas fa-plug" style="font-size: 2rem; color: #0078d4;"></i>
         <h4>Smart Integration</h4>
-        <p>Seamlessly connects with multiple platforms and services.</p>
+        <p>Connects effortlessly with your website, CRM, or messaging platforms like Slack and WhatsApp.</p>
     </div>
 </section>
 
 <section id="how-it-works" class="how-it-works">
-    <h3>How It Works</h3>
-    <p>Our chatbot leverages powerful AI algorithms to provide personalized interactions based on your input. Here's how it works:</p>
+    <h3>How Chat @AI Works</h3>
+    <p>Built on cutting-edge AI technology, Chat @AI simplifies communication and enhances user experiences. Here’s the process:</p>
     <div class="steps">
         <div class="step">
-            <h4>Step 1</h4>
-            <p>Type your question or request in the chat window.</p>
+            <h4>Step 1: Input</h4>
+            <p>Ask a question or provide a task via text or voice input.</p>
         </div>
         <div class="step">
-            <h4>Step 2</h4>
-            <p>Our AI processes your input and generates a relevant response.</p>
+            <h4>Step 2: Processing</h4>
+            <p>Our AI analyzes the request using natural language processing and contextual understanding.</p>
         </div>
         <div class="step">
-            <h4>Step 3</h4>
-            <p>Enjoy a meaningful conversation and get the answers you need.</p>
+            <h4>Step 3: Response</h4>
+            <p>Get instant, accurate, and conversational replies tailored to your needs.</p>
         </div>
     </div>
 </section>
-<script>
-    let recognition;
-    let isListening = false;
 
-    // Check if the browser supports Speech Recognition
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
-        
-        recognition.continuous = true;  // Keep listening until stopped
-        recognition.interimResults = false;
-        recognition.lang = 'en-US';
-
-        // Function to start or stop listening
-        document.getElementById('voice-btn').addEventListener('click', function () {
-            if (!isListening) {
-                recognition.start();
-                isListening = true;
-                this.classList.add('active');  // Change button style
-                this.innerHTML = '<i class="fas fa-microphone-slash"></i> Stop Voice Navigation';
-            } else {
-                recognition.stop();
-                isListening = false;
-                this.classList.remove('active');
-                this.innerHTML = '<i class="fas fa-microphone"></i> Voice Navigation';
-            }
-        });
-
-        // Process recognized voice commands
-        recognition.onresult = function (event) {
-            const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-            console.log('Voice Command:', command);
-            handleVoiceCommand(command);
-        };
-
-        recognition.onerror = function (event) {
-            console.error('Speech Recognition Error:', event.error);
-        };
-
-    } else {
-        alert('Sorry, your browser does not support Speech Recognition.');
-    }
-
-    // Function to handle different voice commands
-    function handleVoiceCommand(command) {
-        if (command.includes('home')) {
-            window.location.href = '#home';
-        } else if (command.includes('features')) {
-            window.location.href = '#features';
-        } else if (command.includes('about')) {
-            window.location.href = '#how-it-works';
-        } else if (command.includes('testimonials')) {
-            window.location.href = '#testimonials';
-        } else if (command.includes('login')) {
-            openLoginModal();
-        } else if (command.includes('sign up') || command.includes('register')) {
-            openSignupModal();
-        } else if (command.includes("start chat") || command.includes("get started")) {
-            window.location.href = "chat.html";
-        } else {
-            alert('Command not recognized. Try saying "Home", "Features", "About", or "Testimonials".');
-        }
-    }
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
 <script>
     VANTA.FOG({
@@ -550,16 +492,15 @@
 <section id="testimonials" class="testimonials scroll-slide-up">
     <h3>What Our Users Say</h3>
     <div class="testimonial-item">
-        <p>"The AI chatbot has been incredibly helpful in my daily tasks!"</p>
-        <div class="author">John Doe</div>
+        <p>"Chat @AI transformed our customer support, reducing response times and improving satisfaction!"</p>
+        <div class="author">John Doe, Business Owner</div>
     </div>
     <div class="testimonial-item">
-        <p>"I love how it understands complex requests and provides instant answers!"</p>
-        <div class="author">Jane Smith</div>
+        <p>"The integration was seamless, and the AI’s ability to handle complex queries is impressive."</p>
+        <div class="author">Jane Smith, Tech Lead</div>
     </div>
 </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
 <script>
     VANTA.BIRDS({
@@ -571,11 +512,87 @@
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00
-    })
+    });
 </script>
 
+<!-- New FAQ Section -->
+<section id="faq" class="faq scroll-slide-up">
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item">
+        <h4>What is Chat @AI?</h4>
+        <p>Chat @AI is an advanced AI chatbot designed to provide personalized, 24/7 support for businesses and individuals.</p>
+    </div>
+    <div class="faq-item">
+        <h4>How do I integrate it with my website?</h4>
+        <p>Simply add our provided script to your site, and Chat @AI will be up and running in minutes.</p>
+    </div>
+    <div class="faq-item">
+        <h4>Can it handle multiple languages?</h4>
+        <p>Yes, Chat @AI supports multiple languages and can be customized to suit your audience.</p>
+    </div>
+</section>
+
 <script>
-    // Function to check if an element is in the viewport
+    let recognition;
+    let isListening = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        document.getElementById('voice-btn').addEventListener('click', function () {
+            if (!isListening) {
+                recognition.start();
+                isListening = true;
+                this.classList.add('active');
+                this.innerHTML = '<i class="fas fa-microphone-slash"></i> Stop Voice Navigation';
+            } else {
+                recognition.stop();
+                isListening = false;
+                this.classList.remove('active');
+                this.innerHTML = '<i class="fas fa-microphone"></i> Voice Navigation';
+            }
+        });
+
+        recognition.onresult = function (event) {
+            const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+            console.log('Voice Command:', command);
+            handleVoiceCommand(command);
+        };
+
+        recognition.onerror = function (event) {
+            console.error('Speech Recognition Error:', event.error);
+        };
+    } else {
+        alert('Sorry, your browser does not support Speech Recognition.');
+    }
+
+    function handleVoiceCommand(command) {
+        if (command.includes('home')) {
+            window.location.href = '#home';
+        } else if (command.includes('features')) {
+            window.location.href = '#features';
+        } else if (command.includes('about')) {
+            window.location.href = '#how-it-works';
+        } else if (command.includes('testimonials')) {
+            window.location.href = '#testimonials';
+        } else if (command.includes('faq')) {
+            window.location.href = '#faq';
+        } else if (command.includes('login')) {
+            openLoginModal();
+        } else if (command.includes('sign up') || command.includes('register')) {
+            openSignupModal();
+        } else if (command.includes("start chat") || command.includes("get started")) {
+            window.location.href = "chat.html";
+        } else {
+            alert('Command not recognized. Try saying "Home", "Features", "About", "Testimonials", or "FAQ".');
+        }
+    }
+
     function isInViewport(element) {
         const rect = element.getBoundingClientRect();
         return (
@@ -586,10 +603,8 @@
         );
     }
 
-    // Function to add 'in-view' class when element comes into view
     function handleScroll() {
         const elements = document.querySelectorAll('.scroll-fade, .scroll-slide-up');
-
         elements.forEach((element) => {
             if (isInViewport(element)) {
                 element.classList.add('in-view');
@@ -597,16 +612,22 @@
         });
     }
 
-    // Event listener for scroll events
     window.addEventListener('scroll', handleScroll);
-
-    // Initial check when page loads
     document.addEventListener('DOMContentLoaded', handleScroll);
+
+    function openLoginModal() {
+        alert("Login modal coming soon!");
+    }
+    function openSignupModal() {
+        alert("Signup modal coming soon!");
+    }
 </script>
 
 <footer>
-    <p>&copy; 2024 AI Chatbot. All rights reserved.</p>
-    <p>Contact us at <a href="mailto:achyuthinsrirama@gmail.com">achyuthinsrirama@gmail.com</a></p>
+    <p>© 2024 Chat @AI. All rights reserved.</p>
+    <p>Contact us at <a href="mailto:achyuthinsrirama@gmail.com">achyuthinsrirama@gmail.com</a> | 
+    <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    <p>Follow us: <a href="#"><i class="fab fa-twitter"></i></a> <a href="#"><i class="fab fa-linkedin"></i></a></p>
 </footer>
 
 </body>
