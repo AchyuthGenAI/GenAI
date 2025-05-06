@@ -129,7 +129,7 @@
 
         .search-bar input {
             width: 100%;
-            padding: 12px 45px 12px 45px; /* Adjusted padding for larger icons */
+            padding: 12px 45px 12px 45px;
             border: none;
             border-radius: 25px;
             background: transparent;
@@ -496,6 +496,32 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         }
 
+        .clear-history-button {
+            background: linear-gradient(135deg, #ff3f31, #ff6f61);
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .clear-history-button:hover {
+            background: linear-gradient(135deg, #ff6f61, #ff3f31);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .clear-history-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 "4px 6px rgba(0, 0, 0, 0.15);
+        }
+
         .nav-right {
             display: flex;
             align-items: center;
@@ -567,6 +593,7 @@
                 <span class="search-icon"><i class="fas fa-search"></i></span>
                 <span class="clear-search" id="clearSearch"><i class="fas fa-times"></i></span>
             </div>
+            <button class="clear-history-button" id="clearHistoryBtn">Clear All History</button>
             <h3>Chat History</h3>
             <div id="chatHistory">
                 <div class="history-item">
@@ -622,6 +649,7 @@
         const newChatBtn = document.getElementById('newChatBtn');
         const sidebar = document.getElementById('sidebar');
         const toggleButton = document.getElementById('toggleSidebar');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
         let recognizing = false;
 
         toggleButton.addEventListener('click', () => {
@@ -637,6 +665,17 @@
 
         newChatBtn.addEventListener('click', resetChat);
 
+        function clearAllHistory() {
+            console.log('Clear All History button clicked');
+            if (confirm('Are you sure you want to permanently delete all chat history? This action cannot be undone.')) {
+                chatHistory.innerHTML = '';
+                localStorage.clear();
+                appendMessage('All chat history has been permanently deleted.', 'bot');
+            }
+        }
+
+        clearHistoryBtn.addEventListener('click', clearAllHistory);
+
         userInput.addEventListener('input', () => {
             userInput.style.height = 'auto';
             userInput.style.height = `${userInput.scrollHeight}px`;
@@ -650,6 +689,24 @@
                 userInput.style.height = "auto";
             }
         });
+
+        function typeMessage(element, content, speed = 10) {
+            let index = 0;
+            element.innerHTML = '';
+            const text = content.replace(/<[^>]+>/g, ''); // Strip HTML tags for typing
+            const type = () => {
+                if (index < text.length) {
+                    element.innerHTML = text.substring(0, index + 1);
+                    index++;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    setTimeout(type, speed);
+                } else {
+                    element.innerHTML = content; // Restore original HTML content
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            };
+            type();
+        }
 
         function appendMessage(content, sender) {
             const messageDiv = document.createElement('div');
@@ -671,17 +728,19 @@
 
                 const formattedContent = formatResponse(content);
                 const messageContent = document.createElement('div');
-                messageContent.innerHTML = formattedContent;
+                messageContent.style.minWidth = '100px'; // Ensure content has space
 
                 messageContainer.appendChild(iconImg);
                 messageContainer.appendChild(messageContent);
                 messageDiv.appendChild(messageContainer);
+                chatBox.appendChild(messageDiv);
+
+                typeMessage(messageContent, formattedContent);
             } else {
                 messageDiv.innerHTML = content;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
             }
-
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function formatTextResponse(response) {
@@ -774,12 +833,12 @@
             const questionDiv = document.createElement('div');
             questionDiv.className = 'question';
             questionDiv.textContent = question;
-            questionDiv.title = question; // Full text on hover
+            questionDiv.title = question;
 
             const metaDiv = document.createElement('div');
             metaDiv.className = 'meta';
             metaDiv.textContent = `${formattedDate} ${formattedTime} | ${keyword}`;
-            metaDiv.title = `${formattedDate} ${formattedTime} | ${keyword}`; // Full text on hover
+            metaDiv.title = `${formattedDate} ${formattedTime} | ${keyword}`;
 
             content.appendChild(questionDiv);
             content.appendChild(metaDiv);
@@ -789,7 +848,7 @@
             deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
 
             deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent triggering the history item click
+                e.stopPropagation();
                 chatHistory.removeChild(historyItem);
                 const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
                 const updatedHistory = savedHistory.filter(
