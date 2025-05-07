@@ -16,16 +16,299 @@
             height: 100vh;
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: #2e333f;
             font-family: Arial, sans-serif;
             position: fixed;
             top: 0;
             left: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Theme (Default) */
+        body.dark-theme {
+            background-color: #2e333f;
+            color: #fff;
+        }
+
+        body.dark-theme .navbar {
+            background-color: #2e333f;
+            color: white;
+        }
+
+        body.dark-theme .sidebar {
+            background-color: rgba(20, 20, 20, 0.9);
+            color: #fff;
+        }
+
+        body.dark-theme .chat-container,
+        body.dark-theme .chat-box,
+        body.dark-theme .chat-box::-webkit-scrollbar-track {
+            background-color: #2e333f;
+        }
+
+        body.dark-theme .input-group,
+        body.dark-theme .send-btn,
+        body.dark-theme .voice-btn {
+            background-color: #444;
+            color: #fff;
+        }
+
+        body.dark-theme .history-item {
+            background-color: #2e333f;
+            border: 1px solid #444;
+        }
+
+        body.dark-theme .history-item:hover {
+            background-color: #3a3f4b;
+        }
+
+        body.dark-theme .history-item .content .question {
+            color: #fff;
+        }
+
+        body.dark-theme .history-item .content .meta {
+            color: #aaa;
+        }
+
+        body.dark-theme .message.user {
+            background-color: white;
+            color: black;
+            margin-left: auto;
+        }
+
+        body.dark-theme .message.bot {
+            color: white;
+            margin-right: auto;
+        }
+
+        body.dark-theme footer {
+            color: #ddd;
+        }
+
+        body.dark-theme .search-bar {
+            background: linear-gradient(135deg, #3a3f4b, #2e333f);
+        }
+
+        body.dark-theme .search-bar input {
+            color: #fff;
+        }
+
+        body.dark-theme .search-bar input::placeholder {
+            color: #bbb;
+        }
+
+        body.dark-theme .search-bar .clear-search {
+            color: #aaa;
+        }
+
+        body.dark-theme .search-bar .clear-search:hover {
+            color: #ff6f61;
+        }
+
+        body.dark-theme .theme-dropdown .dropdown-menu {
+            background-color: #3a3f4b;
+            border: 1px solid #444;
+        }
+
+        body.dark-theme .theme-dropdown .dropdown-item {
+            color: #fff;
+        }
+
+        body.dark-theme .theme-dropdown .dropdown-item:hover {
+            background-color: #444;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        body.light-theme .navbar {
+            background-color: #ffffff;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-theme .sidebar {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+
+        body.light-theme .chat-container,
+        body.light-theme .chat-box,
+        body.light-theme .chat-box::-webkit-scrollbar-track {
+            background-color: #f5f5f5;
+        }
+
+        body.light-theme .input-group,
+        body.light-theme .send-btn,
+        body.light-theme .voice-btn {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        body.light-theme .history-item {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+        }
+
+        body.light-theme .history-item:hover {
+            background-color: #e8ecef;
+        }
+
+        body.light-theme .history-item .content .question {
+            color: #333;
+        }
+
+        body.light-theme .history-item .content .meta {
+            color: #666;
+        }
+
+        body.light-theme .message.user {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+
+        body.light-theme .message.bot {
+            background-color: #e9ecef;
+            color: #333;
+            margin-right: auto;
+        }
+
+        body.light-theme footer {
+            color: #666;
+        }
+
+        body.light-theme .search-bar {
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+        }
+
+        body.light-theme .search-bar input {
+            color: #333;
+        }
+
+        body.light-theme .search-bar input::placeholder {
+            color: #888;
+        }
+
+        body.light-theme .search-bar .clear-search {
+            color: #666;
+        }
+
+        body.light-theme .search-bar .clear-search:hover {
+            color: #dc3545;
+        }
+
+        body.light-theme .theme-dropdown .dropdown-menu {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+        }
+
+        body.light-theme .theme-dropdown .dropdown-item {
+            color: #333;
+        }
+
+        body.light-theme .theme-dropdown .dropdown-item:hover {
+            background-color: #e8ecef;
+        }
+
+        /* Sepia Theme */
+        body.sepia-theme {
+            background-color: #f4ecd8;
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .navbar {
+            background-color: #ead9b8;
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .sidebar {
+            background-color: rgba(234, 217, 184, 0.95);
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .chat-container,
+        body.sepia-theme .chat-box,
+        body.sepia-theme .chat-box::-webkit-scrollbar-track {
+            background-color: #f4ecd8;
+        }
+
+        body.sepia-theme .input-group,
+        body.sepia-theme .send-btn,
+        body.sepia-theme .voice-btn {
+            background-color: #d9c8a6;
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .history-item {
+            background-color: #ead9b8;
+            border: 1px solid #b8a57b;
+        }
+
+        body.sepia-theme .history-item:hover {
+            background-color: #e0cfa0;
+        }
+
+        body.sepia-theme .history-item .content .question {
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .history-item .content .meta {
+            color: #8b6f47;
+        }
+
+        body.sepia-theme .message.user {
+            background-color: #8b6f47;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        body.sepia-theme .message.bot {
+            background-color: #ead9b8;
+            color: #5c4b38;
+            margin-right: auto;
+        }
+
+        body.sepia-theme footer {
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .search-bar {
+            background: linear-gradient(135deg, #ead9b8, #d9c8a6);
+        }
+
+        body.sepia-theme .search-bar input {
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .search-bar input::placeholder {
+            color: #8b6f47;
+        }
+
+        body.sepia-theme .search-bar .clear-search {
+            color: #8b6f47;
+        }
+
+        body.sepia-theme .search-bar .clear-search:hover {
+            color: #6b4e31;
+        }
+
+        body.sepia-theme .theme-dropdown .dropdown-menu {
+            background-color: #ead9b8;
+            border: 1px solid #b8a57b;
+        }
+
+        body.sepia-theme .theme-dropdown .dropdown-item {
+            color: #5c4b38;
+        }
+
+        body.sepia-theme .theme-dropdown .dropdown-item:hover {
+            background-color: #e0cfa0;
         }
 
         .navbar {
-            background-color: #2e333f;
-            color: white;
             padding: 10px 20px;
             position: relative;
             margin-left: 300px;
@@ -54,8 +337,6 @@
             left: -300px;
             width: 300px;
             height: calc(100vh - 70px);
-            background-color: rgba(20, 20, 20, 0.9);
-            color: #fff;
             padding: 20px;
             z-index: 1000;
             transition: left 0.3s ease;
@@ -89,6 +370,52 @@
             background: linear-gradient(135deg, #2575fc, #6a11cb);
         }
 
+        .theme-dropdown {
+            position: fixed;
+            top: 20px;
+            left: 70px;
+            z-index: 1100;
+        }
+
+        .theme-dropdown .btn {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .theme-dropdown .btn:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-dropdown .btn:active {
+            transform: scale(0.95);
+        }
+
+        .theme-dropdown .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+        }
+
+        .theme-dropdown .dropdown-item {
+            padding: 8px 16px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-dropdown .dropdown-item:hover {
+            cursor: pointer;
+        }
+
         .sidebar::-webkit-scrollbar {
             width: 8px;
         }
@@ -99,8 +426,19 @@
         }
 
         .sidebar::-webkit-scrollbar-track {
-            background: rgba(20, 20, 20, 0.7);
             border-radius: 50px;
+        }
+
+        body.dark-theme .sidebar::-webkit-scrollbar-track {
+            background: rgba(20, 20, 20, 0.7);
+        }
+
+        body.light-theme .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        body.sepia-theme .sidebar::-webkit-scrollbar-track {
+            background: rgba(234, 217, 184, 0.7);
         }
 
         .sidebar h3 {
@@ -115,14 +453,14 @@
             margin-bottom: 25px;
             display: flex;
             align-items: center;
-            background: linear-gradient(135deg, #3a3f4b, #2e333f);
             border-radius: 25px;
             padding: 5px 10px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         }
 
-        .search-bar:hover, .search-bar.active {
+        .search-bar:hover,
+        .search-bar.active {
             transform: scale(1.03);
             box-shadow: 0 4px 12px rgba(0, 198, 255, 0.2);
         }
@@ -133,7 +471,6 @@
             border: none;
             border-radius: 25px;
             background: transparent;
-            color: #fff;
             font-size: 15px;
             transition: all 0.3s ease;
         }
@@ -142,11 +479,6 @@
             outline: none;
             background: rgba(69, 75, 91, 0.8);
             box-shadow: inset 0 0 5px rgba(0, 198, 255, 0.5);
-        }
-
-        .search-bar input::placeholder {
-            color: #bbb;
-            transition: all 0.3s ease;
         }
 
         .search-bar input:focus::placeholder {
@@ -165,26 +497,9 @@
             transition: all 0.3s ease;
         }
 
-        .search-bar input:focus + .search-icon {
+        .search-bar input:focus+.search-icon {
             color: #0072ff;
             transform: translateY(-50%) scale(1.1);
-        }
-
-        .search-bar .clear-search {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #aaa;
-            font-size: 18px;
-            cursor: pointer;
-            display: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar .clear-search:hover {
-            color: #ff6f61;
-            transform: translateY(-50%) rotate(90deg);
         }
 
         .history-item {
@@ -192,16 +507,13 @@
             align-items: center;
             padding: 12px;
             margin-bottom: 10px;
-            background-color: #2e333f;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            border: 1px solid #444;
         }
 
         .history-item:hover {
-            background-color: #3a3f4b;
             transform: scale(1.02);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
@@ -220,7 +532,6 @@
         .history-item .content .question {
             font-size: 15px;
             font-weight: 500;
-            color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -229,7 +540,6 @@
 
         .history-item .content .meta {
             font-size: 12px;
-            color: #aaa;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -255,12 +565,10 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            background-color: #2e333f;
             height: 100%;
         }
 
         .chat-box {
-            background-color: #2e333f;
             border-radius: 12px;
             padding: 20px;
             flex-grow: 1;
@@ -281,13 +589,8 @@
             border-radius: 12px;
         }
 
-        .chat-box::-webkit-scrollbar-track {
-            background: #2e333f;
-            border-radius: 12px;
-        }
-
         .message {
-            margin: 10px 0;
+            margin: 10px 15px;
             padding: 10px 15px;
             border-radius: 10px;
             width: fit-content;
@@ -295,23 +598,9 @@
             animation: fadeIn 0.3s ease;
         }
 
-        .message.user {
-            background-color: white;
-            color: black;
-            align-self: flex-end;
-            border-radius: 15px;
-        }
-
-        .message.bot {
-            color: white;
-            align-self: flex-start;
-            font-size: 17px;
-        }
-
         .input-group {
             display: flex;
             position: relative;
-            background-color: #444;
             border-radius: 50px;
             padding: 10px 20px;
             align-items: center;
@@ -322,8 +611,6 @@
             padding: 15px 60px 15px 60px;
             border: none;
             border-radius: 50px;
-            background-color: #444;
-            color: #fff;
             font-size: 16px;
             resize: none;
             overflow-y: hidden;
@@ -334,6 +621,21 @@
             outline: none;
             scrollbar-width: thin;
             scrollbar-color: #00c6ff #333;
+        }
+
+        body.dark-theme .input-group textarea {
+            background-color: #444;
+            color: #fff;
+        }
+
+        body.light-theme .input-group textarea {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        body.sepia-theme .input-group textarea {
+            background-color: #d9c8a6;
+            color: #5c4b38;
         }
 
         .input-group textarea::-webkit-scrollbar {
@@ -370,13 +672,11 @@
             transform: translateY(50%);
             width: 40px;
             height: 40px;
-            background: #444;
             display: flex;
             justify-content: center;
             align-items: center;
             border: none;
             border-radius: 50%;
-            color: white;
             font-size: 18px;
             cursor: pointer;
         }
@@ -388,20 +688,18 @@
             transform: translateY(50%);
             width: 40px;
             height: 40px;
-            background: #444;
             display: flex;
             justify-content: center;
             align-items: center;
             border: none;
             border-radius: 50%;
-            color: white;
             font-size: 18px;
             cursor: pointer;
         }
 
         .send-btn:hover,
         .voice-btn:hover {
-            color: black;
+            filter: brightness(1.2);
         }
 
         .loader {
@@ -445,7 +743,6 @@
             text-align: center;
             padding: 15px;
             background-color: transparent;
-            color: #ddd;
             position: fixed;
             bottom: 0;
             width: 100%;
@@ -519,7 +816,7 @@
 
         .clear-history-button:active {
             transform: scale(0.95);
-            box-shadow: 0 "4px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         }
 
         .nav-right {
@@ -548,7 +845,7 @@
             background: linear-gradient(135deg, #2575fc, #6a11cb);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
             transform: scale(1.05);
-            color: red;
+            color: white;
         }
 
         .home-button:active {
@@ -566,17 +863,23 @@
             .sidebar {
                 width: 250px;
             }
+
             .chat-container {
                 margin-left: 250px;
             }
+
             .navbar {
                 margin-left: 250px;
+            }
+
+            .theme-dropdown {
+                left: 70px;
             }
         }
     </style>
 </head>
 
-<body>
+<body class="dark-theme">
     <nav class="navbar navbar-dark">
         <a class="navbar-brand"><i class="fas fa-comments"></i> Chat @AI</a>
         <div class="nav-right">
@@ -618,6 +921,16 @@
         <button class="toggle-sidebar" id="toggleSidebar">
             <i class="fas fa-bars"></i>
         </button>
+        <div class="theme-dropdown">
+            <button class="btn dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-adjust"></i> Theme
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="themeDropdown">
+                <li><a class="dropdown-item" href="#" data-theme="dark-theme">Dark</a></li>
+                <li><a class="dropdown-item" href="#" data-theme="light-theme">Light</a></li>
+                <li><a class="dropdown-item" href="#" data-theme="sepia-theme">Sepia</a></li>
+            </ul>
+        </div>
 
         <div class="chat-container">
             <div id="controls" style="text-align: left; margin: 20px;">
@@ -651,6 +964,27 @@
         const toggleButton = document.getElementById('toggleSidebar');
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
         let recognizing = false;
+
+        // Theme Dropdown Functionality
+        const themeItems = document.querySelectorAll('.theme-dropdown .dropdown-item');
+        const themes = ['dark-theme', 'light-theme', 'sepia-theme'];
+
+        function setTheme(theme) {
+            document.body.className = theme;
+            localStorage.setItem('theme', theme);
+        }
+
+        themeItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const selectedTheme = item.getAttribute('data-theme');
+                setTheme(selectedTheme);
+            });
+        });
+
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark-theme';
+        setTheme(savedTheme);
 
         toggleButton.addEventListener('click', () => {
             sidebar.classList.toggle('active');
@@ -909,23 +1243,23 @@
                     }
                 }),
             })
-            .then(response => response.json())
-            .then(data => {
-                chatBox.removeChild(loader);
-                if (data && data.predictions && data.predictions.length > 0) {
-                    const imageData = data.predictions[0].image;
-                    const imgHtml = `<img src="${imageData}" alt="Generated image" style="max-width: 100%; border-radius: 5px;">`;
-                    appendMessage(imgHtml, 'bot');
-                    addToHistory(`/generate_image ${prompt}`, imgHtml);
-                } else {
-                    appendMessage("No image generated.", 'bot');
-                }
-            })
-            .catch(error => {
-                console.error('Fetch Error:', error);
-                chatBox.removeChild(loader);
-                appendMessage(`Error: ${error.message}.`, 'bot');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    chatBox.removeChild(loader);
+                    if (data && data.predictions && data.predictions.length > 0) {
+                        const imageData = data.predictions[0].image;
+                        const imgHtml = `<img src="${imageData}" alt="Generated image" style="max-width: 100%; border-radius: 5px;">`;
+                        appendMessage(imgHtml, 'bot');
+                        addToHistory(`/generate_image ${prompt}`, imgHtml);
+                    } else {
+                        appendMessage("No image generated.", 'bot');
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Error:', error);
+                    chatBox.removeChild(loader);
+                    appendMessage(`Error: ${error.message}.`, 'bot');
+                });
         }
 
         function sendMessage() {
@@ -971,30 +1305,30 @@
                             }
                         }),
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('API Response:', data);
-                        chatBox.removeChild(loader);
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('API Response:', data);
+                            chatBox.removeChild(loader);
 
-                        if (data && data.candidates && data.candidates.length > 0) {
-                            let botResponse = data.candidates[0].content.parts[0].text;
-                            appendMessage(botResponse, 'bot');
-                            addToHistory(question, botResponse);
-                            localStorage.setItem(`response_${question}`, botResponse);
-                        } else {
-                            appendMessage("No response from the API. Please check your API key or try again later.", 'bot');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Fetch Error:', error);
-                        chatBox.removeChild(loader);
-                        appendMessage(`Error: ${error.message}. Please check your API setup or try again later.`, 'bot');
-                    });
+                            if (data && data.candidates && data.candidates.length > 0) {
+                                let botResponse = data.candidates[0].content.parts[0].text;
+                                appendMessage(botResponse, 'bot');
+                                addToHistory(question, botResponse);
+                                localStorage.setItem(`response_${question}`, botResponse);
+                            } else {
+                                appendMessage("No response from the API. Please check your API key or try again later.", 'bot');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Fetch Error:', error);
+                            chatBox.removeChild(loader);
+                            appendMessage(`Error: ${error.message}. Please check your API setup or try again later.`, 'bot');
+                        });
                 }
             }
         }
