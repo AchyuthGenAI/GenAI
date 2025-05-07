@@ -8,6 +8,7 @@
     <link rel="icon" type="image/webp" href="https://i.ibb.co/MCLkk0y/icon-png.webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
     <style>
         body {
             margin: 0;
@@ -595,7 +596,84 @@
             border-radius: 10px;
             width: fit-content;
             max-width: 70%;
-            animation: fadeIn 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .response-container {
+            background-color: #3a3f4b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+
+        body.light-theme .response-container {
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+        }
+
+        body.sepia-theme .response-container {
+            background-color: #ead9b8;
+            border: 1px solid #b8a57b;
+        }
+
+        .code-container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            position: relative;
+        }
+
+        body.light-theme .code-container {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+        }
+
+        body.sepia-theme .code-container {
+            background-color: #ead9b8;
+            border: 1px solid #b8a57b;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .code-language {
+            color: #00c6ff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .copy-code-btn {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-code-btn:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
         }
 
         .input-group {
@@ -865,15 +943,27 @@
             }
 
             .chat-container {
-                margin-left: 250px;
+                margin-left: 0;
             }
 
             .navbar {
-                margin-left: 250px;
+                margin-left: 0;
             }
 
             .theme-dropdown {
                 left: 70px;
+            }
+
+            .toggle-sidebar {
+                left: 10px;
+            }
+
+            .chat-box {
+                padding: 10px;
+            }
+
+            .message {
+                max-width: 85%;
             }
         }
     </style>
@@ -897,25 +987,9 @@
                 <span class="clear-search" id="clearSearch"><i class="fas fa-times"></i></span>
             </div>
             <button class="clear-history-button" id="clearHistoryBtn">Clear All History</button>
+            <button class="fancy-button" id="viewHistoryBtn">View Conversation History</button>
             <h3>Chat History</h3>
-            <div id="chatHistory">
-                <div class="history-item">
-                    <i class="fas fa-comment icon"></i>
-                    <div class="content">
-                        <div class="question" title="Chat 1">Chat 1</div>
-                        <div class="meta">03/22/2025 12:00 | Sample...</div>
-                    </div>
-                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                </div>
-                <div class="history-item">
-                    <i class="fas fa-image icon"></i>
-                    <div class="content">
-                        <div class="question" title="Chat 2">Chat 2</div>
-                        <div class="meta">03/22/2025 12:05 | Image...</div>
-                    </div>
-                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
+            <div id="chatHistory"></div>
         </aside>
 
         <button class="toggle-sidebar" id="toggleSidebar">
@@ -946,9 +1020,14 @@
     </div>
 
     <footer>
-        <p>© 2024 AI Chatbot | <a href="#" class="footer-link">Privacy Policy</a> | <a href="#" class="footer-link">Terms of Service</a></p>
+        <p>© 2025 AI Chatbot | <a href="#" class="footer-link">Privacy Policy</a> | <a href="#" class="footer-link">Terms of Service</a></p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
     <script>
         const baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
         const apiKey = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // Replace with your actual Gemini API key
@@ -963,7 +1042,9 @@
         const sidebar = document.getElementById('sidebar');
         const toggleButton = document.getElementById('toggleSidebar');
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const viewHistoryBtn = document.getElementById('viewHistoryBtn');
         let recognizing = false;
+        const maxContextMessages = 5; // Number of recent messages to include as context
 
         // Theme Dropdown Functionality
         const themeItems = document.querySelectorAll('.theme-dropdown .dropdown-item');
@@ -994,16 +1075,15 @@
             chatBox.innerHTML = '';
             chatBox.scrollTop = 0;
             userInput.value = '';
-            localStorage.clear();
+            appendMessage('Welcome to Chat @AI! How can I assist you today?', 'bot');
         }
 
         newChatBtn.addEventListener('click', resetChat);
 
         function clearAllHistory() {
-            console.log('Clear All History button clicked');
             if (confirm('Are you sure you want to permanently delete all chat history? This action cannot be undone.')) {
                 chatHistory.innerHTML = '';
-                localStorage.clear();
+                localStorage.removeItem('chatHistory');
                 appendMessage('All chat history has been permanently deleted.', 'bot');
             }
         }
@@ -1016,40 +1096,181 @@
             userInput.style.overflowY = userInput.scrollHeight > userInput.clientHeight ? 'auto' : 'hidden';
         });
 
-        userInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                document.getElementById("sendBtn").click();
-                userInput.style.height = "auto";
+                sendBtn.click();
+                userInput.style.height = 'auto';
             }
         });
 
-        function typeMessage(element, content, speed = 10) {
-            let index = 0;
+        function typeMessage(element, content, responseType, speed = 10) {
             element.innerHTML = '';
-            const text = content.replace(/<[^>]+>/g, ''); // Strip HTML tags for typing
-            const type = () => {
-                if (index < text.length) {
-                    element.innerHTML = text.substring(0, index + 1);
-                    index++;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                    setTimeout(type, speed);
-                } else {
-                    element.innerHTML = content; // Restore original HTML content
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-            };
-            type();
+            let index = 0;
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const body = doc.body;
+
+            if (responseType === 'code') {
+                const codeElement = body.querySelector('code');
+                const codeText = codeElement.textContent;
+                const language = codeElement.className.replace('language-', '');
+                const pre = document.createElement('div');
+                pre.className = 'code-container';
+                const header = document.createElement('div');
+                header.className = 'code-header';
+                const languageSpan = document.createElement('span');
+                languageSpan.className = 'code-language';
+                languageSpan.textContent = language.toUpperCase();
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-code-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.onclick = () => navigator.clipboard.writeText(codeText);
+                header.appendChild(languageSpan);
+                header.appendChild(copyBtn);
+                pre.appendChild(header);
+                const code = document.createElement('pre');
+                const codeTag = document.createElement('code');
+                codeTag.className = `language-${language}`;
+                code.appendChild(codeTag);
+                pre.appendChild(code);
+                element.appendChild(pre);
+
+                const typeCode = () => {
+                    if (index < codeText.length) {
+                        codeTag.textContent = codeText.substring(0, index + 1);
+                        index++;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        setTimeout(typeCode, speed);
+                    } else {
+                        codeTag.textContent = codeText;
+                        Prism.highlightAllUnder(element);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                };
+                typeCode();
+            } else if (responseType === 'list') {
+                const items = Array.from(body.querySelectorAll('li')).map(li => li.textContent);
+                const ul = document.createElement('ul');
+                ul.className = 'response-container';
+                element.appendChild(ul);
+                let currentItem = 0;
+
+                const typeList = () => {
+                    if (currentItem < items.length) {
+                        if (!ul.children[currentItem]) {
+                            const li = document.createElement('li');
+                            ul.appendChild(li);
+                        }
+                        const text = items[currentItem];
+                        if (index < text.length) {
+                            ul.children[currentItem].textContent = text.substring(0, index + 1);
+                            index++;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                            setTimeout(typeList, speed);
+                        } else {
+                            ul.children[currentItem].textContent = text;
+                            index = 0;
+                            currentItem++;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                            setTimeout(typeList, speed);
+                        }
+                    } else {
+                        element.innerHTML = content;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                };
+                typeList();
+            } else if (responseType === 'table') {
+                const cells = Array.from(body.querySelectorAll('td')).map(td => td.textContent);
+                const table = document.createElement('table');
+                table.className = 'response-container';
+                table.style.width = '100%';
+                table.style.borderCollapse = 'collapse';
+                table.setAttribute('border', '1');
+                const tbody = document.createElement('tbody');
+                table.appendChild(tbody);
+                element.appendChild(table);
+                let currentCell = 0;
+                let currentRow;
+                const cellsPerRow = body.querySelector('tr').children.length;
+
+                const typeTable = () => {
+                    if (currentCell < cells.length) {
+                        if (currentCell % cellsPerRow === 0) {
+                            currentRow = document.createElement('tr');
+                            tbody.appendChild(currentRow);
+                        }
+                        if (!currentRow.children[currentCell % cellsPerRow]) {
+                            const td = document.createElement('td');
+                            currentRow.appendChild(td);
+                        }
+                        const text = cells[currentCell];
+                        if (index < text.length) {
+                            currentRow.children[currentCell % cellsPerRow].textContent = text.substring(0, index + 1);
+                            index++;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                            setTimeout(typeTable, speed);
+                        } else {
+                            currentRow.children[currentCell % cellsPerRow].textContent = text;
+                            index = 0;
+                            currentCell++;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                            setTimeout(typeTable, speed);
+                        }
+                    } else {
+                        element.innerHTML = content;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                };
+                typeTable();
+            } else if (responseType === 'image') {
+                element.innerHTML = content;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } else {
+                const paragraphs = Array.from(body.querySelectorAll('p')).map(p => p.textContent);
+                const div = document.createElement('div');
+                div.className = 'response-container';
+                element.appendChild(div);
+                let currentPara = 0;
+
+                const typeText = () => {
+                    if (currentPara < paragraphs.length) {
+                        if (!div.children[currentPara]) {
+                            const p = document.createElement('p');
+                            div.appendChild(p);
+                        }
+                        const text = paragraphs[currentPara];
+                        if (index < text.length) {
+                            div.children[currentPara].textContent = text.substring(0, index + 1);
+                            index++;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                            setTimeout(typeText, speed);
+                        } else {
+                            div.children[currentPara].textContent = text;
+                            index = 0;
+                            currentPara++;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                            setTimeout(typeText, speed);
+                        }
+                    } else {
+                        element.innerHTML = content;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                };
+                typeText();
+            }
         }
 
-        function appendMessage(content, sender) {
+        function appendMessage(content, sender, sessionId = null, timestamp = null) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender);
 
             if (sender === 'bot') {
                 const iconImg = document.createElement('img');
                 iconImg.src = 'https://i.ibb.co/MCLkk0y/icon-png.webp';
-                iconImg.alt = 'CoreIntelli Bot';
+                iconImg.alt = 'Chat @AI Bot';
                 iconImg.style.width = '50px';
                 iconImg.style.height = '40px';
                 iconImg.style.marginRight = '10px';
@@ -1062,40 +1283,77 @@
 
                 const formattedContent = formatResponse(content);
                 const messageContent = document.createElement('div');
-                messageContent.style.minWidth = '100px'; // Ensure content has space
+                messageContent.style.minWidth = '100px';
 
                 messageContainer.appendChild(iconImg);
                 messageContainer.appendChild(messageContent);
                 messageDiv.appendChild(messageContainer);
                 chatBox.appendChild(messageDiv);
 
-                typeMessage(messageContent, formattedContent);
+                const responseType = detectResponseType(content);
+                typeMessage(messageContent, formattedContent, responseType);
             } else {
                 messageDiv.innerHTML = content;
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
+
+            // Save to history if not a historical message
+            if (!sessionId && !timestamp) {
+                addToHistory(content, sender === 'bot' ? content : userInput.value, sender);
+            }
+        }
+
+        function detectResponseType(response) {
+            if (response.match(/```[\w]*\n[\s\S]*?\n```/)) {
+                return 'code';
+            } else if (response.includes('|')) {
+                return 'table';
+            } else if (response.includes('http') && response.match(/<img\s+src=/)) {
+                return 'image';
+            } else if (response.match(/^\s*[-*]\s/m)) {
+                return 'list';
+            } else {
+                return 'text';
+            }
         }
 
         function formatTextResponse(response) {
-            return `<p>${response}</p>`;
+            return `<div class="response-container"><p>${response}</p></div>`;
         }
 
         function formatListResponse(response) {
-            const items = response.split('\n').map(item => `<div>${item}</div>`).join('');
-            return `<div>${items}</div>`;
+            const items = response.split('\n').filter(item => item.trim().startsWith('-') || item.trim().startsWith('*')).map(item => `<li>${item.trim().substring(1).trim()}</li>`).join('');
+            return `<div class="response-container"><ul>${items}</ul></div>`;
         }
 
         function formatCodeResponse(response) {
-            return `<pre style="padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-width: 100%;">${response}</pre>`;
+            let language = 'plaintext';
+            let codeContent = response;
+            const match = response.match(/```(\w+)?\n([\s\S]*?)\n```/);
+            if (match) {
+                language = match[1] || 'plaintext';
+                codeContent = match[2];
+            }
+            const escapedCode = codeContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return `
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">${language.toUpperCase()}</span>
+                        <button class="copy-code-btn" onclick="navigator.clipboard.writeText(\`${codeContent.replace(/`/g, '\\`')}\`)">Copy</button>
+                    </div>
+                    <pre><code class="language-${language}">${escapedCode}</code></pre>
+                </div>
+            `;
         }
 
         function formatImageResponse(response) {
-            return `<img src="${response}" alt="Bot-suggested image" style="max-width: 100%; border-radius: 5px;">`;
+            return `<div class="response-container">${response}</div>`;
         }
 
         function formatLinkResponse(response) {
-            return response.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+            const formatted = response.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+            return `<div class="response-container"><p>${formatted}</p></div>`;
         }
 
         function formatTableResponse(response) {
@@ -1103,52 +1361,26 @@
                 const cells = row.split('|').map(cell => `<td>${cell.trim()}</td>`).join('');
                 return `<tr>${cells}</tr>`;
             }).join('');
-            return `<table border="1" style="width: 100%; border-collapse: collapse;">${rows}</table>`;
-        }
-
-        function formatJsonResponse(response) {
-            try {
-                const data = JSON.parse(response);
-                switch (data.type) {
-                    case 'image':
-                        return formatImageResponse(data.url);
-                    case 'list':
-                        return formatListResponse(data.items.join('\n'));
-                    case 'text':
-                        return formatTextResponse(data.content);
-                    case 'code':
-                        return formatCodeResponse(data.content);
-                    case 'table':
-                        return formatTableResponse(data.content);
-                    case 'link':
-                        return formatLinkResponse(data.url);
-                    default:
-                        console.warn('Unknown response type:', data.type);
-                        return formatTextResponse('Unsupported response type: ' + data.type);
-                }
-            } catch (error) {
-                console.error('Error parsing JSON response:', error);
-                return formatTextResponse(
-                    typeof response === 'string' ? response : 'Invalid response format.'
-                );
-            }
+            return `<div class="response-container"><table border="1" style="width: 100%; border-collapse: collapse;">${rows}</table></div>`;
         }
 
         function formatResponse(response) {
-            if (response.startsWith('{') && response.endsWith('}')) {
-                return formatJsonResponse(response);
+            if (response.match(/```[\w]*\n[\s\S]*?\n```/)) {
+                return formatCodeResponse(response);
             } else if (response.includes('|')) {
                 return formatTableResponse(response);
-            } else if (response.includes('http')) {
+            } else if (response.includes('http') && !response.match(/<img\s+src=/)) {
                 return formatLinkResponse(response);
-            } else if (response.includes('\n')) {
-                return formatCodeResponse(response);
+            } else if (response.match(/^\s*[-*]\s/m)) {
+                return formatListResponse(response);
             } else {
                 return formatTextResponse(response);
             }
         }
 
-        function addToHistory(question, response) {
+        function addToHistory(question, response, sender) {
+            const sessionId = Date.now().toString();
+            const timestamp = new Date().toISOString();
             const historyItem = document.createElement('div');
             historyItem.classList.add('history-item');
 
@@ -1186,7 +1418,7 @@
                 chatHistory.removeChild(historyItem);
                 const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
                 const updatedHistory = savedHistory.filter(
-                    item => item.question !== question || item.response !== response
+                    item => item.sessionId !== sessionId
                 );
                 localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
             });
@@ -1196,36 +1428,103 @@
             historyItem.appendChild(deleteBtn);
 
             historyItem.addEventListener('click', () => {
-                appendMessage(`<strong>Context:</strong> ${question}<br>${response}`, 'bot');
+                appendMessage(`<strong>Previous:</strong> ${question}<br>${response}`, 'bot', sessionId, timestamp);
             });
 
             chatHistory.appendChild(historyItem);
-            saveHistoryToLocalStorage();
+
+            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            savedHistory.push({
+                sessionId,
+                timestamp,
+                question,
+                response,
+                sender,
+                keyword
+            });
+            localStorage.setItem('chatHistory', JSON.stringify(savedHistory));
         }
 
         function summarizeResponse(response) {
             return response.split(' ').slice(0, 5).join(' ') + '...';
         }
 
-        function saveHistoryToLocalStorage() {
-            const historyItems = Array.from(chatHistory.getElementsByClassName('history-item')).map(item => {
-                const question = item.querySelector('.question').textContent;
-                const meta = item.querySelector('.meta').textContent.split('|')[1].trim();
-                return { question, keyword: meta };
-            });
-            localStorage.setItem('chatHistory', JSON.stringify(historyItems));
-        }
-
         function loadHistoryFromLocalStorage() {
             chatHistory.innerHTML = '';
             const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            savedHistory.forEach(({ question, keyword }) => {
-                const response = localStorage.getItem(`response_${question}`);
-                if (response) {
-                    addToHistory(question, response);
-                }
+            savedHistory.forEach(({ question, response, sender, keyword, sessionId, timestamp }) => {
+                const historyItem = document.createElement('div');
+                historyItem.classList.add('history-item');
+
+                const isImage = question.startsWith('/generate_image');
+                const icon = document.createElement('i');
+                icon.className = isImage ? 'fas fa-image icon' : 'fas fa-comment icon';
+
+                const content = document.createElement('div');
+                content.className = 'content';
+
+                const date = new Date(timestamp);
+                const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const formattedDate = date.toLocaleDateString();
+
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.textContent = question;
+                questionDiv.title = question;
+
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'meta';
+                metaDiv.textContent = `${formattedDate} ${formattedTime} | ${keyword}`;
+                metaDiv.title = `${formattedDate} ${formattedTime} | ${keyword}`;
+
+                content.appendChild(questionDiv);
+                content.appendChild(metaDiv);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chatHistory.removeChild(historyItem);
+                    const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                    const updatedHistory = savedHistory.filter(
+                        item => item.sessionId !== sessionId
+                    );
+                    localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
+                });
+
+                historyItem.appendChild(icon);
+                historyItem.appendChild(content);
+                historyItem.appendChild(deleteBtn);
+
+                historyItem.addEventListener('click', () => {
+                    appendMessage(`<strong>Previous:</strong> ${question}<br>${response}`, 'bot', sessionId, timestamp);
+                });
+
+                chatHistory.appendChild(historyItem);
             });
         }
+
+        function viewConversationHistory() {
+            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            if (savedHistory.length === 0) {
+                appendMessage('No conversation history available.', 'bot');
+                return;
+            }
+
+            let historyText = '<div class="response-container"><h4>Conversation History</h4><ul>';
+            savedHistory.forEach(({ question, response, timestamp }) => {
+                const date = new Date(timestamp);
+                const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const formattedDate = date.toLocaleDateString();
+                historyText += `<li><strong>${formattedDate} ${formattedTime}</strong>: ${question} → ${summarizeResponse(response)}</li>`;
+            });
+            historyText += '</ul></div>';
+            appendMessage(historyText, 'bot');
+        }
+
+        viewHistoryBtn.addEventListener('click', viewConversationHistory);
 
         function generateImage(prompt, loader) {
             const imageUrl = 'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=' + apiKey;
@@ -1250,86 +1549,90 @@
                         const imageData = data.predictions[0].image;
                         const imgHtml = `<img src="${imageData}" alt="Generated image" style="max-width: 100%; border-radius: 5px;">`;
                         appendMessage(imgHtml, 'bot');
-                        addToHistory(`/generate_image ${prompt}`, imgHtml);
+                        addToHistory(`/generate_image ${prompt}`, imgHtml, 'bot');
                     } else {
-                        appendMessage("No image generated.", 'bot');
+                        appendMessage("No image generated. Try a different prompt.", 'bot');
                     }
                 })
                 .catch(error => {
-                    console.error('Fetch Error:', error);
+                    console.error('Image Generation Error:', error);
                     chatBox.removeChild(loader);
-                    appendMessage(`Error: ${error.message}.`, 'bot');
+                    appendMessage(`Error generating image: ${error.message}. Please try again.`, 'bot');
                 });
         }
 
         function sendMessage() {
             const question = userInput.value.trim();
-            if (question !== '') {
-                appendMessage(`${question}`, 'user');
-                userInput.value = '';
-                userInput.focus();
+            if (question === '') return;
 
-                const loader = document.createElement('div');
-                loader.classList.add('loader');
-                for (let i = 0; i < 3; i++) {
-                    const dot = document.createElement('div');
-                    loader.appendChild(dot);
-                }
-                chatBox.appendChild(loader);
+            appendMessage(question, 'user');
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            userInput.focus();
 
-                if (question.startsWith('/generate_image ')) {
-                    const prompt = question.substring('/generate_image '.length).trim();
-                    generateImage(prompt, loader);
-                } else {
-                    const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-                    const contextMessages = savedHistory.map(item => ({
-                        role: "user",
+            const loader = document.createElement('div');
+            loader.classList.add('loader');
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                loader.appendChild(dot);
+            }
+            chatBox.appendChild(loader);
+
+            if (question.startsWith('/generate_image ')) {
+                const prompt = question.substring('/generate_image '.length).trim();
+                generateImage(prompt, loader);
+            } else {
+                const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                const contextMessages = savedHistory.slice(-maxContextMessages).map(item => [
+                    {
+                        role: 'user',
                         parts: [{ text: item.question }]
-                    }));
+                    },
+                    {
+                        role: 'model',
+                        parts: [{ text: item.response }]
+                    }
+                ]).flat();
 
-                    contextMessages.push({
-                        role: "user",
-                        parts: [{ text: question }]
-                    });
+                contextMessages.push({
+                    role: 'user',
+                    parts: [{ text: question }]
+                });
 
-                    fetch(`${baseUrl}?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            contents: contextMessages,
-                            generationConfig: {
-                                temperature: 0.7,
-                                maxOutputTokens: 1024
-                            }
-                        }),
+                fetch(`${baseUrl}?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: contextMessages,
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 1024
+                        }
+                    }),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
                     })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('API Response:', data);
-                            chatBox.removeChild(loader);
-
-                            if (data && data.candidates && data.candidates.length > 0) {
-                                let botResponse = data.candidates[0].content.parts[0].text;
-                                appendMessage(botResponse, 'bot');
-                                addToHistory(question, botResponse);
-                                localStorage.setItem(`response_${question}`, botResponse);
-                            } else {
-                                appendMessage("No response from the API. Please check your API key or try again later.", 'bot');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Fetch Error:', error);
-                            chatBox.removeChild(loader);
-                            appendMessage(`Error: ${error.message}. Please check your API setup or try again later.`, 'bot');
-                        });
-                }
+                    .then(data => {
+                        chatBox.removeChild(loader);
+                        if (data && data.candidates && data.candidates.length > 0) {
+                            let botResponse = data.candidates[0].content.parts[0].text;
+                            appendMessage(botResponse, 'bot');
+                            addToHistory(question, botResponse, 'bot');
+                        } else {
+                            appendMessage("No response from the API. Please try again later.", 'bot');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch Error:', error);
+                        chatBox.removeChild(loader);
+                        appendMessage(`Error: ${error.message}. Please check your connection or try again.`, 'bot');
+                    });
             }
         }
 
@@ -1346,14 +1649,14 @@
 
         recognition.onerror = (event) => {
             console.error('Speech recognition error:', event.error);
-            appendMessage("Sorry, couldn't recognize your voice. Please try again.", 'bot');
+            appendMessage("Sorry, I couldn't understand you. Please try speaking again.", 'bot');
         };
 
         voiceBtn.addEventListener('click', () => {
             if (!recognizing) {
                 recognition.start();
                 recognizing = true;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
             } else {
                 recognition.stop();
                 recognizing = false;
@@ -1362,12 +1665,6 @@
         });
 
         sendBtn.addEventListener('click', sendMessage);
-
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
 
         searchBar.addEventListener('input', (e) => {
             const searchText = e.target.value.toLowerCase();
@@ -1401,8 +1698,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadHistoryFromLocalStorage();
+            resetChat();
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
