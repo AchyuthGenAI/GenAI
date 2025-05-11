@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +7,6 @@
     <link rel="icon" type="image/webp" href="https://i.ibb.co/MCLkk0y/icon-png.webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
     <style>
         body {
             margin: 0;
@@ -35,8 +33,8 @@
             color: white;
         }
 
-        body.dark-theme .sidebar {
-            background-color: rgba(20, 20, 20, 0.9);
+        body.dark-theme .history-panel {
+            background-color: rgba(20, 20, 20, 0.95);
             color: #fff;
         }
 
@@ -130,7 +128,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        body.light-theme .sidebar {
+        body.light-theme .history-panel {
             background-color: rgba(255, 255, 255, 0.95);
             color: #333;
         }
@@ -225,7 +223,7 @@
             color: #5c4b38;
         }
 
-        body.sepia-theme .sidebar {
+        body.sepia-theme .history-panel {
             background-color: rgba(234, 217, 184, 0.95);
             color: #5c4b38;
         }
@@ -310,9 +308,25 @@
         }
 
         .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 10px 20px;
             position: relative;
-            margin-left: 300px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-center {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .navbar-brand {
@@ -323,7 +337,9 @@
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-left: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .container {
@@ -332,27 +348,76 @@
             overflow: hidden;
         }
 
-        .sidebar {
+        .history-panel {
             position: fixed;
             top: 70px;
-            left: -300px;
-            width: 300px;
-            height: calc(100vh - 70px);
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 90%;
+            max-width: 400px;
+            height: calc(100vh - 100px);
             padding: 20px;
             z-index: 1000;
-            transition: left 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
             overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
         }
 
-        .sidebar.active {
-            left: 0;
+        .history-panel.active {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
         }
 
-        .toggle-sidebar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
+        .history-panel .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff6f61;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .history-panel .close-btn:hover {
+            color: #ff3f31;
+        }
+
+        .history-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .history-panel::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 50px;
+        }
+
+        .history-panel::-webkit-scrollbar-track {
+            border-radius: 50px;
+        }
+
+        body.dark-theme .history-panel::-webkit-scrollbar-track {
+            background: rgba(20, 20, 20, 0.7);
+        }
+
+        body.light-theme .history-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        body.sepia-theme .history-panel::-webkit-scrollbar-track {
+            background: rgba(234, 217, 184, 0.7);
+        }
+
+        .history-panel h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #00c6ff;
+        }
+
+        .toggle-history {
             width: 40px;
             height: 40px;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -363,19 +428,23 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            z-index: 1100;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .toggle-sidebar:hover {
+        .toggle-history:hover {
             background: linear-gradient(135deg, #2575fc, #6a11cb);
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-history i {
+            font-size: 20px;
         }
 
         .theme-dropdown {
-            position: fixed;
-            top: 20px;
-            left: 70px;
-            z-index: 1100;
+            display: flex;
+            align-items: center;
         }
 
         .theme-dropdown .btn {
@@ -415,38 +484,6 @@
 
         .theme-dropdown .dropdown-item:hover {
             cursor: pointer;
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 50px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            border-radius: 50px;
-        }
-
-        body.dark-theme .sidebar::-webkit-scrollbar-track {
-            background: rgba(20, 20, 20, 0.7);
-        }
-
-        body.light-theme .sidebar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.7);
-        }
-
-        body.sepia-theme .sidebar::-webkit-scrollbar-track {
-            background: rgba(234, 217, 184, 0.7);
-        }
-
-        .sidebar h3 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #00c6ff;
         }
 
         .search-bar {
@@ -562,7 +599,6 @@
         }
 
         .chat-container {
-            margin-left: 300px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -610,70 +646,71 @@
             }
         }
 
-        .response-container {
-            background-color: #3a3f4b;
-            border-radius: 8px;
+        .markdown-container {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .markdown-container pre {
+            background: #1e1e1e;
             padding: 15px;
-            margin-top: 10px;
-            overflow-x: auto;
-        }
-
-        body.light-theme .response-container {
-            background-color: #e9ecef;
-            border: 1px solid #ccc;
-        }
-
-        body.sepia-theme .response-container {
-            background-color: #ead9b8;
-            border: 1px solid #b8a57b;
-        }
-
-        .code-container {
-            background-color: #1e1e1e;
             border-radius: 8px;
-            padding: 15px;
-            margin-top: 10px;
             overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
             position: relative;
-        }
-
-        body.light-theme .code-container {
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-        }
-
-        body.sepia-theme .code-container {
-            background-color: #ead9b8;
-            border: 1px solid #b8a57b;
-        }
-
-        .code-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .code-language {
-            color: #00c6ff;
-            font-weight: bold;
+            font-family: 'Consolas', 'Monaco', monospace;
             font-size: 14px;
+            line-height: 1.5;
         }
 
-        .copy-code-btn {
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+        .markdown-container code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            font-weight: normal;
+            background: none;
+        }
+
+        .markdown-container ul, .markdown-container ol {
+            padding-left: 20px;
+        }
+
+        .markdown-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .markdown-container th, .markdown-container td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00c6ff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             padding: 5px 10px;
             cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            transition: background 0.3s ease;
         }
 
-        .copy-code-btn:hover {
-            background: linear-gradient(135deg, #2575fc, #6a11cb);
+        .copy-btn:hover {
+            background: #0072ff;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .copy-btn.copied::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
         }
 
         .input-group {
@@ -733,10 +770,6 @@
 
         .input-group textarea::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(45deg, #00a6dd, #005fcc);
-        }
-
-        .input-group textarea::-webkit-scrollbar-corner {
-            background: #444;
         }
 
         .input-group textarea:focus {
@@ -825,7 +858,6 @@
             bottom: 0;
             width: 100%;
             font-size: 14px;
-            margin-left: 150px;
         }
 
         footer a {
@@ -841,10 +873,6 @@
 
         footer p {
             margin: 5px 0;
-        }
-
-        footer .footer-link {
-            margin-left: 10px;
         }
 
         .fancy-button {
@@ -900,7 +928,6 @@
         .nav-right {
             display: flex;
             align-items: center;
-            margin-left: auto;
         }
 
         .home-button {
@@ -931,31 +958,15 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         }
 
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .history-item:focus {
+            outline: 2px solid #00c6ff;
+            outline-offset: 2px;
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 250px;
-            }
-
-            .chat-container {
-                margin-left: 0;
-            }
-
-            .navbar {
-                margin-left: 0;
-            }
-
-            .theme-dropdown {
-                left: 70px;
-            }
-
-            .toggle-sidebar {
-                left: 10px;
+            .history-panel {
+                width: 95%;
+                max-width: 320px;
             }
 
             .chat-box {
@@ -965,13 +976,55 @@
             .message {
                 max-width: 85%;
             }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .toggle-history {
+                width: 36px;
+                height: 36px;
+            }
+
+            .toggle-history i {
+                font-size: 18px;
+            }
+
+            .theme-dropdown .btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            .navbar-left {
+                gap: 8px;
+            }
+
+            .navbar-center {
+                gap: 8px;
+            }
         }
     </style>
 </head>
-
 <body class="dark-theme">
     <nav class="navbar navbar-dark">
-        <a class="navbar-brand"><i class="fas fa-comments"></i> Chat @AI</a>
+        <div class="navbar-left">
+            <button class="toggle-history" id="toggleHistory" aria-label="Toggle history panel">
+                <i class="fas fa-clock"></i>
+            </button>
+            <div class="theme-dropdown">
+                <button class="btn dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-adjust"></i> Theme
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="themeDropdown">
+                    <li><a class="dropdown-item" href="#" data-theme="dark-theme">Dark</a></li>
+                    <li><a class="dropdown-item" href="#" data-theme="light-theme">Light</a></li>
+                    <li><a class="dropdown-item" href="#" data-theme="sepia-theme">Sepia</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="navbar-brand"><i class="fas fa-comments"></i> Chat@AI</a>
+        </div>
         <div class="nav-right">
             <a href="index.html" class="home-button">
                 <i class="fas fa-home"></i>
@@ -980,31 +1033,21 @@
     </nav>
 
     <div class="container">
-        <aside class="sidebar" id="sidebar">
+        <aside class="history-panel" id="historyPanel">
+            <button class="close-btn" id="closeHistoryBtn" aria-label="Close history panel">
+                <i class="fas fa-times"></i>
+            </button>
             <div class="search-bar">
-                <input type="text" id="searchBar" placeholder="Search chat history...">
+                <input type="text" id="searchBar" placeholder="Search chat history..." aria-label="Search chat history">
                 <span class="search-icon"><i class="fas fa-search"></i></span>
                 <span class="clear-search" id="clearSearch"><i class="fas fa-times"></i></span>
             </div>
             <button class="clear-history-button" id="clearHistoryBtn">Clear All History</button>
-            <button class="fancy-button" id="viewHistoryBtn">View Conversation History</button>
+            <button class="fancy-button" id="exportHistoryBtn">Export History</button>
+            <button class="fancy-button" id="importHistoryBtn">Import History</button>
             <h3>Chat History</h3>
             <div id="chatHistory"></div>
         </aside>
-
-        <button class="toggle-sidebar" id="toggleSidebar">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="theme-dropdown">
-            <button class="btn dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-adjust"></i> Theme
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="themeDropdown">
-                <li><a class="dropdown-item" href="#" data-theme="dark-theme">Dark</a></li>
-                <li><a class="dropdown-item" href="#" data-theme="light-theme">Light</a></li>
-                <li><a class="dropdown-item" href="#" data-theme="sepia-theme">Sepia</a></li>
-            </ul>
-        </div>
 
         <div class="chat-container">
             <div id="controls" style="text-align: left; margin: 20px;">
@@ -1012,9 +1055,9 @@
             </div>
             <div class="chat-box" id="chatBox"></div>
             <div class="input-group">
-                <textarea id="userInput" placeholder="Ask Anything..." rows="1"></textarea>
-                <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
-                <button class="voice-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
+                <textarea id="userInput" placeholder="Ask Anything..." rows="1" aria-label="Enter your message"></textarea>
+                <button class="send-btn" id="sendBtn" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+                <button class="voice-btn" id="voiceBtn" aria-label="Toggle voice input"><i class="fas fa-microphone"></i></button>
             </div>
         </div>
     </div>
@@ -1024,437 +1067,98 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.12/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
     <script>
+        // UUID generator
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        // Constants
         const baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
         const apiKey = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // Replace with your actual Gemini API key
-        const chatBox = document.getElementById('chatBox');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const voiceBtn = document.getElementById('voiceBtn');
-        const chatHistory = document.getElementById('chatHistory');
-        const searchBar = document.getElementById('searchBar');
-        const clearSearch = document.getElementById('clearSearch');
-        const newChatBtn = document.getElementById('newChatBtn');
-        const sidebar = document.getElementById('sidebar');
-        const toggleButton = document.getElementById('toggleSidebar');
-        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-        const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+        const maxContextMessages = 5;
+        const typingSpeed = 20; // Milliseconds per character (faster)
+        const elements = {
+            chatBox: document.getElementById('chatBox'),
+            userInput: document.getElementById('userInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            voiceBtn: document.getElementById('voiceBtn'),
+            chatHistory: document.getElementById('chatHistory'),
+            searchBar: document.getElementById('searchBar'),
+            clearSearch: document.getElementById('clearSearch'),
+            newChatBtn: document.getElementById('newChatBtn'),
+            historyPanel: document.getElementById('historyPanel'),
+            toggleHistory: document.getElementById('toggleHistory'),
+            closeHistoryBtn: document.getElementById('closeHistoryBtn'),
+            clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+            exportHistoryBtn: document.getElementById('exportHistoryBtn'),
+            importHistoryBtn: document.getElementById('importHistoryBtn')
+        };
         let recognizing = false;
-        const maxContextMessages = 5; // Number of recent messages to include as context
 
-        // Theme Dropdown Functionality
-        const themeItems = document.querySelectorAll('.theme-dropdown .dropdown-item');
-        const themes = ['dark-theme', 'light-theme', 'sepia-theme'];
-
+        // Theme Management
         function setTheme(theme) {
             document.body.className = theme;
             localStorage.setItem('theme', theme);
         }
 
-        themeItems.forEach(item => {
-            item.addEventListener('click', (e) => {
+        document.querySelectorAll('.theme-dropdown .dropdown-item').forEach(item => {
+            item.addEventListener('click', e => {
                 e.preventDefault();
-                const selectedTheme = item.getAttribute('data-theme');
-                setTheme(selectedTheme);
+                setTheme(item.getAttribute('data-theme'));
             });
         });
 
-        // Load saved theme or default to dark
         const savedTheme = localStorage.getItem('theme') || 'dark-theme';
         setTheme(savedTheme);
 
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-
-        function resetChat() {
-            chatBox.innerHTML = '';
-            chatBox.scrollTop = 0;
-            userInput.value = '';
-            appendMessage('Welcome to Chat @AI! How can I assist you today?', 'bot');
+        // History Panel Toggle
+        function toggleHistoryPanel() {
+            elements.historyPanel.classList.toggle('active');
         }
 
-        newChatBtn.addEventListener('click', resetChat);
+        elements.toggleHistory.addEventListener('click', toggleHistoryPanel);
+        elements.closeHistoryBtn.addEventListener('click', toggleHistoryPanel);
 
-        function clearAllHistory() {
-            if (confirm('Are you sure you want to permanently delete all chat history? This action cannot be undone.')) {
-                chatHistory.innerHTML = '';
-                localStorage.removeItem('chatHistory');
-                appendMessage('All chat history has been permanently deleted.', 'bot');
-            }
-        }
-
-        clearHistoryBtn.addEventListener('click', clearAllHistory);
-
-        userInput.addEventListener('input', () => {
-            userInput.style.height = 'auto';
-            userInput.style.height = `${userInput.scrollHeight}px`;
-            userInput.style.overflowY = userInput.scrollHeight > userInput.clientHeight ? 'auto' : 'hidden';
-        });
-
-        userInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendBtn.click();
-                userInput.style.height = 'auto';
-            }
-        });
-
-        function typeMessage(element, content, responseType, speed = 10) {
-            element.innerHTML = '';
-            let index = 0;
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(content, 'text/html');
-            const body = doc.body;
-
-            if (responseType === 'code') {
-                const codeElement = body.querySelector('code');
-                const codeText = codeElement.textContent;
-                const language = codeElement.className.replace('language-', '');
-                const pre = document.createElement('div');
-                pre.className = 'code-container';
-                const header = document.createElement('div');
-                header.className = 'code-header';
-                const languageSpan = document.createElement('span');
-                languageSpan.className = 'code-language';
-                languageSpan.textContent = language.toUpperCase();
-                const copyBtn = document.createElement('button');
-                copyBtn.className = 'copy-code-btn';
-                copyBtn.textContent = 'Copy';
-                copyBtn.onclick = () => navigator.clipboard.writeText(codeText);
-                header.appendChild(languageSpan);
-                header.appendChild(copyBtn);
-                pre.appendChild(header);
-                const code = document.createElement('pre');
-                const codeTag = document.createElement('code');
-                codeTag.className = `language-${language}`;
-                code.appendChild(codeTag);
-                pre.appendChild(code);
-                element.appendChild(pre);
-
-                const typeCode = () => {
-                    if (index < codeText.length) {
-                        codeTag.textContent = codeText.substring(0, index + 1);
-                        index++;
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                        setTimeout(typeCode, speed);
-                    } else {
-                        codeTag.textContent = codeText;
-                        Prism.highlightAllUnder(element);
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
-                };
-                typeCode();
-            } else if (responseType === 'list') {
-                const items = Array.from(body.querySelectorAll('li')).map(li => li.textContent);
-                const ul = document.createElement('ul');
-                ul.className = 'response-container';
-                element.appendChild(ul);
-                let currentItem = 0;
-
-                const typeList = () => {
-                    if (currentItem < items.length) {
-                        if (!ul.children[currentItem]) {
-                            const li = document.createElement('li');
-                            ul.appendChild(li);
-                        }
-                        const text = items[currentItem];
-                        if (index < text.length) {
-                            ul.children[currentItem].textContent = text.substring(0, index + 1);
-                            index++;
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                            setTimeout(typeList, speed);
-                        } else {
-                            ul.children[currentItem].textContent = text;
-                            index = 0;
-                            currentItem++;
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                            setTimeout(typeList, speed);
-                        }
-                    } else {
-                        element.innerHTML = content;
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
-                };
-                typeList();
-            } else if (responseType === 'table') {
-                const cells = Array.from(body.querySelectorAll('td')).map(td => td.textContent);
-                const table = document.createElement('table');
-                table.className = 'response-container';
-                table.style.width = '100%';
-                table.style.borderCollapse = 'collapse';
-                table.setAttribute('border', '1');
-                const tbody = document.createElement('tbody');
-                table.appendChild(tbody);
-                element.appendChild(table);
-                let currentCell = 0;
-                let currentRow;
-                const cellsPerRow = body.querySelector('tr').children.length;
-
-                const typeTable = () => {
-                    if (currentCell < cells.length) {
-                        if (currentCell % cellsPerRow === 0) {
-                            currentRow = document.createElement('tr');
-                            tbody.appendChild(currentRow);
-                        }
-                        if (!currentRow.children[currentCell % cellsPerRow]) {
-                            const td = document.createElement('td');
-                            currentRow.appendChild(td);
-                        }
-                        const text = cells[currentCell];
-                        if (index < text.length) {
-                            currentRow.children[currentCell % cellsPerRow].textContent = text.substring(0, index + 1);
-                            index++;
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                            setTimeout(typeTable, speed);
-                        } else {
-                            currentRow.children[currentCell % cellsPerRow].textContent = text;
-                            index = 0;
-                            currentCell++;
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                            setTimeout(typeTable, speed);
-                        }
-                    } else {
-                        element.innerHTML = content;
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
-                };
-                typeTable();
-            } else if (responseType === 'image') {
-                element.innerHTML = content;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            } else {
-                const paragraphs = Array.from(body.querySelectorAll('p')).map(p => p.textContent);
-                const div = document.createElement('div');
-                div.className = 'response-container';
-                element.appendChild(div);
-                let currentPara = 0;
-
-                const typeText = () => {
-                    if (currentPara < paragraphs.length) {
-                        if (!div.children[currentPara]) {
-                            const p = document.createElement('p');
-                            div.appendChild(p);
-                        }
-                        const text = paragraphs[currentPara];
-                        if (index < text.length) {
-                            div.children[currentPara].textContent = text.substring(0, index + 1);
-                            index++;
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                            setTimeout(typeText, speed);
-                        } else {
-                            div.children[currentPara].textContent = text;
-                            index = 0;
-                            currentPara++;
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                            setTimeout(typeText, speed);
-                        }
-                    } else {
-                        element.innerHTML = content;
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
-                };
-                typeText();
-            }
-        }
-
-        function appendMessage(content, sender, sessionId = null, timestamp = null) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-
-            if (sender === 'bot') {
-                const iconImg = document.createElement('img');
-                iconImg.src = 'https://i.ibb.co/MCLkk0y/icon-png.webp';
-                iconImg.alt = 'Chat @AI Bot';
-                iconImg.style.width = '50px';
-                iconImg.style.height = '40px';
-                iconImg.style.marginRight = '10px';
-                iconImg.style.borderRadius = '50%';
-                iconImg.style.objectFit = 'cover';
-
-                const messageContainer = document.createElement('div');
-                messageContainer.style.display = 'flex';
-                messageContainer.style.alignItems = 'flex-start';
-
-                const formattedContent = formatResponse(content);
-                const messageContent = document.createElement('div');
-                messageContent.style.minWidth = '100px';
-
-                messageContainer.appendChild(iconImg);
-                messageContainer.appendChild(messageContent);
-                messageDiv.appendChild(messageContainer);
-                chatBox.appendChild(messageDiv);
-
-                const responseType = detectResponseType(content);
-                typeMessage(messageContent, formattedContent, responseType);
-            } else {
-                messageDiv.innerHTML = content;
-                chatBox.appendChild(messageDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
+        // Chat History Management
+        class ChatHistory {
+            static load() {
+                const compressed = localStorage.getItem('chatHistory');
+                const history = compressed ? JSON.parse(LZString.decompress(compressed) || '[]') : [];
+                elements.chatHistory.innerHTML = '';
+                history.forEach(item => this.renderHistoryItem(item));
             }
 
-            // Save to history if not a historical message
-            if (!sessionId && !timestamp) {
-                addToHistory(content, sender === 'bot' ? content : userInput.value, sender);
+            static save(history) {
+                const compressed = LZString.compress(JSON.stringify(history));
+                localStorage.setItem('chatHistory', compressed);
             }
-        }
 
-        function detectResponseType(response) {
-            if (response.match(/```[\w]*\n[\s\S]*?\n```/)) {
-                return 'code';
-            } else if (response.includes('|')) {
-                return 'table';
-            } else if (response.includes('http') && response.match(/<img\s+src=/)) {
-                return 'image';
-            } else if (response.match(/^\s*[-*]\s/m)) {
-                return 'list';
-            } else {
-                return 'text';
+            static add(question, response, sender) {
+                const sessionId = generateUUID();
+                const timestamp = new Date().toISOString();
+                const keyword = this.summarizeResponse(response);
+                const item = { sessionId, timestamp, question, response, sender, keyword };
+                const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
+                history.push(item);
+                this.save(history);
+                this.renderHistoryItem(item);
             }
-        }
 
-        function formatTextResponse(response) {
-            return `<div class="response-container"><p>${response}</p></div>`;
-        }
-
-        function formatListResponse(response) {
-            const items = response.split('\n').filter(item => item.trim().startsWith('-') || item.trim().startsWith('*')).map(item => `<li>${item.trim().substring(1).trim()}</li>`).join('');
-            return `<div class="response-container"><ul>${items}</ul></div>`;
-        }
-
-        function formatCodeResponse(response) {
-            let language = 'plaintext';
-            let codeContent = response;
-            const match = response.match(/```(\w+)?\n([\s\S]*?)\n```/);
-            if (match) {
-                language = match[1] || 'plaintext';
-                codeContent = match[2];
+            static summarizeResponse(response) {
+                return response.split(' ').slice(0, 5).join(' ') + '...';
             }
-            const escapedCode = codeContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return `
-                <div class="code-container">
-                    <div class="code-header">
-                        <span class="code-language">${language.toUpperCase()}</span>
-                        <button class="copy-code-btn" onclick="navigator.clipboard.writeText(\`${codeContent.replace(/`/g, '\\`')}\`)">Copy</button>
-                    </div>
-                    <pre><code class="language-${language}">${escapedCode}</code></pre>
-                </div>
-            `;
-        }
 
-        function formatImageResponse(response) {
-            return `<div class="response-container">${response}</div>`;
-        }
-
-        function formatLinkResponse(response) {
-            const formatted = response.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
-            return `<div class="response-container"><p>${formatted}</p></div>`;
-        }
-
-        function formatTableResponse(response) {
-            const rows = response.split('\n').map(row => {
-                const cells = row.split('|').map(cell => `<td>${cell.trim()}</td>`).join('');
-                return `<tr>${cells}</tr>`;
-            }).join('');
-            return `<div class="response-container"><table border="1" style="width: 100%; border-collapse: collapse;">${rows}</table></div>`;
-        }
-
-        function formatResponse(response) {
-            if (response.match(/```[\w]*\n[\s\S]*?\n```/)) {
-                return formatCodeResponse(response);
-            } else if (response.includes('|')) {
-                return formatTableResponse(response);
-            } else if (response.includes('http') && !response.match(/<img\s+src=/)) {
-                return formatLinkResponse(response);
-            } else if (response.match(/^\s*[-*]\s/m)) {
-                return formatListResponse(response);
-            } else {
-                return formatTextResponse(response);
-            }
-        }
-
-        function addToHistory(question, response, sender) {
-            const sessionId = Date.now().toString();
-            const timestamp = new Date().toISOString();
-            const historyItem = document.createElement('div');
-            historyItem.classList.add('history-item');
-
-            const isImage = question.startsWith('/generate_image');
-            const icon = document.createElement('i');
-            icon.className = isImage ? 'fas fa-image icon' : 'fas fa-comment icon';
-
-            const content = document.createElement('div');
-            content.className = 'content';
-
-            const now = new Date();
-            const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const formattedDate = now.toLocaleDateString();
-            const keyword = summarizeResponse(response);
-
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'question';
-            questionDiv.textContent = question;
-            questionDiv.title = question;
-
-            const metaDiv = document.createElement('div');
-            metaDiv.className = 'meta';
-            metaDiv.textContent = `${formattedDate} ${formattedTime} | ${keyword}`;
-            metaDiv.title = `${formattedDate} ${formattedTime} | ${keyword}`;
-
-            content.appendChild(questionDiv);
-            content.appendChild(metaDiv);
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                chatHistory.removeChild(historyItem);
-                const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-                const updatedHistory = savedHistory.filter(
-                    item => item.sessionId !== sessionId
-                );
-                localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
-            });
-
-            historyItem.appendChild(icon);
-            historyItem.appendChild(content);
-            historyItem.appendChild(deleteBtn);
-
-            historyItem.addEventListener('click', () => {
-                appendMessage(`<strong>Previous:</strong> ${question}<br>${response}`, 'bot', sessionId, timestamp);
-            });
-
-            chatHistory.appendChild(historyItem);
-
-            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            savedHistory.push({
-                sessionId,
-                timestamp,
-                question,
-                response,
-                sender,
-                keyword
-            });
-            localStorage.setItem('chatHistory', JSON.stringify(savedHistory));
-        }
-
-        function summarizeResponse(response) {
-            return response.split(' ').slice(0, 5).join(' ') + '...';
-        }
-
-        function loadHistoryFromLocalStorage() {
-            chatHistory.innerHTML = '';
-            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            savedHistory.forEach(({ question, response, sender, keyword, sessionId, timestamp }) => {
+            static renderHistoryItem({ sessionId, timestamp, question, response, keyword }) {
                 const historyItem = document.createElement('div');
                 historyItem.classList.add('history-item');
+                historyItem.tabIndex = 0;
+                historyItem.setAttribute('aria-label', `Chat from ${question}`);
 
                 const isImage = question.startsWith('/generate_image');
                 const icon = document.createElement('i');
@@ -1483,15 +1187,13 @@
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-btn';
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-
-                deleteBtn.addEventListener('click', (e) => {
+                deleteBtn.setAttribute('aria-label', 'Delete chat history item');
+                deleteBtn.addEventListener('click', e => {
                     e.stopPropagation();
-                    chatHistory.removeChild(historyItem);
-                    const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-                    const updatedHistory = savedHistory.filter(
-                        item => item.sessionId !== sessionId
-                    );
-                    localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
+                    elements.chatHistory.removeChild(historyItem);
+                    const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
+                    const updatedHistory = history.filter(item => item.sessionId !== sessionId);
+                    this.save(updatedHistory);
                 });
 
                 historyItem.appendChild(icon);
@@ -1499,205 +1201,360 @@
                 historyItem.appendChild(deleteBtn);
 
                 historyItem.addEventListener('click', () => {
-                    appendMessage(`<strong>Previous:</strong> ${question}<br>${response}`, 'bot', sessionId, timestamp);
+                    appendMessage(`**Previous:** ${question}\n${response}`, 'bot', sessionId, timestamp);
+                    toggleHistoryPanel();
                 });
 
-                chatHistory.appendChild(historyItem);
-            });
-        }
-
-        function viewConversationHistory() {
-            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            if (savedHistory.length === 0) {
-                appendMessage('No conversation history available.', 'bot');
-                return;
+                elements.chatHistory.appendChild(historyItem);
             }
 
-            let historyText = '<div class="response-container"><h4>Conversation History</h4><ul>';
-            savedHistory.forEach(({ question, response, timestamp }) => {
-                const date = new Date(timestamp);
-                const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const formattedDate = date.toLocaleDateString();
-                historyText += `<li><strong>${formattedDate} ${formattedTime}</strong>: ${question} → ${summarizeResponse(response)}</li>`;
-            });
-            historyText += '</ul></div>';
-            appendMessage(historyText, 'bot');
+            static clear() {
+                if (confirm('Are you sure you want to permanently delete all chat history? This action cannot be undone.')) {
+                    elements.chatHistory.innerHTML = '';
+                    localStorage.removeItem('chatHistory');
+                    appendMessage('All chat history has been permanently deleted.', 'bot');
+                }
+            }
+
+            static export() {
+                const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
+                const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'chat_history.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            static import() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        try {
+                            const history = JSON.parse(event.target.result);
+                            this.save(history);
+                            this.load();
+                            appendMessage('Chat history imported successfully.', 'bot');
+                        } catch (error) {
+                            appendMessage(`Error importing history: ${error.message}`, 'bot');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            }
         }
 
-        viewHistoryBtn.addEventListener('click', viewConversationHistory);
+        // Response Formatting
+        function formatResponse(response) {
+            const html = marked.parse(response, {
+                gfm: true,
+                breaks: true,
+                sanitize: false
+            });
+            return `<div class="markdown-container">${html}</div>`;
+        }
 
-        function generateImage(prompt, loader) {
-            const imageUrl = 'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=' + apiKey;
-            fetch(imageUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "prompt": {
-                        "text": prompt
-                    },
-                    "generationConfig": {
-                        "sampleCount": 1
+        // Typing Effect
+        function typeMessage(element, html, callback) {
+            element.innerHTML = '<div class="markdown-container"></div>';
+            const container = element.querySelector('.markdown-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const nodes = Array.from(doc.querySelector('.markdown-container').childNodes);
+
+            let nodeIndex = 0;
+            let charIndex = 0;
+            let currentElement = null;
+
+            function typeNext() {
+                if (nodeIndex >= nodes.length) {
+                    addCopyButtons(container);
+                    callback();
+                    return;
+                }
+
+                const node = nodes[nodeIndex];
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (!currentElement) {
+                        currentElement = node.cloneNode(false);
+                        container.appendChild(currentElement);
                     }
-                }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    chatBox.removeChild(loader);
-                    if (data && data.predictions && data.predictions.length > 0) {
-                        const imageData = data.predictions[0].image;
-                        const imgHtml = `<img src="${imageData}" alt="Generated image" style="max-width: 100%; border-radius: 5px;">`;
-                        appendMessage(imgHtml, 'bot');
-                        addToHistory(`/generate_image ${prompt}`, imgHtml, 'bot');
+
+                    if (node.childNodes.length > 0) {
+                        nodes.splice(nodeIndex, 1, ...node.childNodes);
                     } else {
-                        appendMessage("No image generated. Try a different prompt.", 'bot');
+                        nodeIndex++;
+                        currentElement = null;
                     }
-                })
-                .catch(error => {
-                    console.error('Image Generation Error:', error);
-                    chatBox.removeChild(loader);
-                    appendMessage(`Error generating image: ${error.message}. Please try again.`, 'bot');
+                } else if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    if (charIndex < text.length) {
+                        if (!currentElement) {
+                            currentElement = document.createTextNode('');
+                            container.appendChild(currentElement);
+                        }
+                        currentElement.textContent = text.slice(0, charIndex + 1);
+                        charIndex++;
+                        elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                    } else {
+                        nodeIndex++;
+                        charIndex = 0;
+                        currentElement = null;
+                    }
+                } else {
+                    nodeIndex++;
+                }
+
+                setTimeout(typeNext, typingSpeed);
+            }
+
+            typeNext();
+        }
+
+        // Add Copy Buttons to Code Blocks
+        function addCopyButtons(container) {
+            container.querySelectorAll('pre').forEach(pre => {
+                let codeText = pre.textContent;
+                if (pre.querySelector('code')) {
+                    codeText = pre.querySelector('code').textContent;
+                }
+
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.innerHTML = '<i class="fas fa-copy"></i>';
+                button.setAttribute('aria-label', 'Copy code');
+                button.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeText).then(() => {
+                        button.classList.add('copied');
+                        setTimeout(() => button.classList.remove('copied'), 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy:', err);
+                    });
                 });
+
+                pre.appendChild(button);
+            });
+        }
+
+        function appendMessage(content, sender, sessionId = null, timestamp = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+
+            if (sender === 'bot') {
+                const iconImg = document.createElement('img');
+                iconImg.src = 'https://i.ibb.co/MCLkk0y/icon-png.webp';
+                iconImg.alt = 'Chat @AI Bot';
+                iconImg.style.width = '50px';
+                iconImg.style.height = '40px';
+                iconImg.style.marginRight = '10px';
+                iconImg.style.borderRadius = '50%';
+                iconImg.style.objectFit = 'cover';
+
+                const messageContainer = document.createElement('div');
+                messageContainer.style.display = 'flex';
+                messageContainer.style.alignItems = 'flex-start';
+
+                const messageContent = document.createElement('div');
+                messageContent.style.minWidth = '100px';
+
+                messageContainer.appendChild(iconImg);
+                messageContainer.appendChild(messageContent);
+                messageDiv.appendChild(messageContainer);
+
+                if (sessionId && timestamp) {
+                    // Skip typing for history recall
+                    messageContent.innerHTML = formatResponse(content);
+                    addCopyButtons(messageContent);
+                    elements.chatBox.appendChild(messageDiv);
+                    elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                } else {
+                    typeMessage(messageContent, formatResponse(content), () => {
+                        elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                    });
+                }
+            } else {
+                messageDiv.innerHTML = content;
+                elements.chatBox.appendChild(messageDiv);
+                elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+            }
+
+            elements.chatBox.appendChild(messageDiv);
+
+            if (!sessionId && !timestamp) {
+                ChatHistory.add(content, content, sender);
+            }
+        }
+
+        // Chat Functions
+        function resetChat() {
+            elements.chatBox.innerHTML = '';
+            elements.userInput.value = '';
+            appendMessage('Welcome to Chat @AI! How can I assist you today?', 'bot');
         }
 
         function sendMessage() {
-            const question = userInput.value.trim();
-            if (question === '') return;
+            const question = elements.userInput.value.trim();
+            if (!question) return;
 
             appendMessage(question, 'user');
-            userInput.value = '';
-            userInput.style.height = 'auto';
-            userInput.focus();
+            elements.userInput.value = '';
+            elements.userInput.style.height = 'auto';
+            elements.userInput.focus();
 
             const loader = document.createElement('div');
             loader.classList.add('loader');
             for (let i = 0; i < 3; i++) {
-                const dot = document.createElement('div');
-                loader.appendChild(dot);
+                loader.appendChild(document.createElement('div'));
             }
-            chatBox.appendChild(loader);
+            elements.chatBox.appendChild(loader);
 
             if (question.startsWith('/generate_image ')) {
                 const prompt = question.substring('/generate_image '.length).trim();
                 generateImage(prompt, loader);
             } else {
-                const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-                const contextMessages = savedHistory.slice(-maxContextMessages).map(item => [
-                    {
-                        role: 'user',
-                        parts: [{ text: item.question }]
-                    },
-                    {
-                        role: 'model',
-                        parts: [{ text: item.response }]
-                    }
+                const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
+                const contextMessages = history.slice(-maxContextMessages).map(item => [
+                    { role: 'user', parts: [{ text: item.question }] },
+                    { role: 'model', parts: [{ text: item.response }] }
                 ]).flat();
 
-                contextMessages.push({
-                    role: 'user',
-                    parts: [{ text: question }]
-                });
+                contextMessages.push({ role: 'user', parts: [{ text: question }] });
 
                 fetch(`${baseUrl}?key=${apiKey}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: contextMessages,
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 1024
-                        }
-                    }),
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+                    })
                 })
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
+                        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                         return response.json();
                     })
                     .then(data => {
-                        chatBox.removeChild(loader);
-                        if (data && data.candidates && data.candidates.length > 0) {
-                            let botResponse = data.candidates[0].content.parts[0].text;
+                        elements.chatBox.removeChild(loader);
+                        if (data?.candidates?.length) {
+                            const botResponse = data.candidates[0].content.parts[0].text;
                             appendMessage(botResponse, 'bot');
-                            addToHistory(question, botResponse, 'bot');
                         } else {
-                            appendMessage("No response from the API. Please try again later.", 'bot');
+                            appendMessage('No response from the API. Please try again later.', 'bot');
                         }
                     })
                     .catch(error => {
-                        console.error('Fetch Error:', error);
-                        chatBox.removeChild(loader);
+                        elements.chatBox.removeChild(loader);
                         appendMessage(`Error: ${error.message}. Please check your connection or try again.`, 'bot');
                     });
             }
         }
+
+        function generateImage(prompt, loader) {
+            const imageUrl = 'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=' + apiKey;
+            fetch(imageUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: { text: prompt },
+                    generationConfig: { sampleCount: 1 }
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    elements.chatBox.removeChild(loader);
+                    if (data?.predictions?.length) {
+                        const imageData = data.predictions[0].image;
+                        const imgHtml = `![Generated image](${imageData})`;
+                        appendMessage(imgHtml, 'bot');
+                    } else {
+                        appendMessage('No image generated. Try a different prompt.', 'bot');
+                    }
+                })
+                .catch(error => {
+                    elements.chatBox.removeChild(loader);
+                    appendMessage(`Error generating image: ${error.message}. Please try again.`, 'bot');
+                });
+        }
+
+        // Event Listeners
+        elements.newChatBtn.addEventListener('click', resetChat);
+        elements.clearHistoryBtn.addEventListener('click', () => ChatHistory.clear());
+        elements.exportHistoryBtn.addEventListener('click', () => ChatHistory.export());
+        elements.importHistoryBtn.addEventListener('click', () => ChatHistory.import());
+
+        elements.userInput.addEventListener('input', () => {
+            elements.userInput.style.height = 'auto';
+            elements.userInput.style.height = `${elements.userInput.scrollHeight}px`;
+        });
+
+        elements.userInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        elements.sendBtn.addEventListener('click', sendMessage);
 
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            userInput.value = transcript;
+        recognition.onresult = event => {
+            elements.userInput.value = event.results[0][0].transcript;
             sendMessage();
         };
 
-        recognition.onerror = (event) => {
-            console.error('Speech recognition error:', event.error);
-            appendMessage("Sorry, I couldn't understand you. Please try speaking again.", 'bot');
+        recognition.onerror = event => {
+            appendMessage(`Speech recognition error: ${event.error}. Please try again.`, 'bot');
         };
 
-        voiceBtn.addEventListener('click', () => {
+        elements.voiceBtn.addEventListener('click', () => {
             if (!recognizing) {
                 recognition.start();
                 recognizing = true;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                elements.voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
             } else {
                 recognition.stop();
                 recognizing = false;
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                elements.voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
             }
         });
 
-        sendBtn.addEventListener('click', sendMessage);
-
-        searchBar.addEventListener('input', (e) => {
-            const searchText = e.target.value.toLowerCase();
-            const items = document.querySelectorAll('.history-item');
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                item.style.display = text.includes(searchText) ? '' : 'none';
-            });
-            clearSearch.style.display = searchText ? 'block' : 'none';
-            searchBar.parentElement.classList.toggle('active', searchText.length > 0);
+        // Debounced search
+        let searchTimeout;
+        elements.searchBar.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchText = elements.searchBar.value.toLowerCase();
+                const items = document.querySelectorAll('.history-item');
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchText) ? '' : 'none';
+                });
+                elements.clearSearch.style.display = searchText ? 'block' : 'none';
+                elements.searchBar.parentElement.classList.toggle('active', searchText.length > 0);
+            }, 300);
         });
 
-        searchBar.addEventListener('focus', () => {
-            searchBar.parentElement.classList.add('active');
+        elements.clearSearch.addEventListener('click', () => {
+            elements.searchBar.value = '';
+            document.querySelectorAll('.history-item').forEach(item => item.style.display = '');
+            elements.clearSearch.style.display = 'none';
+            elements.searchBar.parentElement.classList.remove('active');
+            elements.searchBar.focus();
         });
 
-        searchBar.addEventListener('blur', () => {
-            if (!searchBar.value) {
-                searchBar.parentElement.classList.remove('active');
-            }
-        });
-
-        clearSearch.addEventListener('click', () => {
-            searchBar.value = '';
-            const items = document.querySelectorAll('.history-item');
-            items.forEach(item => item.style.display = '');
-            clearSearch.style.display = 'none';
-            searchBar.parentElement.classList.remove('active');
-            searchBar.focus();
-        });
-
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            loadHistoryFromLocalStorage();
+            ChatHistory.load();
             resetChat();
         });
     </script>
