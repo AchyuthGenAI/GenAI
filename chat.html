@@ -101,8 +101,8 @@
         }
 
         body[data-theme="light"] .stop-btn {
-            background-color: #e0e0e0; /* Matches send-btn */
-            color: #333333; /* Matches send-btn text color */
+            background-color: #e0e0e0;
+            color: #333333;
         }
 
         body[data-theme="light"] .newChatBtn {
@@ -124,7 +124,7 @@
         }
 
         body[data-theme="light"] .history-item .content .meta {
-            color: #555555; /* Improved contrast */
+            color: #555555;
         }
 
         body[data-theme="light"] .history-item .delete-btn {
@@ -133,7 +133,7 @@
 
         body[data-theme="light"] .message.user {
             background-color: #e9ecef;
-            color: #333333; /* Fixed for better contrast */
+            color: #333333;
             margin-left: auto;
         }
 
@@ -153,11 +153,11 @@
         }
 
         body[data-theme="light"] .markdown-container code {
-            color: #000000;
+            color: #ffffff;
         }
 
         body[data-theme="light"] footer {
-            color: #555555; /* Improved contrast */
+            color: #555555;
         }
 
         body[data-theme="light"] footer a {
@@ -251,8 +251,8 @@
         }
 
         body[data-theme="dark"] .stop-btn {
-            background-color: #3a3f4b; /* Matches send-btn */
-            color: #ffffff; /* Matches send-btn text color */
+            background-color: #3a3f4b;
+            color: #ffffff;
         }
 
         body[data-theme="dark"] .newChatBtn {
@@ -401,8 +401,8 @@
         }
 
         body[data-theme="ocean"] .stop-btn {
-            background-color: #81d4fa; /* Matches send-btn */
-            color: #003087; /* Matches send-btn text color */
+            background-color: #81d4fa;
+            color: #003087;
         }
 
         body[data-theme="ocean"] .newChatBtn {
@@ -551,8 +551,8 @@
         }
 
         body[data-theme="forest"] .stop-btn {
-            background-color: #a5d6a7; /* Matches send-btn */
-            color: #1b5e20; /* Matches send-btn text color */
+            background-color: #a5d6a7;
+            color: #1b5e20;
         }
 
         body[data-theme="forest"] .newChatBtn {
@@ -993,6 +993,12 @@
             animation: slideIn 0.3s ease;
         }
 
+        .message.user {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -1162,26 +1168,24 @@
             justify-content: center;
             align-items: center;
             border: none;
-            border-radius: 50%; /* Ensures perfect circle */
+            border-radius: 50%;
             font-size: 18px;
             cursor: pointer;
-            box-sizing: border-box; /* Prevents padding/border issues */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-            transition: all 0.3s ease; /* Smooth transitions for hover effects */
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        /* Hover effect */
         .stop-btn:hover {
-            filter: brightness(1.2); /* Matches send-btn hover */
-            transform: translateY(50%) scale(1.1); /* Slight scale for emphasis */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+            filter: brightness(1.2);
+            transform: translateY(50%) scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        /* Ensure icon is centered */
         .stop-btn i {
             margin: 0;
             padding: 0;
-            line-height: 1; /* Perfect vertical centering */
+            line-height: 1;
         }
 
         .voice-btn {
@@ -1545,10 +1549,9 @@
                                   theme === 'dark' ? '🌙' :
                                   theme === 'ocean' ? '🌊' : '🌲';
 
-            updateTextColor(); // Update text color when theme changes
+            updateTextColor();
         }
 
-        // Function to update text color based on the current theme
         function updateTextColor() {
             const currentTheme = document.body.getAttribute('data-theme');
             let textColor;
@@ -1571,9 +1574,6 @@
             }
 
             document.body.style.color = textColor;
-            document.querySelectorAll('.message.user').forEach(element => {
-                element.style.color = currentTheme === 'dark' ? '#000000' : '#ffffff';
-            });
             document.querySelectorAll('.message.bot').forEach(element => {
                 element.style.color = textColor;
             });
@@ -1730,14 +1730,52 @@
             }
         }
 
-        // Response Formatting
+        // Response Formatting for Bot Messages
         function formatResponse(response) {
             const html = marked.parse(response, {
                 gfm: true,
                 breaks: true,
-                sanitize: false
+                sanitize: true // Enable sanitization for security
             });
             return `<div class="markdown-container">${html}</div>`;
+        }
+
+        // Parse and Render User Input with Code Blocks
+        function renderUserInput(content) {
+            const messageContent = document.createElement('div');
+            messageContent.classList.add('markdown-container');
+
+            // Split the content by code blocks using a regex
+            const parts = content.split(/(```[\s\S]*?```)/);
+            parts.forEach(part => {
+                if (part.startsWith('```') && part.endsWith('```')) {
+                    // Extract the language (if any) and the code
+                    const codeBlock = part.slice(3, -3).trim();
+                    const firstLineEnd = codeBlock.indexOf('\n');
+                    let language = '';
+                    let code = codeBlock;
+                    if (firstLineEnd !== -1 && !codeBlock.slice(0, firstLineEnd).includes(' ')) {
+                        language = codeBlock.slice(0, firstLineEnd).trim();
+                        code = codeBlock.slice(firstLineEnd + 1).trim();
+                    }
+
+                    // Create pre and code elements
+                    const pre = document.createElement('pre');
+                    const codeElement = document.createElement('code');
+                    codeElement.textContent = code;
+                    pre.appendChild(codeElement);
+                    messageContent.appendChild(pre);
+                } else {
+                    // Render non-code parts as plain text in a paragraph
+                    if (part.trim()) {
+                        const p = document.createElement('p');
+                        p.textContent = part;
+                        messageContent.appendChild(p);
+                    }
+                }
+            });
+
+            return messageContent;
         }
 
         // Typing Effect with Stop Capability
@@ -1830,6 +1868,7 @@
 
         // Append Message to Chat Box
         function appendMessage(content, sender, sessionId = null, timestamp = null) {
+            console.log('Appending message:', { content, sender, sessionId, timestamp }); // Debug log
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender);
 
@@ -1857,8 +1896,6 @@
                 if (sessionId && timestamp) {
                     messageContent.innerHTML = formatResponse(content);
                     addCopyButtons(messageContent);
-                    elements.chatBox.appendChild(messageDiv);
-                    elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
                 } else {
                     typeMessage(messageContent, formatResponse(content), () => {
                         elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
@@ -1866,12 +1903,14 @@
                     });
                 }
             } else {
-                messageDiv.innerHTML = formatResponse(content);
-                elements.chatBox.appendChild(messageDiv);
-                elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                // Handle user messages with custom rendering for code blocks
+                const messageContent = renderUserInput(content);
+                messageDiv.appendChild(messageContent);
+                addCopyButtons(messageContent); // Add copy buttons to any code blocks
             }
 
             elements.chatBox.appendChild(messageDiv);
+            elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
 
             if (!sessionId && !timestamp) {
                 ChatHistory.add(content, content, sender);
@@ -1913,7 +1952,7 @@
         function resetChat() {
             elements.chatBox.innerHTML = '';
             elements.userInput.value = '';
-            appendMessage('Welcome to Chat @AI!  How can I assist you today?');
+            appendMessage('Welcome to Chat @AI! How can I assist you today?', 'bot');
         }
 
         function sendMessage(input = elements.userInput.value.trim(), fromSearchBar = false) {
