@@ -22,6 +22,51 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #2e333f; /* Matches dark theme */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-heartbeat {
+            font-size: 100px; /* Size of the icon */
+            color: #00c6ff; /* Matches theme colors */
+            animation: heartbeat 1.2s infinite ease-in-out;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(1.2);
+            }
+            40% {
+                transform: scale(1);
+            }
+            60% {
+                transform: scale(1.2);
+            }
+            80% {
+                transform: scale(1);
+            }
+        }
+
         /* Dark Theme (Default) */
         body.dark-theme {
             background-color: #2e333f;
@@ -598,11 +643,21 @@
             color: #ff3f31;
         }
 
+        /* Ensure the container respects navbar and footer heights */
+        .container {
+            display: flex;
+            height: calc(100vh - 70px - 60px); /* Subtract navbar (70px) and footer (60px) heights */
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        /* Chat container adjustments */
         .chat-container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative; /* Ensure relative positioning for child elements */
         }
 
         .chat-box {
@@ -610,7 +665,7 @@
             padding: 20px;
             flex-grow: 1;
             overflow-y: auto;
-            margin-bottom: 60px;
+            margin-bottom: 70px; /* Increased to account for input group height */
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.3s ease;
@@ -715,11 +770,15 @@
 
         .input-group {
             display: flex;
-            position: relative;
+            position: sticky; /* Changed from relative to sticky for better mobile behavior */
+            bottom: 0; /* Stick to the bottom of the chat container */
+            top: auto; /* Remove top: -60px */
             border-radius: 50px;
             padding: 10px 20px;
             align-items: center;
-            top: -60px;
+            z-index: 100; /* Ensure it stays above other content */
+            background-color: inherit; /* Match the theme background */
+            margin-bottom: 10px; /* Space above footer */
         }
 
         .input-group textarea {
@@ -858,6 +917,7 @@
             bottom: 0;
             width: 100%;
             font-size: 14px;
+            z-index: 50; /* Lower z-index to stay below input group */
         }
 
         footer a {
@@ -964,15 +1024,33 @@
         }
 
         @media (max-width: 768px) {
-            .history-panel {
-                width: 95%;
-                max-width: 320px;
+            .container {
+                height: calc(100vh - 60px - 60px); /* Adjust for smaller navbar height on mobile */
             }
-
             .chat-box {
                 padding: 10px;
+                margin-bottom: 80px; /* Extra space for input group */
+            }
+            .input-group {
+                padding: 8px 15px; /* Slightly smaller padding for mobile */
+                margin-bottom: 15px; /* Ensure space above footer */
+            }
+            .input-group textarea {
+                padding: 10px 50px 10px 50px; /* Adjust padding for smaller screens */
+                font-size: 14px; /* Smaller font size */
             }
 
+            .send-btn,
+            .voice-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            footer {
+                padding: 10px;
+                font-size: 12px; /* Smaller font for mobile */
+            }
             .message {
                 max-width: 85%;
             }
@@ -1006,6 +1084,11 @@
     </style>
 </head>
 <body class="dark-theme">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <i class="fas fa-at loading-heartbeat" aria-hidden="true"></i>
+    </div>
+
     <nav class="navbar navbar-dark">
         <div class="navbar-left">
             <button class="toggle-history" id="toggleHistory" aria-label="Toggle history panel">
@@ -1097,7 +1180,8 @@
             closeHistoryBtn: document.getElementById('closeHistoryBtn'),
             clearHistoryBtn: document.getElementById('clearHistoryBtn'),
             exportHistoryBtn: document.getElementById('exportHistoryBtn'),
-            importHistoryBtn: document.getElementById('importHistoryBtn')
+            importHistoryBtn: document.getElementById('importHistoryBtn'),
+            loadingOverlay: document.getElementById('loadingOverlay')
         };
         let recognizing = false;
 
@@ -1552,10 +1636,14 @@
             elements.searchBar.focus();
         });
 
-        // Initialize
+        // Initialize with loading effect
         document.addEventListener('DOMContentLoaded', () => {
-            ChatHistory.load();
-            resetChat();
+            // Simulate loading delay (you can adjust this based on actual content loading)
+            setTimeout(() => {
+                elements.loadingOverlay.classList.add('hidden');
+                ChatHistory.load();
+                resetChat();
+            }, 2000); // 2-second delay for demo; adjust as needed
         });
     </script>
 </body>
