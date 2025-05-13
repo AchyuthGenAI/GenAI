@@ -91,9 +91,14 @@
 
         body.dark-theme .input-group,
         body.dark-theme .send-btn,
-        body.dark-theme .voice-btn {
+        body.dark-theme .voice-btn,
+        body.dark-theme .stop-btn {
             background-color: #444;
             color: #fff;
+        }
+
+        body.dark-theme .stop-btn {
+            background-color: #ff6f61;
         }
 
         body.dark-theme .history-item {
@@ -186,9 +191,14 @@
 
         body.light-theme .input-group,
         body.light-theme .send-btn,
-        body.light-theme .voice-btn {
+        body.light-theme .voice-btn,
+        body.light-theme .stop-btn {
             background-color: #e0e0e0;
             color: #333;
+        }
+
+        body.light-theme .stop-btn {
+            background-color: #dc3545;
         }
 
         body.light-theme .history-item {
@@ -281,9 +291,14 @@
 
         body.sepia-theme .input-group,
         body.sepia-theme .send-btn,
-        body.sepia-theme .voice-btn {
+        body.sepia-theme .voice-btn,
+        body.sepia-theme .stop-btn {
             background-color: #d9c8a6;
             color: #5c4b38;
+        }
+
+        body.sepia-theme .stop-btn {
+            background-color: #6b4e31;
         }
 
         body.sepia-theme .history-item {
@@ -496,12 +511,13 @@
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
             border: none;
-            border-radius: 25px;
-            padding: 8px 16px;
-            font-size: 14px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
         }
@@ -703,6 +719,7 @@
 
         .markdown-container {
             line-height: 1.6;
+
             font-size: 16px;
         }
 
@@ -851,6 +868,24 @@
             cursor: pointer;
         }
 
+        .stop-btn {
+            position: absolute;
+            right: 40px;
+            bottom: 50%;
+            transform: translateY(50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #ff6f61; /* Red color to indicate stop */
+            color: white;
+        }
+
         .voice-btn {
             position: absolute;
             left: 30px;
@@ -868,7 +903,8 @@
         }
 
         .send-btn:hover,
-        .voice-btn:hover {
+        .voice-btn:hover,
+        .stop-btn:hover {
             filter: brightness(1.2);
         }
 
@@ -1041,7 +1077,8 @@
             }
 
             .send-btn,
-            .voice-btn {
+            .voice-btn,
+            .stop-btn {
                 width: 36px;
                 height: 36px;
                 font-size: 16px;
@@ -1069,8 +1106,9 @@
             }
 
             .theme-dropdown .btn {
-                padding: 6px 12px;
-                font-size: 13px;
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
             }
 
             .navbar-left {
@@ -1096,7 +1134,7 @@
             </button>
             <div class="theme-dropdown">
                 <button class="btn dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-adjust"></i> Theme
+                    <i class="fas fa-adjust"></i>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="themeDropdown">
                     <li><a class="dropdown-item" href="#" data-theme="dark-theme">Dark</a></li>
@@ -1140,6 +1178,7 @@
             <div class="input-group">
                 <textarea id="userInput" placeholder="Ask Anything..." rows="1" aria-label="Enter your message"></textarea>
                 <button class="send-btn" id="sendBtn" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+                <button class="stop-btn" id="stopBtn" style="display: none;" aria-label="Stop generation"><i class="fas fa-stop"></i></button>
                 <button class="voice-btn" id="voiceBtn" aria-label="Toggle voice input"><i class="fas fa-microphone"></i></button>
             </div>
         </div>
@@ -1170,6 +1209,7 @@
             chatBox: document.getElementById('chatBox'),
             userInput: document.getElementById('userInput'),
             sendBtn: document.getElementById('sendBtn'),
+            stopBtn: document.getElementById('stopBtn'),
             voiceBtn: document.getElementById('voiceBtn'),
             chatHistory: document.getElementById('chatHistory'),
             searchBar: document.getElementById('searchBar'),
@@ -1184,6 +1224,8 @@
             loadingOverlay: document.getElementById('loadingOverlay')
         };
         let recognizing = false;
+        let abortController = null;
+        let isTypingStopped = false;
 
         // Theme Management
         function setTheme(theme) {
@@ -1345,7 +1387,7 @@
             return `<div class="markdown-container">${html}</div>`;
         }
 
-        // Typing Effect
+        // Typing Effect with Stop Capability
         function typeMessage(element, html, callback) {
             element.innerHTML = '<div class="markdown-container"></div>';
             const container = element.querySelector('.markdown-container');
@@ -1358,6 +1400,12 @@
             let currentElement = null;
 
             function typeNext() {
+                if (isTypingStopped) {
+                    addCopyButtons(container);
+                    callback();
+                    return;
+                }
+
                 if (nodeIndex >= nodes.length) {
                     addCopyButtons(container);
                     callback();
@@ -1461,6 +1509,7 @@
                 } else {
                     typeMessage(messageContent, formatResponse(content), () => {
                         elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                        resetButtons();
                     });
                 }
             } else {
@@ -1499,6 +1548,14 @@
             }
             elements.chatBox.appendChild(loader);
 
+            // Disable send button and show stop button
+            elements.sendBtn.disabled = true;
+            elements.sendBtn.style.opacity = '0.5';
+            elements.stopBtn.style.display = 'flex';
+
+            abortController = new AbortController();
+            isTypingStopped = false;
+
             if (question.startsWith('/generate_image ')) {
                 const prompt = question.substring('/generate_image '.length).trim();
                 generateImage(prompt, loader);
@@ -1517,7 +1574,8 @@
                     body: JSON.stringify({
                         contents: contextMessages,
                         generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
-                    })
+                    }),
+                    signal: abortController.signal
                 })
                     .then(response => {
                         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1530,11 +1588,17 @@
                             appendMessage(botResponse, 'bot');
                         } else {
                             appendMessage('No response from the API. Please try again later.', 'bot');
+                            resetButtons();
                         }
                     })
                     .catch(error => {
                         elements.chatBox.removeChild(loader);
-                        appendMessage(`Error: ${error.message}. Please check your connection or try again.`, 'bot');
+                        if (error.name === 'AbortError') {
+                            appendMessage('Response generation stopped.', 'bot');
+                        } else {
+                            appendMessage(`Error: ${error.message}. Please check your connection or try again.`, 'bot');
+                        }
+                        resetButtons();
                     });
             }
         }
@@ -1547,7 +1611,8 @@
                 body: JSON.stringify({
                     prompt: { text: prompt },
                     generationConfig: { sampleCount: 1 }
-                })
+                }),
+                signal: abortController.signal
             })
                 .then(response => response.json())
                 .then(data => {
@@ -1558,12 +1623,26 @@
                         appendMessage(imgHtml, 'bot');
                     } else {
                         appendMessage('No image generated. Try a different prompt.', 'bot');
+                        resetButtons();
                     }
                 })
                 .catch(error => {
                     elements.chatBox.removeChild(loader);
-                    appendMessage(`Error generating image: ${error.message}. Please try again.`, 'bot');
+                    if (error.name === 'AbortError') {
+                        appendMessage('Image generation stopped.', 'bot');
+                    } else {
+                        appendMessage(`Error generating image: ${error.message}. Please try again.`, 'bot');
+                    }
+                    resetButtons();
                 });
+        }
+
+        function resetButtons() {
+            elements.sendBtn.disabled = false;
+            elements.sendBtn.style.opacity = '1';
+            elements.stopBtn.style.display = 'none';
+            abortController = null;
+            isTypingStopped = false;
         }
 
         // Event Listeners
@@ -1571,6 +1650,13 @@
         elements.clearHistoryBtn.addEventListener('click', () => ChatHistory.clear());
         elements.exportHistoryBtn.addEventListener('click', () => ChatHistory.export());
         elements.importHistoryBtn.addEventListener('click', () => ChatHistory.import());
+
+        elements.stopBtn.addEventListener('click', () => {
+            if (abortController) {
+                abortController.abort();
+                isTypingStopped = true;
+            }
+        });
 
         elements.userInput.addEventListener('input', () => {
             elements.userInput.style.height = 'auto';
@@ -1580,35 +1666,49 @@
         elements.userInput.addEventListener('keydown', e => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage();
+                if (!elements.sendBtn.disabled) {
+                    sendMessage();
+                }
             }
         });
 
-        elements.sendBtn.addEventListener('click', sendMessage);
+        elements.sendBtn.addEventListener('click', () => {
+            if (!elements.sendBtn.disabled) {
+                sendMessage();
+            }
+        });
 
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
+        recognition.onstart = () => {
+            recognizing = true;
+            elements.voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>'; // Keep microphone icon
+        };
+
         recognition.onresult = event => {
             elements.userInput.value = event.results[0][0].transcript;
             sendMessage();
         };
 
+        recognition.onend = () => {
+            recognizing = false;
+            elements.voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>'; // Show slash after completion
+        };
+
         recognition.onerror = event => {
             appendMessage(`Speech recognition error: ${event.error}. Please try again.`, 'bot');
+            recognizing = false;
+            elements.voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
         };
 
         elements.voiceBtn.addEventListener('click', () => {
             if (!recognizing) {
                 recognition.start();
-                recognizing = true;
-                elements.voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
             } else {
                 recognition.stop();
-                recognizing = false;
-                elements.voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
             }
         });
 
@@ -1638,12 +1738,12 @@
 
         // Initialize with loading effect
         document.addEventListener('DOMContentLoaded', () => {
-            // Simulate loading delay (you can adjust this based on actual content loading)
+            // Simulate loading delay
             setTimeout(() => {
                 elements.loadingOverlay.classList.add('hidden');
                 ChatHistory.load();
                 resetChat();
-            }, 2000); // 2-second delay for demo; adjust as needed
+            }, 2000);
         });
     </script>
 </body>
