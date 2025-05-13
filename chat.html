@@ -70,23 +70,36 @@
         /* Dark Theme (Default) */
         body.dark-theme {
             background-color: #2e333f;
-            color: #fff;
+            color: #ffffff; /* White text for dark theme */
         }
 
         body.dark-theme .navbar {
             background-color: #2e333f;
-            color: white;
+            color: #ffffff; /* White text */
+        }
+
+        body.dark-theme .navbar-brand {
+            color: transparent; /* Maintain gradient text */
+        }
+
+        body.dark-theme .home-button {
+            color: #ffffff; /* White text for contrast */
         }
 
         body.dark-theme .history-panel {
             background-color: rgba(20, 20, 20, 0.95);
-            color: #fff;
+            color: #ffffff; /* White text */
+        }
+
+        body.dark-theme .history-panel h3 {
+            color: #00c6ff; /* Keep accent color */
         }
 
         body.dark-theme .chat-container,
         body.dark-theme .chat-box,
         body.dark-theme .chat-box::-webkit-scrollbar-track {
             background-color: #2e333f;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .input-group,
@@ -94,16 +107,22 @@
         body.dark-theme .voice-btn,
         body.dark-theme .stop-btn {
             background-color: #444;
-            color: #fff;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .stop-btn {
             background-color: #ff6f61;
+            color: #ffffff; /* White text */
+        }
+
+        body.dark-theme .newChatBtn {
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .history-item {
             background-color: #2e333f;
             border: 1px solid #444;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .history-item:hover {
@@ -111,26 +130,48 @@
         }
 
         body.dark-theme .history-item .content .question {
-            color: #fff;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .history-item .content .meta {
-            color: #aaa;
+            color: #aaaaaa; /* Light gray for meta */
+        }
+
+        body.dark-theme .history-item .delete-btn {
+            color: #ff6f61; /* Keep accent color */
         }
 
         body.dark-theme .message.user {
-            background-color: white;
-            color: black;
+            background-color: #ffffff;
+            color: #000000; /* Black text for contrast */
             margin-left: auto;
         }
 
         body.dark-theme .message.bot {
-            color: white;
+            background-color: #444;
+            color: #ffffff; /* White text */
             margin-right: auto;
         }
 
+        body.dark-theme .markdown-container {
+            color: #ffffff; /* White text */
+        }
+
+        body.dark-theme .markdown-container pre {
+            background: #1e1e1e;
+            color: #ffffff; /* White text for code */
+        }
+
+        body.dark-theme .markdown-container code {
+            color: #ffffff; /* White text for inline code */
+        }
+
         body.dark-theme footer {
-            color: #ddd;
+            color: #dddddd; /* Light gray text */
+        }
+
+        body.dark-theme footer a {
+            color: #00adb5; /* Accent color for links */
         }
 
         body.dark-theme .search-bar {
@@ -138,55 +179,79 @@
         }
 
         body.dark-theme .search-bar input {
-            color: #fff;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .search-bar input::placeholder {
-            color: #bbb;
+            color: #bbbbbb; /* Light gray placeholder */
+        }
+
+        body.dark-theme .search-bar .search-icon {
+            color: #00c6ff; /* Accent color */
         }
 
         body.dark-theme .search-bar .clear-search {
-            color: #aaa;
+            color: #aaaaaa; /* Light gray */
         }
 
         body.dark-theme .search-bar .clear-search:hover {
-            color: #ff6f61;
+            color: #ff6f61; /* Accent color on hover */
+        }
+
+        body.dark-theme .clear-history-button,
+        body.dark-theme .fancy-button {
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .theme-dropdown .dropdown-menu {
             background-color: #3a3f4b;
             border: 1px solid #444;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .theme-dropdown .dropdown-item {
-            color: #fff;
+            color: #ffffff; /* White text */
         }
 
         body.dark-theme .theme-dropdown .dropdown-item:hover {
             background-color: #444;
+            color: #ffffff; /* White text */
         }
 
         /* Light Theme */
         body.light-theme {
             background-color: #f5f5f5;
-            color: #333;
+            color: #333333; /* Dark gray text for light theme */
         }
 
         body.light-theme .navbar {
             background-color: #ffffff;
-            color: #333;
+            color: #333333; /* Dark gray text */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-theme .navbar-brand {
+            color: transparent; /* Maintain gradient text */
+        }
+
+        body.light-theme .home-button {
+            color: #ffffff; /* White text for contrast */
         }
 
         body.light-theme .history-panel {
             background-color: rgba(255, 255, 255, 0.95);
-            color: #333;
+            color: #333333; /* Dark gray text */
+        }
+
+        body.light-theme .history-panel h3 {
+            color: #00c6ff; /* Keep accent color */
         }
 
         body.light-theme .chat-container,
         body.light-theme .chat-box,
         body.light-theme .chat-box::-webkit-scrollbar-track {
             background-color: #f5f5f5;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .input-group,
@@ -194,16 +259,22 @@
         body.light-theme .voice-btn,
         body.light-theme .stop-btn {
             background-color: #e0e0e0;
-            color: #333;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .stop-btn {
             background-color: #dc3545;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        body.light-theme .newChatBtn {
+            color: #ffffff; /* White text */
         }
 
         body.light-theme .history-item {
             background-color: #ffffff;
-            border: 1px solid #ccc;
+            border: 1px solid #cccccc;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .history-item:hover {
@@ -211,27 +282,48 @@
         }
 
         body.light-theme .history-item .content .question {
-            color: #333;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .history-item .content .meta {
-            color: #666;
+            color: #666666; /* Medium gray for meta */
+        }
+
+        body.light-theme .history-item .delete-btn {
+            color: #dc3545; /* Accent color */
         }
 
         body.light-theme .message.user {
             background-color: #007bff;
-            color: white;
+            color: #ffffff; /* White text for contrast */
             margin-left: auto;
         }
 
         body.light-theme .message.bot {
             background-color: #e9ecef;
-            color: #333;
+            color: #333333; /* Dark gray text */
             margin-right: auto;
         }
 
+        body.light-theme .markdown-container {
+            color: #333333; /* Dark gray text */
+        }
+
+        body.light-theme .markdown-container pre {
+            background: #1e1e1e;
+            color: #ffffff; /* White text for code (high contrast) */
+        }
+
+        body.light-theme .markdown-container code {
+            color: #ffffff; /* White text for inline code */
+        }
+
         body.light-theme footer {
-            color: #666;
+            color: #666666; /* Medium gray text */
+        }
+
+        body.light-theme footer a {
+            color: #007bff; /* Accent color for links */
         }
 
         body.light-theme .search-bar {
@@ -239,54 +331,78 @@
         }
 
         body.light-theme .search-bar input {
-            color: #333;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .search-bar input::placeholder {
-            color: #888;
+            color: #888888; /* Gray placeholder */
+        }
+
+        body.light-theme .search-bar .search-icon {
+            color: #007bff; /* Accent color */
         }
 
         body.light-theme .search-bar .clear-search {
-            color: #666;
+            color: #666666; /* Medium gray */
         }
 
         body.light-theme .search-bar .clear-search:hover {
-            color: #dc3545;
+            color: #dc3545; /* Accent color on hover */
+        }
+
+        body.light-theme .clear-history-button,
+        body.light-theme .fancy-button {
+            color: #ffffff; /* White text */
         }
 
         body.light-theme .theme-dropdown .dropdown-menu {
             background-color: #ffffff;
-            border: 1px solid #ccc;
+            border: 1px solid #cccccc;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .theme-dropdown .dropdown-item {
-            color: #333;
+            color: #333333; /* Dark gray text */
         }
 
         body.light-theme .theme-dropdown .dropdown-item:hover {
             background-color: #e8ecef;
+            color: #333333; /* Dark gray text */
         }
 
         /* Sepia Theme */
         body.sepia-theme {
             background-color: #f4ecd8;
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text for sepia theme */
         }
 
         body.sepia-theme .navbar {
             background-color: #ead9b8;
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
+        }
+
+        body.sepia-theme .navbar-brand {
+            color: transparent; /* Maintain gradient text */
+        }
+
+        body.sepia-theme .home-button {
+            color: #ffffff; /* White text for contrast */
         }
 
         body.sepia-theme .history-panel {
             background-color: rgba(234, 217, 184, 0.95);
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
+        }
+
+        body.sepia-theme .history-panel h3 {
+            color: #00c6ff; /* Keep accent color */
         }
 
         body.sepia-theme .chat-container,
         body.sepia-theme .chat-box,
         body.sepia-theme .chat-box::-webkit-scrollbar-track {
             background-color: #f4ecd8;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .input-group,
@@ -294,16 +410,22 @@
         body.sepia-theme .voice-btn,
         body.sepia-theme .stop-btn {
             background-color: #d9c8a6;
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .stop-btn {
             background-color: #6b4e31;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        body.sepia-theme .newChatBtn {
+            color: #ffffff; /* White text */
         }
 
         body.sepia-theme .history-item {
             background-color: #ead9b8;
             border: 1px solid #b8a57b;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .history-item:hover {
@@ -311,27 +433,48 @@
         }
 
         body.sepia-theme .history-item .content .question {
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .history-item .content .meta {
-            color: #8b6f47;
+            color: #8b6f47; /* Medium brown for meta */
+        }
+
+        body.sepia-theme .history-item .delete-btn {
+            color: #6b4e31; /* Accent color */
         }
 
         body.sepia-theme .message.user {
             background-color: #8b6f47;
-            color: #fff;
+            color: #ffffff; /* White text for contrast */
             margin-left: auto;
         }
 
         body.sepia-theme .message.bot {
             background-color: #ead9b8;
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
             margin-right: auto;
         }
 
+        body.sepia-theme .markdown-container {
+            color: #5c4b38; /* Dark brown text */
+        }
+
+        body.sepia-theme .markdown-container pre {
+            background: #1e1e1e;
+            color: #ffffff; /* White text for code (high contrast) */
+        }
+
+        body.sepia-theme .markdown-container code {
+            color: #ffffff; /* White text for inline code */
+        }
+
         body.sepia-theme footer {
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
+        }
+
+        body.sepia-theme footer a {
+            color: #6b4e31; /* Accent color for links */
         }
 
         body.sepia-theme .search-bar {
@@ -339,32 +482,43 @@
         }
 
         body.sepia-theme .search-bar input {
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .search-bar input::placeholder {
-            color: #8b6f47;
+            color: #8b6f47; /* Medium brown placeholder */
+        }
+
+        body.sepia-theme .search-bar .search-icon {
+            color: #6b4e31; /* Accent color */
         }
 
         body.sepia-theme .search-bar .clear-search {
-            color: #8b6f47;
+            color: #8b6f47; /* Medium brown */
         }
 
         body.sepia-theme .search-bar .clear-search:hover {
-            color: #6b4e31;
+            color: #6b4e31; /* Accent color on hover */
+        }
+
+        body.sepia-theme .clear-history-button,
+        body.sepia-theme .fancy-button {
+            color: #ffffff; /* White text */
         }
 
         body.sepia-theme .theme-dropdown .dropdown-menu {
             background-color: #ead9b8;
             border: 1px solid #b8a57b;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .theme-dropdown .dropdown-item {
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
         }
 
         body.sepia-theme .theme-dropdown .dropdown-item:hover {
             background-color: #e0cfa0;
+            color: #5c4b38; /* Dark brown text */
         }
 
         .navbar {
@@ -474,14 +628,13 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #00c6ff;
         }
 
         .toggle-history {
             width: 40px;
             height: 40px;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
+            color: #ffffff; /* White icon */
             border: none;
             border-radius: 50%;
             display: flex;
@@ -509,7 +662,7 @@
 
         .theme-dropdown .btn {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
+            color: #ffffff; /* White icon */
             border: none;
             border-radius: 50%;
             width: 40px;
@@ -590,14 +743,12 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #00c6ff;
             font-size: 18px;
             pointer-events: none;
             transition: all 0.3s ease;
         }
 
         .search-bar input:focus+.search-icon {
-            color: #0072ff;
             transform: translateY(-50%) scale(1.1);
         }
 
@@ -648,7 +799,6 @@
         .history-item .delete-btn {
             background: none;
             border: none;
-            color: #ff6f61;
             font-size: 16px;
             cursor: pointer;
             padding: 5px;
@@ -719,12 +869,10 @@
 
         .markdown-container {
             line-height: 1.6;
-
             font-size: 16px;
         }
 
         .markdown-container pre {
-            background: #1e1e1e;
             padding: 15px;
             border-radius: 8px;
             overflow-x: auto;
@@ -762,7 +910,7 @@
             top: 10px;
             right: 10px;
             background: #00c6ff;
-            color: white;
+            color: #ffffff; /* White text */
             border: none;
             border-radius: 4px;
             padding: 5px 10px;
@@ -816,17 +964,17 @@
 
         body.dark-theme .input-group textarea {
             background-color: #444;
-            color: #fff;
+            color: #ffffff; /* White text */
         }
 
         body.light-theme .input-group textarea {
             background-color: #e0e0e0;
-            color: #333;
+            color: #333333; /* Dark gray text */
         }
 
         body.sepia-theme .input-group textarea {
             background-color: #d9c8a6;
-            color: #5c4b38;
+            color: #5c4b38; /* Dark brown text */
         }
 
         .input-group textarea::-webkit-scrollbar {
@@ -882,8 +1030,6 @@
             border-radius: 50%;
             font-size: 18px;
             cursor: pointer;
-            background-color: #ff6f61; /* Red color to indicate stop */
-            color: white;
         }
 
         .voice-btn {
@@ -957,23 +1103,28 @@
         }
 
         footer a {
-            color: #00adb5;
             text-decoration: none;
             transition: all 0.3s ease;
         }
 
         footer a:hover {
             text-decoration: underline;
-            color: #00bcd4;
         }
 
-        footer p {
-            margin: 5px 0;
+        body.dark-theme footer a:hover {
+            color: #00bcd4; /* Accent color */
+        }
+
+        body.light-theme footer a:hover {
+            color: #0056b3; /* Darker accent */
+        }
+
+        body.sepia-theme footer a:hover {
+            color: #4a3722; /* Darker brown */
         }
 
         .fancy-button {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
             padding: 12px 24px;
             font-size: 16px;
             font-weight: bold;
@@ -997,7 +1148,6 @@
 
         .clear-history-button {
             background: linear-gradient(135deg, #ff3f31, #ff6f61);
-            color: white;
             padding: 12px 24px;
             font-size: 16px;
             font-weight: bold;
@@ -1028,7 +1178,6 @@
 
         .home-button {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
             padding: 8px 20px;
             font-size: 16px;
             font-weight: bold;
@@ -1046,7 +1195,7 @@
             background: linear-gradient(135deg, #2575fc, #6a11cb);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
             transform: scale(1.05);
-            color: white;
+            color: #ffffff; /* White text */
         }
 
         .home-button:active {
