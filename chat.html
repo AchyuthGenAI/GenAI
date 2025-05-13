@@ -95,15 +95,14 @@
 
         body[data-theme="light"] .input-group,
         body[data-theme="light"] .send-btn,
-        body[data-theme="light"] .voice-btn,
-        body[data-theme="light"] .stop-btn {
+        body[data-theme="light"] .voice-btn {
             background-color: #e0e0e0;
             color: #333333;
         }
 
         body[data-theme="light"] .stop-btn {
-            background-color: #dc3545;
-            color: #ffffff;
+            background-color: #e0e0e0; /* Matches send-btn */
+            color: #333333; /* Matches send-btn text color */
         }
 
         body[data-theme="light"] .newChatBtn {
@@ -134,7 +133,7 @@
 
         body[data-theme="light"] .message.user {
             background-color: #e9ecef;
-            color: #ffffff;
+            color: #333333; /* Fixed for better contrast */
             margin-left: auto;
         }
 
@@ -150,8 +149,7 @@
 
         body[data-theme="light"] .markdown-container pre {
             background: #1e1e1e;
-            color: 
-            #ffffff;
+            color: #ffffff;
         }
 
         body[data-theme="light"] .markdown-container code {
@@ -247,15 +245,14 @@
 
         body[data-theme="dark"] .input-group,
         body[data-theme="dark"] .send-btn,
-        body[data-theme="dark"] .voice-btn,
-        body[data-theme="dark"] .stop-btn {
+        body[data-theme="dark"] .voice-btn {
             background-color: #3a3f4b;
             color: #ffffff;
         }
 
         body[data-theme="dark"] .stop-btn {
-            background-color: #ff6f61;
-            color: #ffffff;
+            background-color: #3a3f4b; /* Matches send-btn */
+            color: #ffffff; /* Matches send-btn text color */
         }
 
         body[data-theme="dark"] .newChatBtn {
@@ -361,8 +358,6 @@
             color: #ffffff;
         }
 
-
-
         /* Ocean Theme */
         body[data-theme="ocean"] {
             background-color: #e0f7fa;
@@ -400,15 +395,14 @@
 
         body[data-theme="ocean"] .input-group,
         body[data-theme="ocean"] .send-btn,
-        body[data-theme="ocean"] .voice-btn,
-        body[data-theme="ocean"] .stop-btn {
+        body[data-theme="ocean"] .voice-btn {
             background-color: #81d4fa;
             color: #003087;
         }
 
         body[data-theme="ocean"] .stop-btn {
-            background-color: #d81b60;
-            color: #ffffff;
+            background-color: #81d4fa; /* Matches send-btn */
+            color: #003087; /* Matches send-btn text color */
         }
 
         body[data-theme="ocean"] .newChatBtn {
@@ -551,15 +545,14 @@
 
         body[data-theme="forest"] .input-group,
         body[data-theme="forest"] .send-btn,
-        body[data-theme="forest"] .voice-btn,
-        body[data-theme="forest"] .stop-btn {
+        body[data-theme="forest"] .voice-btn {
             background-color: #a5d6a7;
             color: #1b5e20;
         }
 
         body[data-theme="forest"] .stop-btn {
-            background-color: #d32f2f;
-            color: #ffffff;
+            background-color: #a5d6a7; /* Matches send-btn */
+            color: #1b5e20; /* Matches send-btn text color */
         }
 
         body[data-theme="forest"] .newChatBtn {
@@ -761,10 +754,6 @@
 
         body[data-theme="dark"] .history-panel::-webkit-scrollbar-track {
             background: rgba(20, 20, 20, 0.7);
-        }
-
-        body[data-theme="high-contrast"] .history-panel::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.7);
         }
 
         body[data-theme="ocean"] .history-panel::-webkit-scrollbar-track {
@@ -1113,11 +1102,6 @@
             color: #ffffff;
         }
 
-        body[data-theme="high-contrast"] .input-group textarea {
-            background-color: #333333;
-            color: #ffffff;
-        }
-
         body[data-theme="ocean"] .input-group textarea {
             background-color: #81d4fa;
             color: #003087;
@@ -1178,9 +1162,26 @@
             justify-content: center;
             align-items: center;
             border: none;
-            border-radius: 50%;
+            border-radius: 50%; /* Ensures perfect circle */
             font-size: 18px;
             cursor: pointer;
+            box-sizing: border-box; /* Prevents padding/border issues */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            transition: all 0.3s ease; /* Smooth transitions for hover effects */
+        }
+
+        /* Hover effect */
+        .stop-btn:hover {
+            filter: brightness(1.2); /* Matches send-btn hover */
+            transform: translateY(50%) scale(1.1); /* Slight scale for emphasis */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        }
+
+        /* Ensure icon is centered */
+        .stop-btn i {
+            margin: 0;
+            padding: 0;
+            line-height: 1; /* Perfect vertical centering */
         }
 
         .voice-btn {
@@ -1194,7 +1195,7 @@
             justify-content: center;
             align-items: center;
             border: none;
-            border-radius:50%;
+            border-radius: 50%;
             font-size: 18px;
             cursor: pointer;
         }
@@ -1264,10 +1265,6 @@
 
         body[data-theme="dark"] footer a:hover {
             color: #00bcd4;
-        }
-
-        body[data-theme="high-contrast"] footer a:hover {
-            color: #00cc00;
         }
 
         body[data-theme="ocean"] footer a:hover {
@@ -1443,7 +1440,6 @@
                 <ul class="dropdown-menu" aria-labelledby="themeDropdown">
                     <li><a class="dropdown-item" href="#" data-theme="light">Light</a></li>
                     <li><a class="dropdown-item" href="#" data-theme="dark">Dark</a></li>
-                    
                     <li><a class="dropdown-item" href="#" data-theme="ocean">Ocean</a></li>
                     <li><a class="dropdown-item" href="#" data-theme="forest">Forest</a></li>
                 </ul>
@@ -1535,7 +1531,7 @@
 
         // Theme Management
         function setTheme(theme) {
-            const validThemes = ['light', 'dark', 'high-contrast', 'ocean', 'forest'];
+            const validThemes = ['light', 'dark', 'ocean', 'forest'];
             if (!validThemes.includes(theme)) {
                 theme = 'light';
                 localStorage.setItem('theme', 'light');
@@ -1547,7 +1543,6 @@
             const themeBtn = document.querySelector('.theme-toggle-btn');
             themeBtn.textContent = theme === 'light' ? '☀️' :
                                   theme === 'dark' ? '🌙' :
-                                  theme === 'high-contrast' ? '⚪' :
                                   theme === 'ocean' ? '🌊' : '🌲';
 
             updateTextColor(); // Update text color when theme changes
@@ -1565,9 +1560,6 @@
                 case 'dark':
                     textColor = '#ffffff';
                     break;
-                case 'high-contrast':
-                    textColor = '#ffffff';
-                    break;
                 case 'ocean':
                     textColor = '#003087';
                     break;
@@ -1580,7 +1572,7 @@
 
             document.body.style.color = textColor;
             document.querySelectorAll('.message.user').forEach(element => {
-                element.style.color = currentTheme === 'dark' || currentTheme === 'high-contrast' ? '#000000' : '#ffffff';
+                element.style.color = currentTheme === 'dark' ? '#000000' : '#ffffff';
             });
             document.querySelectorAll('.message.bot').forEach(element => {
                 element.style.color = textColor;
