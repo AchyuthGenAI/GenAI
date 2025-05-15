@@ -1819,6 +1819,7 @@
         let isTypingStopped = false;
         let isGenerating = false;
         let isTyping = false;
+        let currentQuestion = ''; // Store the current question being answered
 
         // Theme Management
         function setTheme(theme) {
@@ -1910,7 +1911,6 @@
         elements.closePreviewBtn.addEventListener('click', togglePreviewPanel);
         document.addEventListener('click', closePanels);
 
-        // Chat History Management
         // Chat History Management
         class ChatHistory {
             static load() {
@@ -2103,14 +2103,14 @@
             let nodeIndex = 0;
             let charIndex = 0;
             let currentElement = null;
-            let typedContent = ''; // Store the typed content
+            let typedContent = ''; // Store the typed content as plain text
 
             function typeNext() {
                 if (isTypingStopped) {
                     addCopyButtons(container);
-                    // Save the partially typed response to history if stopped
-                    if (typedContent && originalResponse) {
-                        ChatHistory.add(originalResponse.question, typedContent);
+                    // Save the partially typed content to history
+                    if (typedContent && currentQuestion) {
+                        ChatHistory.add(currentQuestion, typedContent);
                     }
                     callback();
                     return;
@@ -2119,8 +2119,8 @@
                 if (nodeIndex >= nodes.length) {
                     addCopyButtons(container);
                     // Save the full response to history when complete
-                    if (originalResponse) {
-                        ChatHistory.add(originalResponse.question, originalResponse.response);
+                    if (originalResponse && currentQuestion) {
+                        ChatHistory.add(currentQuestion, originalResponse);
                     }
                     callback();
                     return;
@@ -2147,7 +2147,7 @@
                             container.appendChild(currentElement);
                         }
                         currentElement.textContent = text.slice(0, charIndex + 1);
-                        typedContent = container.innerHTML; // Update typed content
+                        typedContent += text[charIndex]; // Accumulate plain text
                         charIndex++;
                         elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
                     } else {
@@ -2258,51 +2258,31 @@
                 } else {
                     isTyping = true; // Set typing state
                     typeMessage(messageContent, formatResponse(content), () => {
-                        isTyping = false; // Reset typing state
-                        elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
-                        resetButtons();
-                        if (content.includes('```')) {
-                            showCodePreview(content);
-                        }
-                    }, { question: elements.userInput.value || elements.mobileUserInput.value, response: content });
+                                                isTyping = false; // Reset typing state
+                        isGenerating = false; // Reset generating state
+                        toggleInputState(true); // Re-enable input
+                    }, content);
                 }
-                        } else {
+            } else {
                 const messageContent = renderUserInput(content);
                 messageDiv.appendChild(messageContent);
-            }
-
-            if (sessionId) {
-                messageDiv.dataset.sessionId = sessionId;
-            }
-            if (timestamp) {
-                const date = new Date(timestamp);
-                const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const formattedDate = date.toLocaleDateString();
-                const meta = document.createElement('div');
-                meta.className = 'meta';
-                meta.textContent = `${formattedDate} ${formattedTime}`;
-                meta.style.fontSize = '12px';
-                meta.style.color = '#888';
-                messageDiv.appendChild(meta);
             }
 
             elements.chatBox.appendChild(messageDiv);
             elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
         }
 
-        // Reset Button States
-        function resetButtons() {
-            isGenerating = false;
-            isTypingStopped = false;
-            elements.sendBtn.style.display = 'flex';
-            elements.stopBtn.style.display = 'none';
-            elements.mobileSendBtn.style.display = 'flex';
-            elements.mobileStopBtn.style.display = 'none';
-            elements.userInput.disabled = false;
-            elements.mobileUserInput.disabled = false;
+        // Toggle Input State
+        function toggleInputState(enable) {
+            elements.userInput.disabled = !enable;
+            elements.mobileUserInput.disabled = !enable;
+            elements.sendBtn.style.display = enable ? 'flex' : 'none';
+            elements.mobileSendBtn.style.display = enable ? 'flex' : 'none';
+            elements.stopBtn.style.display = enable ? 'none' : 'flex';
+            elements.mobileStopBtn.style.display = enable ? 'none' : 'flex';
         }
 
-        // Stop Generation
+                // Stop Generation
         function stopGeneration() {
             if (abortController) {
                 abortController.abort();
@@ -2310,155 +2290,131 @@
             }
             isTypingStopped = true;
             isGenerating = false;
-            resetButtons();
+            toggleInputState(true);
+            removeLoader(); // Ensure loader is removed when stopping
         }
 
-        // Send Message
-        async function sendMessage(inputElement, sendButton, stopButton) {
-            const message = inputElement.value.trim();
-            if (!message || isGenerating || isTyping) return;
+        // Append Loader to Chat Box
+        function appendLoader() {
+            const loaderDiv = document.createElement('div');
+            loaderDiv.classList.add('loader');
+            loaderDiv.innerHTML = `
+                <div></div>
+                <div></div>
+                <div></div>
+            `;
+            loaderDiv.id = 'chatLoader';
+            elements.chatBox.appendChild(loaderDiv);
+            elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+            return loaderDiv;
+        }
 
-            isGenerating = true;
-            inputElement.disabled = true;
-            sendButton.style.display = 'none';
-            stopButton.style.display = 'flex';
+        // Remove Loader from Chat Box
+        function removeLoader() {
+            const loader = document.getElementById('chatLoader');
+            if (loader) {
+                loader.remove();
+            }
+        }
 
-            appendMessage(message, 'user');
-            inputElement.value = '';
+        // Fetch Response from Gemini API
+        async function fetchResponse(prompt, contextMessages = []) {
+            abortController = new AbortController();
+            isTypingStopped = false;
+
+            const requestBody = {
+                contents: [
+                    ...contextMessages.map(msg => ({
+                        role: msg.sender === 'user' ? 'user' : 'model',
+                        parts: [{ text: msg.content }]
+                    })),
+                    { role: 'user', parts: [{ text: prompt }] }
+                ]
+            };
 
             try {
-                abortController = new AbortController();
-                const contextMessages = Array.from(elements.chatBox.querySelectorAll('.message'))
-                    .slice(-maxContextMessages * 2)
-                    .map(msg => ({
-                        role: msg.classList.contains('user') ? 'user' : 'assistant',
-                        parts: [{ text: msg.querySelector('.markdown-container')?.textContent || msg.textContent }]
-                    }));
-
-                contextMessages.push({ role: 'user', parts: [{ text: message }] });
-
                 const response = await fetch(`${baseUrl}?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: contextMessages
-                    }),
+                    body: JSON.stringify(requestBody),
                     signal: abortController.signal
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
-                const botResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received.';
-
-                appendMessage(botResponse, 'bot');
+                const content = data.candidates[0].content.parts[0].text;
+                return content;
             } catch (error) {
                 if (error.name === 'AbortError') {
-                    appendMessage('Response generation stopped.', 'bot');
+                    return ''; // Return empty string on abort
+                }
+                console.error('Error fetching response:', error);
+                return `Error: ${error.message}`;
+            }
+        }
+
+        // Handle Send Message
+        async function sendMessage(inputElement, isMobile = false) {
+            const prompt = inputElement.value.trim();
+            if (!prompt || isGenerating || isTyping) return;
+
+            isGenerating = true;
+            toggleInputState(false);
+            currentQuestion = prompt;
+            appendMessage(prompt, 'user');
+            inputElement.value = '';
+
+            // Add loader
+            const loader = appendLoader();
+
+            // Get context from recent messages
+            const messages = Array.from(elements.chatBox.querySelectorAll('.message')).slice(-maxContextMessages * 2);
+            const contextMessages = messages.map(msg => ({
+                sender: msg.classList.contains('user') ? 'user' : 'bot',
+                content: msg.textContent
+            }));
+
+            try {
+                const response = await fetchResponse(prompt, contextMessages);
+                // Remove loader before appending response
+                removeLoader();
+
+                if (response) {
+                    appendMessage(response, 'bot');
+                    if (response.includes('```')) {
+                        showCodePreview(response);
+                    }
+                } else if (isTypingStopped) {
+                    // If stopped, the partial response is already saved in typeMessage
                 } else {
-                    appendMessage(`Error: ${error.message}`, 'bot');
+                    appendMessage('No response received.', 'bot');
                 }
-            } finally {
-                if (!isTypingStopped) {
-                    resetButtons();
-                }
+            } catch (error) {
+                // Remove loader on error
+                removeLoader();
+                appendMessage(`Error: ${error.message}`, 'bot');
             }
-        }
-
-        // Voice Input
-        function toggleVoiceInput(inputElement, voiceBtn) {
-            if (!('webkitSpeechRecognition' in window)) {
-                appendMessage('Speech recognition not supported in this browser.', 'bot');
-                return;
-            }
-
-            const recognition = new webkitSpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = true;
-            recognition.lang = 'en-US';
-
-            if (recognizing) {
-                recognition.stop();
-                recognizing = false;
-                voiceBtn.classList.remove('recording');
-                return;
-            }
-
-            recognizing = true;
-            voiceBtn.classList.add('recording');
-
-            recognition.onresult = event => {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
-                }
-                inputElement.value = transcript;
-            };
-
-            recognition.onend = () => {
-                recognizing = false;
-                voiceBtn.classList.remove('recording');
-            };
-
-            recognition.onerror = event => {
-                appendMessage(`Speech recognition error: ${event.error}`, 'bot');
-                recognizing = false;
-                voiceBtn.classList.remove('recording');
-            };
-
-            recognition.start();
-        }
-
-        // New Chat
-        function startNewChat() {
-            elements.chatBox.innerHTML = '';
-            elements.userInput.value = '';
-            elements.mobileUserInput.value = '';
-            appendMessage('New chat started. How can I assist you?', 'bot');
-            resetButtons();
         }
 
         // Event Listeners
-        elements.sendBtn.addEventListener('click', () => sendMessage(elements.userInput, elements.sendBtn, elements.stopBtn));
-        elements.mobileSendBtn.addEventListener('click', () => sendMessage(elements.mobileUserInput, elements.mobileSendBtn, elements.mobileStopBtn));
+        elements.sendBtn.addEventListener('click', () => sendMessage(elements.userInput));
+        elements.mobileSendBtn.addEventListener('click', () => sendMessage(elements.mobileUserInput, true));
         elements.stopBtn.addEventListener('click', stopGeneration);
         elements.mobileStopBtn.addEventListener('click', stopGeneration);
+
         elements.userInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter' && !e.shiftKey && !isGenerating && !isTyping) {
+            if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage(elements.userInput, elements.sendBtn, elements.stopBtn);
+                sendMessage(elements.userInput);
             }
         });
+
         elements.mobileUserInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter' && !e.shiftKey && !isGenerating && !isTyping) {
+            if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage(elements.mobileUserInput, elements.mobileSendBtn, elements.mobileStopBtn);
+                sendMessage(elements.mobileUserInput, true);
             }
-        });
-        elements.voiceBtn.addEventListener('click', () => toggleVoiceInput(elements.userInput, elements.voiceBtn));
-        elements.mobileVoiceBtn.addEventListener('click', () => toggleVoiceInput(elements.mobileUserInput, elements.mobileVoiceBtn));
-        elements.newChatBtn.addEventListener('click', startNewChat);
-        elements.clearHistoryBtn.addEventListener('click', () => ChatHistory.clear());
-        elements.exportHistoryBtn.addEventListener('click', () => ChatHistory.export());
-        elements.importHistoryBtn.addEventListener('click', () => ChatHistory.import());
-
-        // Search Functionality
-        elements.searchBar.addEventListener('input', () => {
-            const query = elements.searchBar.value.toLowerCase();
-            const historyItems = elements.chatHistory.querySelectorAll('.history-item');
-            historyItems.forEach(item => {
-                const question = item.querySelector('.question').textContent.toLowerCase();
-                const response = item.querySelector('.meta').textContent.toLowerCase();
-                item.style.display = question.includes(query) || response.includes(query) ? '' : 'none';
-            });
-        });
-
-        elements.clearSearch.addEventListener('click', () => {
-            elements.searchBar.value = '';
-            const historyItems = elements.chatHistory.querySelectorAll('.history-item');
-            historyItems.forEach(item => item.style.display = '');
         });
 
         // Auto-resize Textarea
@@ -2470,22 +2426,102 @@
         elements.userInput.addEventListener('input', () => autoResize(elements.userInput));
         elements.mobileUserInput.addEventListener('input', () => autoResize(elements.mobileUserInput));
 
-        // Initialize
-        window.addEventListener('load', () => {
-            elements.loadingOverlay.classList.add('hidden');
-            setTimeout(() => {
-                elements.loadingOverlay.style.display = 'none';
-                appendMessage('Welcome to Chat@AI! How can I assist you today?', 'bot');
-                ChatHistory.load();
-            }, 500);
+        // Voice Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                recognizing = true;
+                elements.voiceBtn.classList.add('active');
+                elements.mobileVoiceBtn.classList.add('active');
+            };
+
+            recognition.onresult = event => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                elements.userInput.value = transcript;
+                elements.mobileUserInput.value = transcript;
+                autoResize(elements.userInput);
+                autoResize(elements.mobileUserInput);
+            };
+
+            recognition.onend = () => {
+                recognizing = false;
+                elements.voiceBtn.classList.remove('active');
+                elements.mobileVoiceBtn.classList.remove('active');
+            };
+
+            elements.voiceBtn.addEventListener('click', () => {
+                if (recognizing) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+
+            elements.mobileVoiceBtn.addEventListener('click', () => {
+                if (recognizing) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+        } else {
+            elements.voiceBtn.style.display = 'none';
+            elements.mobileVoiceBtn.style.display = 'none';
+        }
+
+        // Search History
+        elements.searchBar.addEventListener('input', () => {
+            const query = elements.searchBar.value.toLowerCase();
+            const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
+            elements.chatHistory.innerHTML = '';
+            history
+                .filter(item => item.question.toLowerCase().includes(query) || item.response.toLowerCase().includes(query))
+                .forEach(item => ChatHistory.renderHistoryItem(item));
         });
 
-        // Prevent default paste behavior and handle manually
-        [elements.userInput, elements.mobileUserInput].forEach(input => {
-            input.addEventListener('paste', e => {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text');
-                document.execCommand('insertText', false, text);
+        elements.clearSearch.addEventListener('click', () => {
+            elements.searchBar.value = '';
+            ChatHistory.load();
+        });
+
+        // New Chat
+        elements.newChatBtn.addEventListener('click', () => {
+            elements.chatBox.innerHTML = '';
+            elements.userInput.value = '';
+            elements.mobileUserInput.value = '';
+            currentQuestion = '';
+        });
+
+        // Clear History
+        elements.clearHistoryBtn.addEventListener('click', () => ChatHistory.clear());
+
+        // Export/Import History
+        elements.exportHistoryBtn.addEventListener('click', () => ChatHistory.export());
+        elements.importHistoryBtn.addEventListener('click', () => ChatHistory.import());
+
+        // Initialize
+        ChatHistory.load();
+        setTimeout(() => {
+            elements.loadingOverlay.classList.add('hidden');
+            setTimeout(() => elements.loadingOverlay.style.display = 'none', 500);
+            appendMessage('Welcome to Chat@AI! How can I assist you today?', 'bot');
+        }, 1000);
+
+        // Accessibility Enhancements
+        document.querySelectorAll('.history-item').forEach(item => {
+            item.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    item.click();
+                }
             });
         });
     </script>
