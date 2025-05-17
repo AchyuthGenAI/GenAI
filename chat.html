@@ -207,16 +207,24 @@
         }
 
         body[data-theme="light"] .preview-panel {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, sustitute255, 0.95);
             color: #333333;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         body[data-theme="light"] .preview-panel h3 {
             color: #007bff;
         }
 
-        body[data-theme="light"] .preview-panel .close-preview-btn {
+        body[data-theme="light"] .preview-panel .preview-header button {
+            color: #333333;
+        }
+
+        body[data-theme="light"] .preview-panel .preview-header button:hover {
+            color: #007bff;
+        }
+
+        body[data-theme="light"] .preview-panel .close-preview-btn:hover {
             color: #dc3545;
         }
 
@@ -378,14 +386,22 @@
         body[data-theme="dark"] .preview-panel {
             background-color: rgba(0, 0, 0, 0.95);
             color: #ffffff;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         body[data-theme="dark"] .preview-panel h3 {
             color: #00c6ff;
         }
 
-        body[data-theme="dark"] .preview-panel .close-preview-btn {
+        body[data-theme="dark"] .preview-panel .preview-header button {
+            color: #ffffff;
+        }
+
+        body[data-theme="dark"] .preview-panel .preview-header button:hover {
+            color: #00c6ff;
+        }
+
+        body[data-theme="dark"] .preview-panel .close-preview-btn:hover {
             color: #ff6f61;
         }
 
@@ -547,14 +563,22 @@
         body[data-theme="ocean"] .preview-panel {
             background-color: rgba(179, 229, 252, 0.95);
             color: #003087;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         body[data-theme="ocean"] .preview-panel h3 {
             color: #0288d1;
         }
 
-        body[data-theme="ocean"] .preview-panel .close-preview-btn {
+        body[data-theme="ocean"] .preview-panel .preview-header button {
+            color: #003087;
+        }
+
+        body[data-theme="ocean"] .preview-panel .preview-header button:hover {
+            color: #0288d1;
+        }
+
+        body[data-theme="ocean"] .preview-panel .close-preview-btn:hover {
             color: #d81b60;
         }
 
@@ -716,14 +740,22 @@
         body[data-theme="forest"] .preview-panel {
             background-color: rgba(200, 230, 201, 0.95);
             color: #1b5e20;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         body[data-theme="forest"] .preview-panel h3 {
             color: #388e3c;
         }
 
-        body[data-theme="forest"] .preview-panel .close-preview-btn {
+        body[data-theme="forest"] .preview-panel .preview-header button {
+            color: #1b5e20;
+        }
+
+        body[data-theme="forest"] .preview-panel .preview-header button:hover {
+            color: #388e3c;
+        }
+
+        body[data-theme="forest"] .preview-panel .close-preview-btn:hover {
             color: #d32f2f;
         }
 
@@ -777,6 +809,7 @@
             flex-direction: column;
             margin-top: 70px;
             margin-bottom: 60px;
+            position: relative;
         }
 
         .history-panel {
@@ -1037,6 +1070,8 @@
             margin: 0 auto;
             padding: 10px;
             border-radius: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .chat-box {
@@ -1450,36 +1485,90 @@
 
         /* Preview Panel */
         .preview-panel {
-            position: fixed;
-            top: 70px;
-            right: 0;
-            transform: translateX(100%);
-            width: 90%;
-            max-width: 500px;
-            height: calc(100vh - 100px);
-            padding: 20px;
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 400px;
+            max-width: 90%;
+            height: 500px;
+            padding: 0;
             z-index: 1000;
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-            border-radius: 12px 0 0 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border-radius: 12px;
+            display: none;
+            cursor: move;
         }
 
         .preview-panel.active {
-            transform: translateX(0);
+            display: block;
         }
 
-        .preview-panel .close-preview-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        .preview-panel.minimized {
+            height: 40px;
+            overflow: hidden;
+        }
+
+        .preview-panel.maximized {
+            width: 90%;
+            height: calc(100vh - 100px);
+            max-width: 800px;
+        }
+
+        .preview-panel .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #ffffff;
+            border-radius: 12px 12px 0 0;
+            user-select: none;
+        }
+
+        .preview-panel .preview-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .preview-panel .preview-header .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .preview-panel .preview-header button {
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
+            transition: color 0.3s ease;
         }
 
-        .preview-panel .close-preview-btn:hover {
-            color: #ff3f31;
+        .preview-panel .preview-content {
+            border-radius: 0 0 12px 12px;
+            padding: 15px;
+            overflow: auto;
+            height: calc(100% - 40px);
+        }
+
+        .preview-panel .preview-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+
+        .preview-panel .preview-content pre {
+            margin: 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #1e1e1e;
+            color: #ffffff;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
         }
 
         .preview-panel::-webkit-scrollbar {
@@ -1509,38 +1598,6 @@
 
         body[data-theme="forest"] .preview-panel::-webkit-scrollbar-track {
             background: rgba(200, 230, 201, 0.7);
-        }
-
-        .preview-panel h3 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .preview-content {
-            border-radius: 8px;
-            padding: 15px;
-            overflow: auto;
-            height: calc(100% - 50px);
-        }
-
-        .preview-content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #ffffff;
-        }
-
-        .preview-content pre {
-            margin: 0;
-            padding: 15px;
-            border-radius: 8px;
-            background: #1e1e1e;
-            color: #ffffff;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-x: auto;
         }
 
         .toggle-preview {
@@ -1672,13 +1729,17 @@
             }
 
             .preview-panel {
+                width: 100%;
                 max-width: 100%;
+                right: 0;
+                top: 70px;
+                height: calc(100vh - 80px);
                 border-radius: 0;
             }
 
-            .history-panel {
+            .preview-panel.maximized {
                 width: 100%;
-                max-width: none;
+                height: calc(100vh - 80px);
             }
         }
     </style>
@@ -1738,10 +1799,20 @@
         </aside>
 
         <aside class="preview-panel" id="previewPanel">
-            <button class="close-preview-btn" id="closePreviewBtn" aria-label="Close preview panel">
-                <i class="fas fa-times"></i>
-            </button>
-            <h3>Code Preview</h3>
+            <div class="preview-header" aria-label="Preview panel header">
+                <h3>Code Preview</h3>
+                <div class="controls">
+                    <button class="minimize-btn" id="minimizePreviewBtn" aria-label="Minimize preview panel">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="maximize-btn" id="maximizePreviewBtn" aria-label="Maximize preview panel">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button class="close-preview-btn" id="closePreviewBtn" aria-label="Close preview panel">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
             <div class="preview-content" id="previewContent"></div>
         </aside>
 
@@ -1788,6 +1859,7 @@
         const maxContextMessages = 5;
         const typingSpeed = 20; // Milliseconds per character
         const maxHistoryLength = 50; // Max characters for history question and response
+        const scrollThreshold = 100; // Pixels from bottom to trigger auto-scroll
         const elements = {
             chatBox: document.getElementById('chatBox'),
             userInput: document.getElementById('userInput'),
@@ -1812,6 +1884,8 @@
             previewPanel: document.getElementById('previewPanel'),
             togglePreview: document.getElementById('togglePreview'),
             closePreviewBtn: document.getElementById('closePreviewBtn'),
+            minimizePreviewBtn: document.getElementById('minimizePreviewBtn'),
+            maximizePreviewBtn: document.getElementById('maximizePreviewBtn'),
             previewContent: document.getElementById('previewContent')
         };
         let recognizing = false;
@@ -1819,7 +1893,12 @@
         let isTypingStopped = false;
         let isGenerating = false;
         let isTyping = false;
-        let currentQuestion = ''; // Store the current question being answered
+        let currentQuestion = '';
+        let isDragging = false;
+        let isMinimized = false;
+        let isMaximized = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
 
         // Theme Management
         function setTheme(theme) {
@@ -1890,6 +1969,12 @@
 
         function togglePreviewPanel() {
             elements.previewPanel.classList.toggle('active');
+            if (!elements.previewPanel.classList.contains('active')) {
+                isMinimized = false;
+                isMaximized = false;
+                elements.previewPanel.classList.remove('minimized', 'maximized');
+                elements.maximizePreviewBtn.querySelector('i').className = 'fas fa-expand';
+            }
         }
 
         function closePanels(event) {
@@ -1911,13 +1996,83 @@
         elements.closePreviewBtn.addEventListener('click', togglePreviewPanel);
         document.addEventListener('click', closePanels);
 
+        // Preview Panel Controls
+        function minimizePreview() {
+            isMinimized = !isMinimized;
+            elements.previewPanel.classList.toggle('minimized', isMinimized);
+            elements.minimizePreviewBtn.querySelector('i').className = isMinimized ? 'fas fa-plus' : 'fas fa-minus';
+            elements.minimizePreviewBtn.setAttribute('aria-label', isMinimized ? 'Restore preview panel' : 'Minimize preview panel');
+        }
+
+        function maximizePreview() {
+            isMaximized = !isMaximized;
+            elements.previewPanel.classList.toggle('maximized', isMaximized);
+            elements.maximizePreviewBtn.querySelector('i').className = isMaximized ? 'fas fa-compress' : 'fas fa-expand';
+            elements.maximizePreviewBtn.setAttribute('aria-label', isMaximized ? 'Restore preview panel' : 'Maximize preview panel');
+            if (isMaximized) {
+                isMinimized = false;
+                elements.previewPanel.classList.remove('minimized');
+                elements.minimizePreviewBtn.querySelector('i').className = 'fas fa-minus';
+                elements.minimizePreviewBtn.setAttribute('aria-label', 'Minimize preview panel');
+            }
+        }
+
+        elements.minimizePreviewBtn.addEventListener('click', minimizePreview);
+        elements.maximizePreviewBtn.addEventListener('click', maximizePreview);
+
+        // Draggable Preview Panel
+        const header = elements.previewPanel.querySelector('.preview-header');
+        header.addEventListener('mousedown', startDragging);
+        header.addEventListener('touchstart', startDragging);
+
+        function startDragging(e) {
+            if (e.target.closest('.controls')) return; // Ignore clicks on buttons
+            e.preventDefault();
+            isDragging = true;
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            dragOffsetX = clientX - elements.previewPanel.offsetLeft;
+            dragOffsetY = clientY - elements.previewPanel.offsetTop;
+            document.addEventListener('mousemove', dragPanel);
+            document.addEventListener('touchmove', dragPanel);
+            document.addEventListener('mouseup', stopDragging);
+            document.addEventListener('touchend', stopDragging);
+        }
+
+        function dragPanel(e) {
+            if (!isDragging) return;
+            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            let newLeft = clientX - dragOffsetX;
+            let newTop = clientY - dragOffsetY;
+
+            // Boundary constraints
+            const container = document.querySelector('.container');
+            const rect = container.getBoundingClientRect();
+            const panelWidth = elements.previewPanel.offsetWidth;
+            const panelHeight = elements.previewPanel.offsetHeight;
+
+            newLeft = Math.max(rect.left, Math.min(newLeft, rect.right - panelWidth));
+            newTop = Math.max(rect.top, Math.min(newTop, rect.bottom - (isMinimized ? 40 : panelHeight)));
+
+            elements.previewPanel.style.left = `${newLeft - rect.left}px`;
+            elements.previewPanel.style.top = `${newTop - rect.top}px`;
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            document.removeEventListener('mousemove', dragPanel);
+            document.removeEventListener('touchmove', dragPanel);
+            document.removeEventListener('mouseup', stopDragging);
+            document.removeEventListener('touchend', stopDragging);
+        }
+
         // Chat History Management
         class ChatHistory {
             static load() {
                 const compressed = localStorage.getItem('chatHistory');
                 let history = compressed ? JSON.parse(LZString.decompress(compressed) || '[]') : [];
                 
-                // Sort history by timestamp in descending order (most recent first)
                 history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 elements.chatHistory.innerHTML = '';
@@ -1937,7 +2092,6 @@
                 const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
                 history.push(item);
                 this.save(history);
-                // Reload history to ensure descending order
                 this.load();
             }
 
@@ -1986,7 +2140,7 @@
                     const history = JSON.parse(LZString.decompress(localStorage.getItem('chatHistory') || '[]') || '[]');
                     const updatedHistory = history.filter(item => item.sessionId !== sessionId);
                     this.save(updatedHistory);
-                    this.load(); // Reload to maintain descending order
+                    this.load();
                 });
 
                 historyItem.appendChild(icon);
@@ -2001,7 +2155,6 @@
                     }
                 });
 
-                // Prepend to show newest first
                 elements.chatHistory.prepend(historyItem);
             }
 
@@ -2030,7 +2183,7 @@
                 input.accept = '.json';
                 input.onchange = e => {
                     const file = e.target.files[0];
-                    if (!file) return;
+                                        if (!file) return;
                     const reader = new FileReader();
                     reader.onload = event => {
                         try {
@@ -2149,7 +2302,12 @@
                         currentElement.textContent = text.slice(0, charIndex + 1);
                         typedContent += text[charIndex]; // Accumulate plain text
                         charIndex++;
-                        elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                        // Only auto-scroll if the user is near the bottom
+                        const scrollPosition = elements.chatBox.scrollTop + elements.chatBox.clientHeight;
+                        const scrollHeight = elements.chatBox.scrollHeight;
+                        if (scrollHeight - scrollPosition < scrollThreshold) {
+                            elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+                        }
                     } else {
                         nodeIndex++;
                         charIndex = 0;
@@ -2224,6 +2382,9 @@
             }
 
             elements.previewPanel.classList.add('active');
+            // Reset position to default when opening
+            elements.previewPanel.style.left = '';
+            elements.previewPanel.style.top = '';
         }
 
         // Append Message to Chat Box
@@ -2256,11 +2417,11 @@
                     messageContent.innerHTML = formatResponse(content);
                     addCopyButtons(messageContent);
                 } else {
-                    isTyping = true; // Set typing state
+                    isTyping = true;
                     typeMessage(messageContent, formatResponse(content), () => {
-                                                isTyping = false; // Reset typing state
-                        isGenerating = false; // Reset generating state
-                        toggleInputState(true); // Re-enable input
+                        isTyping = false;
+                        isGenerating = false;
+                        toggleInputState(true);
                     }, content);
                 }
             } else {
@@ -2282,7 +2443,7 @@
             elements.mobileStopBtn.style.display = enable ? 'none' : 'flex';
         }
 
-                // Stop Generation
+        // Stop Generation
         function stopGeneration() {
             if (abortController) {
                 abortController.abort();
@@ -2291,7 +2452,7 @@
             isTypingStopped = true;
             isGenerating = false;
             toggleInputState(true);
-            removeLoader(); // Ensure loader is removed when stopping
+            removeLoader();
         }
 
         // Append Loader to Chat Box
@@ -2347,7 +2508,7 @@
                 return content;
             } catch (error) {
                 if (error.name === 'AbortError') {
-                    return ''; // Return empty string on abort
+                    return '';
                 }
                 console.error('Error fetching response:', error);
                 return `Error: ${error.message}`;
@@ -2365,10 +2526,8 @@
             appendMessage(prompt, 'user');
             inputElement.value = '';
 
-            // Add loader
             const loader = appendLoader();
 
-            // Get context from recent messages
             const messages = Array.from(elements.chatBox.querySelectorAll('.message')).slice(-maxContextMessages * 2);
             const contextMessages = messages.map(msg => ({
                 sender: msg.classList.contains('user') ? 'user' : 'bot',
@@ -2377,7 +2536,6 @@
 
             try {
                 const response = await fetchResponse(prompt, contextMessages);
-                // Remove loader before appending response
                 removeLoader();
 
                 if (response) {
@@ -2386,12 +2544,11 @@
                         showCodePreview(response);
                     }
                 } else if (isTypingStopped) {
-                    // If stopped, the partial response is already saved in typeMessage
+                    // Handled in typeMessage
                 } else {
                     appendMessage('No response received.', 'bot');
                 }
             } catch (error) {
-                // Remove loader on error
                 removeLoader();
                 appendMessage(`Error: ${error.message}`, 'bot');
             }
@@ -2521,6 +2678,16 @@
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     item.click();
+                }
+            });
+        });
+
+        // Keyboard Accessibility for Preview Panel Buttons
+        [elements.minimizePreviewBtn, elements.maximizePreviewBtn, elements.closePreviewBtn].forEach(btn => {
+            btn.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    btn.click();
                 }
             });
         });
