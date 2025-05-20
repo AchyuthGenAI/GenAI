@@ -2677,8 +2677,11 @@
             recognition.interimResults = true;
             recognition.lang = 'en-US';
 
+            let finalTranscript = ''; // Store the final transcript
+
             recognition.onstart = () => {
                 recognizing = true;
+                finalTranscript = ''; // Reset final transcript on start
                 elements.voiceBtn.classList.add('active');
                 elements.mobileVoiceBtn.classList.add('active');
                 elements.userInput.placeholder = 'Listening...';
@@ -2690,14 +2693,16 @@
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const transcript = event.results[i][0].transcript;
                     if (event.results[i].isFinal) {
-                        elements.userInput.value = transcript;
-                        elements.mobileUserInput.value = transcript;
+                        finalTranscript = transcript; // Store final transcript
+                        elements.userInput.value = finalTranscript;
+                        elements.mobileUserInput.value = finalTranscript;
                     } else {
                         interimTranscript += transcript;
                     }
                 }
-                elements.userInput.value = interimTranscript;
-                elements.mobileUserInput.value = interimTranscript;
+                // Show interim results in the input field
+                elements.userInput.value = interimTranscript || finalTranscript;
+                elements.mobileUserInput.value = interimTranscript || finalTranscript;
                 autoResizeTextarea(elements.userInput);
                 autoResizeTextarea(elements.mobileUserInput);
             };
@@ -2708,6 +2713,25 @@
                 elements.mobileVoiceBtn.classList.remove('active');
                 elements.userInput.placeholder = 'Ask Anything or Enter Code...';
                 elements.mobileUserInput.placeholder = 'Ask Anything or Enter Code...';
+
+                // Auto-send the final transcript if it exists and not generating
+                if (finalTranscript.trim() && !isGenerating) {
+                    sendMessage(finalTranscript);
+                    elements.userInput.value = '';
+                    elements.mobileUserInput.value = '';
+                    autoResizeTextarea(elements.userInput);
+                    autoResizeTextarea(elements.mobileUserInput);
+                }
+            };
+
+            recognition.onerror = event => {
+                console.error('Speech recognition error:', event.error);
+                recognizing = false;
+                elements.voiceBtn.classList.remove('active');
+                elements.mobileVoiceBtn.classList.remove('active');
+                elements.userInput.placeholder = 'Ask Anything or Enter Code...';
+                elements.mobileUserInput.placeholder = 'Ask Anything or Enter Code...';
+                appendMessage(`Speech recognition error: ${event.error}`, 'bot');
             };
 
             elements.voiceBtn.addEventListener('click', toggleRecognition);
@@ -2723,8 +2747,8 @@
         } else {
             elements.voiceBtn.style.display = 'none';
             elements.mobileVoiceBtn.style.display = 'none';
+            appendMessage('Speech recognition is not supported in this browser.', 'bot');
         }
-
         // Auto-resize Textarea
         function autoResizeTextarea(textarea) {
             textarea.style.height = 'auto';
