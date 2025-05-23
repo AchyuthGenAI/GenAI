@@ -501,8 +501,6 @@
         margin-right: auto;
     }
 
-    body[data-theme="ocean"] .markdown讨
-
     body[data-theme="ocean"] .markdown-container {
         color: #003087;
     }
@@ -1788,7 +1786,143 @@
         padding: 10px;
         justify-content: center;
     }
-</style>
+
+    /* Message Actions Toolbar - New Styles */
+    .message-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    body[data-theme="dark"] .message-actions {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body[data-theme="ocean"] .message-actions {
+        border-top-color: rgba(0, 48, 135, 0.1);
+    }
+
+    body[data-theme="forest"] .message-actions {
+        border-top-color: rgba(27, 94, 32, 0.1);
+    }
+
+    .message.bot:hover .message-actions {
+        opacity: 1;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        gap: 4px;
+    }
+
+    .action-btn i {
+        font-size: 14px;
+    }
+
+    body[data-theme="light"] .action-btn {
+        color: #666666;
+    }
+
+    body[data-theme="dark"] .action-btn {
+        color: #aaaaaa;
+    }
+
+    body[data-theme="ocean"] .action-btn {
+        color: #0288d1;
+    }
+
+    body[data-theme="forest"] .action-btn {
+        color: #388e3c;
+    }
+
+    .action-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    body[data-theme="dark"] .action-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .action-btn.active {
+        color: #00c6ff;
+    }
+
+    .action-btn.liked {
+        color: #4caf50;
+    }
+
+    .action-btn.disliked {
+        color: #f44336;
+    }
+
+    .action-btn.copy.copied {
+        color: #4caf50;
+    }
+
+    .action-divider {
+        height: 20px;
+        width: 1px;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    body[data-theme="dark"] .action-divider {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body[data-theme="ocean"] .action-divider {
+        background-color: rgba(0, 48, 135, 0.1);
+    }
+
+    body[data-theme="forest"] .action-divider {
+        background-color: rgba(27, 94, 32, 0.1);
+    }
+
+    /* Animate the like/dislike buttons */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    .action-btn.liked, .action-btn.disliked, .action-btn.copied {
+        animation: pulse 0.3s ease;
+    }
+
+    /* Mobile styles for message actions */
+    @media (max-width: 768px) {
+        .message-actions {
+            opacity: 1;
+            padding: 5px 0;
+            justify-content: space-around;
+        }
+        
+        .action-btn {
+            padding: 5px;
+        }
+        
+        .action-btn span {
+            display: none;
+        }
+        
+        .action-btn i {
+            font-size: 16px;
+        }
+    }
+    </style>
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -1945,6 +2079,7 @@
         let isMaximized = false;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
+        let responseRatings = {};
 
         // Theme Management
         function setTheme(theme) {
@@ -2328,16 +2463,124 @@
             return messageContent.outerHTML;
         }
 
+        // Create message actions toolbar
+        function createMessageActions(messageDiv, messageId, content) {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-actions';
+            actionsDiv.innerHTML = `
+                <button class="action-btn copy" data-message-id="${messageId}" aria-label="Copy response">
+                    <i class="fas fa-copy"></i>
+                    <span>Copy</span>
+                </button>
+                <button class="action-btn regenerate" data-message-id="${messageId}" aria-label="Regenerate response">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Regenerate</span>
+                </button>
+                <div class="action-divider"></div>
+                <button class="action-btn like" data-message-id="${messageId}" aria-label="Like response">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+                <button class="action-btn dislike" data-message-id="${messageId}" aria-label="Dislike response">
+                    <i class="fas fa-thumbs-down"></i>
+                </button>
+            `;
+
+            // Setup event listeners
+            const copyBtn = actionsDiv.querySelector('.copy');
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(content.replace(/<[^>]*>/g, ''))
+                    .then(() => {
+                        copyBtn.classList.add('copied');
+                        setTimeout(() => copyBtn.classList.remove('copied'), 2000);
+                    });
+            });
+
+            const regenerateBtn = actionsDiv.querySelector('.regenerate');
+            regenerateBtn.addEventListener('click', () => {
+                if (isGenerating) return;
+                regenerateResponse(messageId);
+            });
+
+            const likeBtn = actionsDiv.querySelector('.like');
+            likeBtn.addEventListener('click', () => {
+                if (responseRatings[messageId] === 'liked') {
+                    // Already liked, remove the rating
+                    delete responseRatings[messageId];
+                    likeBtn.classList.remove('liked');
+                } else {
+                    // Set to liked
+                    responseRatings[messageId] = 'liked';
+                    likeBtn.classList.add('liked');
+                    const dislikeBtn = actionsDiv.querySelector('.dislike');
+                    dislikeBtn.classList.remove('disliked');
+                }
+            });
+
+            const dislikeBtn = actionsDiv.querySelector('.dislike');
+            dislikeBtn.addEventListener('click', () => {
+                if (responseRatings[messageId] === 'disliked') {
+                    // Already disliked, remove the rating
+                    delete responseRatings[messageId];
+                    dislikeBtn.classList.remove('disliked');
+                } else {
+                    // Set to disliked
+                    responseRatings[messageId] = 'disliked';
+                    dislikeBtn.classList.add('disliked');
+                    const likeBtn = actionsDiv.querySelector('.like');
+                    likeBtn.classList.remove('liked');
+                }
+            });
+
+            return actionsDiv;
+        }
+
+        // Regenerate a response
+        function regenerateResponse(messageId) {
+            const messageElement = document.querySelector(`.message[data-message-id="${messageId}"]`);
+            if (!messageElement) return;
+            
+            // Find the last user message before this bot message
+            let userMessage = null;
+            let currentElement = messageElement;
+            
+            while (currentElement = currentElement.previousElementSibling) {
+                if (currentElement.classList.contains('user')) {
+                    userMessage = currentElement.querySelector('.markdown-container').textContent;
+                    break;
+                }
+            }
+            
+            if (!userMessage) return;
+            
+            // Remove the message
+            messageElement.remove();
+            
+            // Send the message again
+            sendMessage(userMessage);
+        }
+
         // Append Messages to Chat
         function appendMessage(content, sender, sessionId = null, timestamp = null) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
             messageDiv.setAttribute('aria-live', 'polite');
+            
+            // Generate a unique message ID
+            const messageId = generateUUID();
+            messageDiv.dataset.messageId = messageId;
 
             if (sender === 'user') {
                 messageDiv.innerHTML = renderUserInput(content);
             } else {
-                messageDiv.innerHTML = formatResponse(content);
+                const formattedContent = formatResponse(content);
+                messageDiv.innerHTML = `
+                    <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chatbot Avatar" class="bot-avatar">
+                    <div class="message-content">${formattedContent}</div>
+                `;
+                
+                // Add message actions for bot messages
+                const actionsDiv = createMessageActions(messageDiv, messageId, content);
+                messageDiv.querySelector('.message-content').appendChild(actionsDiv);
             }
 
             if (sessionId) {
@@ -2398,16 +2641,30 @@
             let i = 0;
             const htmlContent = formatResponse(content);
 
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'message-content';
+            
+            messageDiv.innerHTML = `
+                <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chatbot Avatar" class="bot-avatar">
+            `;
+            messageDiv.appendChild(contentWrapper);
+
             while (i < htmlContent.length && !isTypingStopped) {
-                messageDiv.innerHTML = htmlContent.slice(0, i + 1);
+                contentWrapper.innerHTML = htmlContent.slice(0, i + 1);
                 i++;
                 await new Promise(resolve => setTimeout(resolve, typingSpeed));
                 scrollToBottom();
             }
 
             if (!isTypingStopped) {
-                messageDiv.innerHTML = htmlContent;
+                contentWrapper.innerHTML = htmlContent;
+                
+                // Add message actions after typing is complete
+                const messageId = messageDiv.dataset.messageId;
+                const actionsDiv = createMessageActions(messageDiv, messageId, content);
+                contentWrapper.appendChild(actionsDiv);
             }
+            
             isTyping = false;
             isTypingStopped = false;
             updateTextColor();
@@ -2429,114 +2686,20 @@
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'message bot';
             botMessageDiv.setAttribute('aria-live', 'polite');
+            botMessageDiv.dataset.messageId = generateUUID();
             elements.chatBox.appendChild(botMessageDiv);
 
-            try {
-                abortController = new AbortController();
-                const messages = getContextMessages(inputText);
-                const response = await fetch(`${baseUrl}?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: messages.map(msg => ({
-                            parts: [{ text: msg.content }],
-                            role: msg.sender === 'user' ? 'user' : 'model'
-                        }))
-                    }),
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const botResponse = data.candidates[0].content.parts[0].text;
-
-                await typeMessage(botResponse, botMessageDiv);
-                ChatHistory.add(currentQuestion, botResponse, 'bot');
-
-                if (botResponse.includes('```')) {
-                    showCodePreview(botResponse);
-                }
-
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    botMessageDiv.innerHTML = formatResponse('Response generation stopped.');
-                } else {
-                    botMessageDiv.innerHTML = formatResponse(`Error: ${error.message}`);
-                }
-            } finally {
-                isGenerating = false;
-                toggleButtons(false);
-                scrollToBottom();
-            }
-        }
-        // Add loading animation to chat
-        function showLoadingMessage() {
-            const loaderDiv = document.createElement('div');
-            loaderDiv.className = 'message bot loading';
-            loaderDiv.setAttribute('aria-live', 'polite');
-            loaderDiv.innerHTML = `
-                <div class="loader">
-                    <div></div>
-                    <div></div>
-                    <div></div>
+            // Show loading animation
+            botMessageDiv.innerHTML = `
+                <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chatbot Avatar" class="bot-avatar">
+                <div class="message-content">
+                    <div class="loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
             `;
-            elements.chatBox.appendChild(loaderDiv);
-            scrollToBottom();
-            return loaderDiv;
-        }
-
-        // Modified appendMessage to include avatar image for bot messages
-        function appendMessage(content, sender, sessionId = null, timestamp = null) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.setAttribute('aria-live', 'polite');
-
-            if (sender === 'user') {
-                messageDiv.innerHTML = renderUserInput(content);
-            } else {
-                const messageContent = formatResponse(content);
-                // Add avatar image for bot messages
-                messageDiv.innerHTML = `
-                    <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chatbot Avatar" class="bot-avatar">
-                    <div class="message-content">${messageContent}</div>
-                `;
-            }
-
-            if (sessionId) {
-                messageDiv.dataset.sessionId = sessionId;
-            }
-            if (timestamp) {
-                messageDiv.dataset.timestamp = timestamp;
-            }
-
-            elements.chatBox.appendChild(messageDiv);
-            scrollToBottom();
-            updateTextColor();
-
-            if (sender === 'user') {
-                currentQuestion = content;
-            }
-        }
-
-        // Modified sendMessage to include loading animation
-        async function sendMessage(inputText) {
-            if (!inputText.trim() || isGenerating) return;
-
-            if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY') {
-                appendMessage('Error: Please configure a valid Gemini API key.', 'bot');
-                return;
-            }
-
-            isGenerating = true;
-            toggleButtons(true);
-            appendMessage(inputText, 'user');
-
-            // Show loading animation
-            const loaderDiv = showLoadingMessage();
 
             try {
                 abortController = new AbortController();
@@ -2560,16 +2723,6 @@
                 const data = await response.json();
                 const botResponse = data.candidates[0].content.parts[0].text;
 
-                // Remove loader
-                if (loaderDiv.parentNode) {
-                    loaderDiv.parentNode.removeChild(loaderDiv);
-                }
-
-                const botMessageDiv = document.createElement('div');
-                botMessageDiv.className = 'message bot';
-                botMessageDiv.setAttribute('aria-live', 'polite');
-                elements.chatBox.appendChild(botMessageDiv);
-
                 await typeMessage(botResponse, botMessageDiv);
                 ChatHistory.add(currentQuestion, botResponse, 'bot');
 
@@ -2578,20 +2731,20 @@
                 }
 
             } catch (error) {
-                // Remove loader
-                if (loaderDiv.parentNode) {
-                    loaderDiv.parentNode.removeChild(loaderDiv);
-                }
-
-                const botMessageDiv = document.createElement('div');
-                botMessageDiv.className = 'message bot';
-                botMessageDiv.setAttribute('aria-live', 'polite');
-                elements.chatBox.appendChild(botMessageDiv);
-
                 if (error.name === 'AbortError') {
-                    botMessageDiv.innerHTML = formatResponse('Response generation stopped.');
+                    botMessageDiv.innerHTML = `
+                        <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chatbot Avatar" class="bot-avatar">
+                        <div class="message-content">
+                            ${formatResponse('Response generation stopped.')}
+                        </div>
+                    `;
                 } else {
-                    botMessageDiv.innerHTML = formatResponse(`Error: ${error.message}`);
+                    botMessageDiv.innerHTML = `
+                        <img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chatbot Avatar" class="bot-avatar">
+                        <div class="message-content">
+                            ${formatResponse(`Error: ${error.message}`)}
+                        </div>
+                    `;
                 }
             } finally {
                 isGenerating = false;
@@ -2599,40 +2752,6 @@
                 scrollToBottom();
             }
         }
-
-        // Add CSS for bot avatar and loading message
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = `
-            .bot-avatar {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                margin-right: 10px;
-                float: left;
-                object-fit: cover;
-            }
-            .message.bot {
-                display: flex;
-                align-items: flex-start;
-            }
-            .message.bot .message-content {
-                flex-grow: 1;
-            }
-            .message.bot.loading {
-                background: none;
-                padding: 10px;
-                justify-content: center;
-            }
-        `;
-        document.head.appendChild(styleSheet);
-
-        // Display welcome message on load
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                elements.loadingOverlay.classList.add('hidden');
-                appendMessage('Hello! Welcome to Chat@AI. How can I assist you today?', 'bot');
-            }, 1000);
-        });
 
         // Get Context Messages
         function getContextMessages(currentInput) {
@@ -2827,6 +2946,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 elements.loadingOverlay.classList.add('hidden');
+                appendMessage('Hello! Welcome to Chat@AI. How can I assist you today?', 'bot');
             }, 1000);
         });
 
@@ -2848,40 +2968,6 @@
                 elements.previewPanel.style.top = `${currentTop}px`;
             }
         });
-        
     </script>
-
-<script>
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('copy-btn')) {
-      const btn = e.target;
-      const pre = btn.closest('pre');
-      if (pre) {
-        const code = pre.querySelector('code');
-        if (code) {
-          const text = code.innerText;
-          navigator.clipboard.writeText(text).then(() => {
-            btn.classList.add('copied');
-            setTimeout(() => btn.classList.remove('copied'), 1500);
-          }).catch(err => {
-            console.error('Failed to copy code:', err);
-          });
-        }
-      }
-    }
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('pre').forEach(pre => {
-      if (!pre.querySelector('.copy-btn')) {
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'copy-btn';
-        copyBtn.textContent = 'Copy';
-        pre.insertBefore(copyBtn, pre.firstChild);
-      }
-    });
-  });
-</script>
-
 </body>
 </html>
