@@ -1244,7 +1244,7 @@
         border-radius: 50px;
         font-size: 16px;
         resize: none;
-        overflow-y: hidden;
+        overflow-y: auto; /* Changed from hidden to auto */
         min-height: 50px;
         max-height: 150px;
         width: 100%;
@@ -2040,7 +2040,7 @@
         const baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
         const apiKey = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // Replace with your actual Gemini API key
         const maxContextMessages = 5;
-        const typingSpeed = 5; // Milliseconds per character
+        const typingSpeed = 1; // Milliseconds per character
         const maxHistoryLength = 50; // Max characters for history question and response
         const scrollThreshold = 100; // Pixels from bottom to trigger auto-scroll
         const elements = {
@@ -2870,9 +2870,13 @@
         }
         // Auto-resize Textarea
         function autoResizeTextarea(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
-        }
+        textarea.style.height = 'auto';
+        const newHeight = Math.min(textarea.scrollHeight, 150);
+        textarea.style.height = `${newHeight}px`;
+        
+        // Show scrollbar only when content exceeds max height
+        textarea.style.overflowY = textarea.scrollHeight > 150 ? 'auto' : 'hidden';
+    }
 
         elements.userInput.addEventListener('input', () => autoResizeTextarea(elements.userInput));
         elements.mobileUserInput.addEventListener('input', () => autoResizeTextarea(elements.mobileUserInput));
