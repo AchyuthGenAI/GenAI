@@ -1923,12 +1923,6 @@
         }
     }
     </style>
-
-<script>
-    if (!localStorage.getItem('chatSession')) {
-        window.location.href = 'login.html';
-    }
-</script>
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -1964,15 +1958,6 @@
             <a class="navbar-brand"><img src="https://i.ibb.co/MCLkk0y/icon-png.webp" alt="Chat@AI Icon"> Chat@AI</a>
         </div>
         <div class="nav-right">
-<div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <span id="userEmail">Account</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
-        <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
-    </ul>
-</div>
-
             <a href="index.html" class="home-button">
                 <i class="fas fa-home"></i>
             </a>
@@ -2988,18 +2973,5 @@
             }
         });
     </script>
-
-<script>
-    const userEmailEl = document.getElementById('userEmail');
-    const user = localStorage.getItem('chatSession');
-    if (user) {
-        userEmailEl.textContent = user;
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('chatSession');
-        window.location.href = 'login.html';
-    });
-</script>
 </body>
-</html>
+</html>   
