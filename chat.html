@@ -150,6 +150,58 @@
             height: 5px;
             transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
+
+        /* Styles for action buttons on chat responses */
+        .chat-message {
+            position: relative;
+            padding-bottom: 2.5rem; /* Space for buttons */
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            position: absolute;
+            bottom: 0;
+            left: 56px; /* Align to the right of model icon for model messages */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .chat-message.user .action-buttons {
+            right: 56px; /* Adjust for user avatar */
+            left: auto;
+        }
+
+        .chat-message:hover .action-buttons {
+            opacity: 1;
+        }
+
+        .action-buttons button {
+            background-color: #334155; /* slate-700 */
+            color: #cbd5e1; /* slate-300 */
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.9rem; /* Slightly larger for emojis */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center emoji */
+            width: 32px; /* Fixed width for consistent button size */
+            height: 32px; /* Fixed height for consistent button size */
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .action-buttons button:hover {
+            background-color: #475569; /* slate-600 */
+        }
+        .action-buttons .active-like {
+            color: #36c768; /* green-500 */
+            font-weight: bold;
+            background-color: #1e293b; /* slate-800 */
+        }
+        .action-buttons .active-dislike {
+            color: #dc3545; /* red-500 */
+            font-weight: bold;
+            background-color: #1e293b; /* slate-800 */
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-white h-full flex overflow-hidden">
@@ -518,7 +570,7 @@
 
             // Use Google photo if available, otherwise use initial
             if (user.photoURL) {
-                profileAvatarContainer.innerHTML = `<img src="${user.photoURL}" alt="Profile Picture" class="w-8 h-8 rounded-full">`;
+                profileAvatarContainer.innerHTML = `<img src="${user.photoURL}" class="w-8 h-8 rounded-full">`;
                 profileAvatarContainer.classList.remove('bg-purple-600', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white');
             } else {
                 const initial = (user.displayName || user.email).charAt(0).toUpperCase();
@@ -595,6 +647,57 @@
             } else {
                  micBtn.disabled = true;
             }
+
+            // Event delegation for action buttons on dynamically added chat messages
+            chatContainer.addEventListener('click', (e) => {
+                const target = e.target;
+                // Traverse up to find the actual button, not its child span/svg if present
+                const button = target.closest('button.copy-btn, button.regenerate-btn, button.like-btn, button.dislike-btn');
+                
+                if (!button) return; // Not an action button
+
+                const messageElement = button.closest('.chat-message');
+                if (!messageElement) return;
+
+                const responseText = messageElement.querySelector('.prose').innerText; // Use .prose now
+
+                if (button.classList.contains('copy-btn')) {
+                    const originalEmoji = button.textContent; // Store original emoji
+                    navigator.clipboard.writeText(responseText).then(() => {
+                        button.textContent = '✔️'; // Checkmark emoji
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        button.textContent = '❌'; // Cross emoji
+                    });
+                    setTimeout(() => { 
+                        button.textContent = originalEmoji; // Revert to original emoji
+                    }, 1200);
+                } else if (button.classList.contains('regenerate-btn')) {
+                    // For now, this is a placeholder. Real regeneration requires fetching new content.
+                    // You would typically re-run the model query for this specific chat context.
+                    alert('Regenerate functionality would trigger a new AI response based on previous messages in this chat.');
+                    // Example: You might call handleSendMessage with the last user message,
+                    // or re-fetch for the current chat's full message history.
+                } else if (button.classList.contains('like-btn')) {
+                    const dislikeBtn = messageElement.querySelector('.dislike-btn');
+                    button.classList.toggle('active-like');
+                    if (button.classList.contains('active-like')) {
+                        dislikeBtn.classList.remove('active-dislike');
+                        // Send 'like' feedback to your backend/database
+                    } else {
+                        // Remove 'like' feedback
+                    }
+                } else if (button.classList.contains('dislike-btn')) {
+                    const likeBtn = messageElement.querySelector('.like-btn');
+                    button.classList.toggle('active-dislike');
+                    if (button.classList.contains('active-dislike')) {
+                        likeBtn.classList.remove('active-like');
+                        // Send 'dislike' feedback to your backend/database
+                    } else {
+                        // Remove 'dislike' feedback
+                    }
+                }
+            });
         }
         
         // --- AUTHENTICATION LOGIC ---
@@ -889,6 +992,7 @@
             
             const messageContainerMaxWidth = 'max-w-3xl';
 
+            // Base HTML for the content, which will be parsed by Marked.js
             const messageContentHtml = `<div class="prose max-w-none text-slate-200"></div>`;
             
             let userAvatarHtml = '';
@@ -904,9 +1008,20 @@
             const isError = sender === 'model-error';
             const modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br ${isError ? 'from-red-500 to-orange-600' : 'from-cyan-500 to-blue-600'} flex items-center justify-center shadow-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-white"><path d="m12 14 4-4"/><path d="m12 14 4 4"/><path d="M12 14H2.5"/><path d="M12 14v7.5"/><path d="m20 10-4-4"/><path d="m20 10-4 4"/><path d="M20 10h-7.5"/><path d="M4 14v-2.5"/><path d="M4 14H2.5"/><path d="M4 14l-1.5-1.5L4 11l1.5 1.5L4 14Z"/><path d="m12 6-2-2-2 2-2-2-2 2-2-2-2 2"/><path d="M12 6V2.5"/></svg></div>`;
 
+            // Action buttons HTML with emoji icons only
+            const actionButtonsHtml = `
+                <div class="action-buttons">
+                    <button class="copy-btn" title="Copy">📋</button>
+                    <button class="regenerate-btn" title="Regenerate">🔄</button>
+                    <button class="like-btn" title="Like">👍</button>
+                    <button class="dislike-btn" title="Dislike">👎</button>
+                </div>
+            `;
+
+
             const messageHtml = sender === 'user' ? 
-                `<div id="${messageId}" class="flex items-start gap-2 sm:gap-3 justify-end"><div class="bg-cyan-600 rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg"><div class="prose max-w-none text-white">${marked.parse(text)}</div></div><div class="flex-shrink-0">${userAvatarHtml}</div></div>` :
-                `<div id="${messageId}" class="flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg">${messageContentHtml}</div></div>`;
+                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 justify-end"><div class="bg-cyan-600 rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg"><div class="prose max-w-none text-white">${marked.parse(text)}</div></div><div class="flex-shrink-0">${userAvatarHtml}</div></div>` :
+                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg">${messageContentHtml}</div>${isModel ? actionButtonsHtml : ''}</div>`; // Add action buttons here
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
             const messageElement = document.getElementById(messageId);
