@@ -26,8 +26,8 @@
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         html, body { font-family: 'Inter', sans-serif; }
-        .sidebar { 
-            transition: transform 0.3s ease-in-out; 
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
             z-index: 50; /* Increased z-index */
         }
         .mic-active { color: #f43f5e; } /* rose-500 */
@@ -105,7 +105,7 @@
         .table-responsive-wrapper table {
             margin: 0 !important;
         }
-        
+
         /* Blinking cursor for typing animation */
         .typing-cursor {
             animation: blink 1s step-end infinite;
@@ -119,7 +119,7 @@
             from, to { background-color: transparent; }
             50% { background-color: #94a3b8; } /* slate-400 */
         }
-        
+
         .auth-container { background: #0f172a; }
         /* Profile Dropdown */
         .profile-dropdown {
@@ -165,7 +165,7 @@
             display: flex;
             gap: 0.5rem;
             position: absolute;
-            bottom: 0;
+            bottom: 0.5rem; /* Adjusted position */
             left: 56px; /* Align to the right of model icon for model messages */
             opacity: 0;
             transition: opacity 0.2s ease-in-out;
@@ -183,30 +183,32 @@
             background-color: #334155; /* slate-700 */
             color: #cbd5e1; /* slate-300 */
             border: none;
-            padding: 0.25rem 0.5rem;
+            padding: 0; /* Removed padding for better centering */
             border-radius: 0.375rem;
-            font-size: 0.9rem; /* Slightly larger for emojis */
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center; /* Center emoji */
-            width: 32px; /* Fixed width for consistent button size */
-            height: 32px; /* Fixed height for consistent button size */
-            transition: background-color 0.2s, color 0.2s;
+            justify-content: center; /* Center SVG */
+            width: 32px; /* Fixed width */
+            height: 32px; /* Fixed height */
+            transition: background-color 0.2s, color 0.2s, transform 0.1s;
         }
         .action-buttons button:hover {
             background-color: #475569; /* slate-600 */
+            color: #f1f5f9; /* slate-100 */
+        }
+        .action-buttons button:active {
+            transform: scale(0.95);
         }
         .action-buttons .active-like {
-            color: #36c768; /* green-500 */
-            font-weight: bold;
             background-color: #1e293b; /* slate-800 */
+            color: #34d399; /* emerald-400 */
         }
         .action-buttons .active-dislike {
-            color: #dc3545; /* red-500 */
-            font-weight: bold;
             background-color: #1e293b; /* slate-800 */
+            color: #f87171; /* red-400 */
         }
+
 
         /* Sidebar overlay improvements */
         .sidebar-overlay {
@@ -304,7 +306,7 @@
             </form>
         </div>
     </div>
-    
+
     <div id="chat-app" class="hidden w-full h-full flex relative">
         <!-- Sidebar for Chat History -->
         <aside id="sidebar" class="sidebar bg-slate-800 w-72 flex-shrink-0 flex flex-col p-4 lg:relative lg:translate-x-0">
@@ -374,18 +376,20 @@
                      <!-- Stop Generating Button Container -->
                     <div id="generation-controls" class="text-center pb-2 hidden">
                         <button id="stop-generating-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 18h12V6H6v12zM8 8h8v8H8V8z"/></svg>
+                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
+                             <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                           </svg>
                             Stop Generating
                         </button>
                     </div>
                     <form id="chat-form">
                         <div class="flex items-end bg-slate-800 border border-slate-700 rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-cyan-500">
                             <textarea id="chat-input" placeholder="Enter a prompt here..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-white placeholder-slate-400 focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
-                            
+
                             <button id="mic-btn" type="button" class="text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-700 transition-colors duration-200 disabled:opacity-50">
                                 <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
                             </button>
-                            
+
                             <button type="submit" class="bg-slate-600 text-white rounded-full p-2 ml-1 transition-colors duration-300 flex items-center justify-center disabled:bg-slate-700 disabled:cursor-not-allowed w-10 h-10 flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
                             </button>
@@ -396,7 +400,7 @@
         </div>
         <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/50 backdrop-blur-sm hidden lg:hidden"></div>
     </div>
-    
+
     <!-- Delete Confirmation Modal -->
     <div id="delete-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-sm">
@@ -408,7 +412,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Code Preview Modal -->
     <div id="preview-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-800 rounded-lg shadow-xl w-full h-full max-w-4xl max-h-[80vh] flex flex-col">
@@ -427,8 +431,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
+        import {
+            getAuth,
             onAuthStateChanged,
             createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
@@ -437,10 +441,10 @@
             signInWithPopup,
             updateProfile
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            getDoc, 
+        import {
+            getFirestore,
+            doc,
+            getDoc,
             setDoc,
             collection,
             addDoc,
@@ -494,11 +498,11 @@
         const previewIframe = document.getElementById('preview-iframe');
         const generationControls = document.getElementById('generation-controls');
         const stopGeneratingBtn = document.getElementById('stop-generating-btn');
-        
+
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-        const API_KEY = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA';
-        
+        const API_KEY = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // IMPORTANT: Replace with your actual API key
+
         const firebaseConfig = {
             apiKey: "AIzaSyAMqtiL99s78TnDyHEi8VlBbzMzZh8Jqh8",
             authDomain: "login-90932.firebaseapp.com",
@@ -520,7 +524,7 @@
         let chatIdToDelete = null;
         let stopGenerationFlag = false;
         let currentUser = null;
-        
+
         // --- Speech Recognition ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
@@ -546,7 +550,7 @@
             addEventListeners();
             checkAuthState();
         });
-        
+
         function checkAuthState() {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
@@ -567,7 +571,7 @@
                         });
                         currentUser = { ...user, displayName, photoURL };
                     }
-                    
+
                     showChatApp();
                     setupUserProfile(currentUser);
                     loadChatsFromFirestore();
@@ -588,7 +592,7 @@
             chatApp.classList.remove('hidden');
             chatApp.classList.add('flex');
         }
-        
+
         function setupUserProfile(user) {
             profileEmail.textContent = user.email;
             profileName.textContent = user.displayName || 'No Name';
@@ -624,11 +628,11 @@
             signupForm.addEventListener('submit', handleSignup);
             googleLoginBtn.addEventListener('click', handleGoogleSignIn);
             googleSignupBtn.addEventListener('click', handleGoogleSignIn);
-            
+
             // Advanced Auth UI Listeners
             signupPasswordInput.addEventListener('input', updatePasswordStrength);
             document.getElementById('signup-email').addEventListener('input', validateEmail);
-            
+
             // Profile & Logout
             profileBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -676,30 +680,27 @@
 
             // Event delegation for action buttons on dynamically added chat messages
             chatContainer.addEventListener('click', (e) => {
-                const target = e.target;
-                // Traverse up to find the actual button, not its child span/svg if present
-                const button = target.closest('button.copy-btn, button.regenerate-btn, button.like-btn, button.dislike-btn');
-                
-                if (!button) return; // Not an action button
+                const button = e.target.closest('button.copy-btn, button.regenerate-btn, button.like-btn, button.dislike-btn');
+                if (!button) return;
 
                 const messageElement = button.closest('.chat-message');
                 if (!messageElement) return;
 
-                const responseText = messageElement.querySelector('.prose').innerText; // Use .prose now
+                const proseElement = messageElement.querySelector('.prose');
+                const responseText = proseElement ? proseElement.innerText : '';
 
                 if (button.classList.contains('copy-btn')) {
-                    const originalEmoji = button.textContent; // Store original emoji
+                    const originalIcon = button.innerHTML;
                     navigator.clipboard.writeText(responseText).then(() => {
-                        button.textContent = '✔️'; // Checkmark emoji
+                        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
                     }).catch(err => {
                         console.error('Failed to copy text: ', err);
-                        button.textContent = '❌'; // Cross emoji
+                        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
                     });
-                    setTimeout(() => { 
-                        button.textContent = originalEmoji; // Revert to original emoji
-                    }, 1200);
+                    setTimeout(() => {
+                        button.innerHTML = originalIcon;
+                    }, 1500);
                 } else if (button.classList.contains('regenerate-btn')) {
-                    // Get the message index for regeneration
                     const messageIndex = Array.from(chatContainer.children).indexOf(messageElement);
                     regenerateMessage(messageIndex);
                 } else if (button.classList.contains('like-btn')) {
@@ -707,23 +708,17 @@
                     button.classList.toggle('active-like');
                     if (button.classList.contains('active-like')) {
                         dislikeBtn.classList.remove('active-dislike');
-                        // Send 'like' feedback to your backend/database
-                    } else {
-                        // Remove 'like' feedback
                     }
                 } else if (button.classList.contains('dislike-btn')) {
                     const likeBtn = messageElement.querySelector('.like-btn');
                     button.classList.toggle('active-dislike');
                     if (button.classList.contains('active-dislike')) {
                         likeBtn.classList.remove('active-like');
-                        // Send 'dislike' feedback to your backend/database
-                    } else {
-                        // Remove 'dislike' feedback
                     }
                 }
             });
         }
-        
+
         // --- AUTHENTICATION LOGIC ---
         async function handleLogin(e) {
             e.preventDefault();
@@ -750,17 +745,13 @@
 
             const submitBtn = signupForm.querySelector('button[type="submit"]');
             toggleButtonLoading(submitBtn, true);
-            
+
             const fullName = signupNameInput.value.trim();
             const email = signupForm['signup-email'].value;
             const password = signupForm['signup-password'].value;
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                
-                // This triggers onAuthStateChanged where the user document will be created.
-                // We also update the auth profile right away.
                 await updateProfile(userCredential.user, { displayName: fullName });
-                
                 authError.classList.add('hidden');
             } catch (error) {
                 console.error("Signup error", error);
@@ -770,7 +761,7 @@
                 toggleButtonLoading(submitBtn, false);
             }
         }
-        
+
         async function handleGoogleSignIn() {
             const provider = new GoogleAuthProvider();
             try {
@@ -786,7 +777,6 @@
         async function handleLogout() {
             try {
                 await signOut(auth);
-                // Clear state
                 allChats = {};
                 currentChatId = null;
                 chatContainer.innerHTML = '';
@@ -795,25 +785,20 @@
                 console.error("Logout error", error);
             }
         }
-        
+
         // --- ADVANCED AUTH UI & HELPERS ---
         function getFriendlyAuthError(error) {
             switch(error.code) {
-                case 'auth/invalid-email':
-                    return 'Please enter a valid email address.';
+                case 'auth/invalid-email': return 'Please enter a valid email address.';
                 case 'auth/user-not-found':
                 case 'auth/wrong-password':
-                case 'auth/invalid-credential':
-                     return 'Invalid email or password. Please try again.';
-                case 'auth/email-already-in-use':
-                    return 'This email is already registered. Please log in.';
-                case 'auth/weak-password':
-                    return 'Password is too weak. Please use at least 6 characters.';
-                default:
-                    return 'An unexpected error occurred. Please try again.';
+                case 'auth/invalid-credential': return 'Invalid email or password. Please try again.';
+                case 'auth/email-already-in-use': return 'This email is already registered. Please log in.';
+                case 'auth/weak-password': return 'Password is too weak. Please use at least 6 characters.';
+                default: return 'An unexpected error occurred. Please try again.';
             }
         }
-        
+
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
             const button = input.nextElementSibling;
@@ -826,24 +811,23 @@
                 icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path  stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
             }
         }
-        
+
         function updatePasswordStrength() {
             const password = signupPasswordInput.value;
             let strength = 0;
-            if (password.length > 5) strength++; // Min length
-            if (password.length > 7) strength++; // Good length
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++; // Mix of case
-            if (password.match(/\d/)) strength++; // Numbers
-            if (password.match(/[^a-zA-Z\d]/)) strength++; // Symbols
+            if (password.length > 5) strength++;
+            if (password.length > 7) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
 
             let color = 'bg-slate-600';
             if (strength <= 2) color = 'bg-red-500';
             else if (strength <= 4) color = 'bg-yellow-500';
             else color = 'bg-green-500';
-            
+
             passwordStrengthBar.className = `rounded-full ${color}`;
             passwordStrengthBar.style.width = `${(strength / 5) * 100}%`;
-            
             validatePassword();
         }
 
@@ -874,21 +858,17 @@
             const isEmailValid = validateEmail();
             const isPasswordValid = validatePassword();
             const isNameValid = signupNameInput.value.trim() !== '';
-            if(!isNameValid) {
-                // You can add an error message for name if you want
-            }
             return isEmailValid && isPasswordValid && isNameValid;
         }
-        
+
         function toggleButtonLoading(button, isLoading) {
             const buttonText = button.querySelector('.button-text');
             const loader = button.querySelector('.button-loader');
+            button.disabled = isLoading;
             if (isLoading) {
-                button.disabled = true;
                 buttonText.classList.add('hidden');
                 loader.classList.remove('hidden');
             } else {
-                button.disabled = false;
                 buttonText.classList.remove('hidden');
                 loader.classList.add('hidden');
             }
@@ -901,18 +881,15 @@
             const userInput = chatInput.value.trim();
             if (!userInput || !currentUser) return;
 
-            // Check for API key before doing anything else.
-            if (!API_KEY) {
+            if (!API_KEY || API_KEY.includes('YOUR_API_KEY_HERE')) {
                 appendMessage("`Error`: API Key is missing.\n\nPlease add your Google AI Gemini API key in the `<script>` section of the HTML file to enable the chat functionality.", 'model-error');
                 return;
             }
 
-            // --- Change UI to "generating" state ---
-            toggleForm(false); 
-            generationControls.classList.remove('hidden'); 
-            stopGenerationFlag = false; 
-            
-            // If this is the first message in a new chat, create the chat document first
+            toggleForm(false);
+            generationControls.classList.remove('hidden');
+            stopGenerationFlag = false;
+
             if (!currentChatId) {
                 try {
                      const title = userInput.substring(0, 40) + (userInput.length > 40 ? '...' : '');
@@ -931,15 +908,13 @@
                     return;
                 }
             }
-            
+
             appendMessage(userInput, 'user');
 
-            // Save user message to history
             const userMessage = { role: 'user', parts: [{ text: userInput }], timestamp: new Date() };
             allChats[currentChatId].messages.push(userMessage);
             await addDoc(collection(db, "users", currentUser.uid, "chats", currentChatId, "messages"), userMessage);
-            
-            // Update sidebar if it's a new chat title
+
             if(allChats[currentChatId].messages.length === 1) {
                 const newTitle = userInput.substring(0, 40) + (userInput.length > 40 ? '...' : '');
                 await updateDoc(doc(db, "users", currentUser.uid, "chats", currentChatId), { title: newTitle });
@@ -947,7 +922,6 @@
                 renderHistorySidebar();
             }
 
-            // Clear input and show loading state
             chatInput.value = '';
             autoResizeTextarea(chatInput);
             updateSendButtonState();
@@ -955,9 +929,8 @@
             scrollToBottom();
 
             try {
-                // Filter out timestamp field for API call
                 const apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
-                
+
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -973,14 +946,12 @@
                 const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
                 if (aiResponseText) {
-                    // Append an empty container for the AI message first
-                    const messageId = appendMessage('', 'model'); 
+                    const messageId = appendMessage('', 'model');
                     const messageElement = document.getElementById(messageId);
                     const contentContainer = messageElement.querySelector('.prose');
 
-                    // Start streaming and wait for it to finish or be stopped
                     const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
-                    
+
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
                     await addDoc(collection(db, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
@@ -993,59 +964,43 @@
                 removeLoadingIndicator();
                 appendMessage(`Error: ${error.message}`, 'model-error');
             } finally {
-                // --- Restore UI to normal state ---
-                generationControls.classList.add('hidden'); // Hide stop button
-                toggleForm(true); // Re-enable form controls
+                generationControls.classList.add('hidden');
+                toggleForm(true);
             }
         }
 
-        // --- REGENERATE MESSAGE FUNCTION ---
         async function regenerateMessage(messageIndex) {
             if (!currentChatId || !allChats[currentChatId] || !API_KEY) return;
 
-            const chat = allChats[currentChatId];
-            const messages = chat.messages.slice(0, messageIndex); // Get context up to this message
-
-            // --- Change UI to "generating" state ---
             toggleForm(false);
             generationControls.classList.remove('hidden');
             stopGenerationFlag = false;
 
             try {
-                // Filter out timestamp field for API call
-                const apiMessages = messages.map(({ role, parts }) => ({ role, parts }));
-                
+                const messagesToRegen = allChats[currentChatId].messages.slice(0, messageIndex);
+                const apiMessages = messagesToRegen.map(({ role, parts }) => ({ role, parts }));
+
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: apiMessages }),
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'An unknown API error occurred.');
-                }
+                if (!response.ok) throw new Error((await response.json()).error?.message);
 
                 const data = await response.json();
                 const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
                 if (aiResponseText && !stopGenerationFlag) {
-                    // Find the message element to replace
-                    const messageElements = chatContainer.children;
-                    const messageElement = messageElements[messageIndex];
-                    
+                    const messageElement = chatContainer.children[messageIndex];
                     if (messageElement) {
                         const contentContainer = messageElement.querySelector('.prose');
                         if (contentContainer) {
-                            // Clear existing content and start streaming new response
                             contentContainer.innerHTML = '';
                             const finalText = await streamResponse(contentContainer, aiResponseText, messageElement.id);
-                            
-                            // Update the message in local state
                             const regeneratedMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                             allChats[currentChatId].messages[messageIndex] = regeneratedMessage;
-                            
-                            // Note: In a full implementation, you'd also update the database
+                            // In a full implementation, you'd also update this specific message in Firestore.
                         }
                     }
                 }
@@ -1053,12 +1008,11 @@
                 console.error('Error regenerating response:', error);
                 appendMessage(`Error regenerating response: ${error.message}`, 'model-error');
             } finally {
-                // --- Restore UI to normal state ---
                 generationControls.classList.add('hidden');
                 toggleForm(true);
             }
         }
-        
+
         // --- UI & DOM MANIPULATION ---
         function handleTextareaKeydown(e) {
             if (e.key === 'Enter' && !e.shiftKey && !submitButton.disabled) {
@@ -1076,12 +1030,9 @@
         function appendMessage(text, sender) {
             const messageId = `msg-${sender}-${Date.now()}`;
             const isModel = sender === 'model' || sender === 'model-error';
-            
             const messageContainerMaxWidth = 'max-w-3xl';
-
-            // Base HTML for the content, which will be parsed by Marked.js
             const messageContentHtml = `<div class="prose max-w-none text-slate-200"></div>`;
-            
+
             let userAvatarHtml = '';
             if (sender === 'user' && currentUser) {
                 if(currentUser.photoURL) {
@@ -1095,25 +1046,22 @@
             const isError = sender === 'model-error';
             const modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br ${isError ? 'from-red-500 to-orange-600' : 'from-cyan-500 to-blue-600'} flex items-center justify-center shadow-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-white"><path d="m12 14 4-4"/><path d="m12 14 4 4"/><path d="M12 14H2.5"/><path d="M12 14v7.5"/><path d="m20 10-4-4"/><path d="m20 10-4 4"/><path d="M20 10h-7.5"/><path d="M4 14v-2.5"/><path d="M4 14H2.5"/><path d="M4 14l-1.5-1.5L4 11l1.5 1.5L4 14Z"/><path d="m12 6-2-2-2 2-2-2-2 2-2-2-2 2"/><path d="M12 6V2.5"/></svg></div>`;
 
-            // Action buttons HTML with emoji icons only
             const actionButtonsHtml = `
                 <div class="action-buttons">
-                    <button class="copy-btn" title="Copy">📋</button>
-                    <button class="regenerate-btn" title="Regenerate">🔄</button>
-                    <button class="like-btn" title="Like">👍</button>
-                    <button class="dislike-btn" title="Dislike">👎</button>
-                </div>
-            `;
+                    <button class="copy-btn" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button>
+                    <button class="regenerate-btn" title="Regenerate"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button>
+                    <button class="like-btn" title="Like"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 18.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a2 2 0 0 1 1.79 1.11L15 5.88Z"/></svg></button>
+                    <button class="dislike-btn" title="Dislike"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a2 2 0 0 1-1.79-1.11L9 18.12Z"/></svg></button>
+                </div>`;
 
-
-            const messageHtml = sender === 'user' ? 
+            const messageHtml = sender === 'user' ?
                 `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 justify-end"><div class="bg-cyan-600 rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg"><div class="prose max-w-none text-white">${marked.parse(text)}</div></div><div class="flex-shrink-0">${userAvatarHtml}</div></div>` :
-                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg">${messageContentHtml}</div>${isModel ? actionButtonsHtml : ''}</div>`; // Add action buttons here
+                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg">${messageContentHtml}</div>${isModel ? actionButtonsHtml : ''}</div>`;
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
             const messageElement = document.getElementById(messageId);
             const contentContainer = messageElement.querySelector('.prose');
-            
+
             if (isModel && contentContainer) {
                  contentContainer.innerHTML = marked.parse(text);
                  makeTablesResponsive(contentContainer);
@@ -1121,91 +1069,40 @@
             }
 
             scrollToBottom();
-            return messageId; // Return the ID for reference
+            return messageId;
         }
 
         function streamResponse(contentContainer, fullText, messageId) {
             return new Promise((resolve) => {
-                const finalHtml = marked.parse(fullText);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = finalHtml;
+                let currentText = '';
+                let index = 0;
+                const typingSpeed = 10;
 
-                const textNodesToAnimate = [];
-                function findTextNodes(node) {
-                    if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim().length > 0) {
-                        textNodesToAnimate.push({ node, originalText: node.nodeValue });
-                        node.nodeValue = '';
-                    }
-                    for (const child of node.childNodes) {
-                        findTextNodes(child);
-                    }
-                }
-                findTextNodes(tempDiv);
-                
-                while (tempDiv.firstChild) {
-                    contentContainer.appendChild(tempDiv.firstChild);
-                }
-
-                let nodeIndex = 0;
-                function animateNextNode() {
-                    // Check for completion or user interruption
-                    if (nodeIndex >= textNodesToAnimate.length || stopGenerationFlag) {
-                        const cursor = contentContainer.querySelector('.typing-cursor');
-                        if (cursor) cursor.remove();
+                function type() {
+                    if (stopGenerationFlag || index >= fullText.length) {
+                        const finalHtml = marked.parse(currentText);
+                        contentContainer.innerHTML = finalHtml;
                         makeTablesResponsive(contentContainer);
                         enhanceCodeBlocks(messageId);
-                        
-                        // Resolve promise with final text (full or partial)
-                        resolve(stopGenerationFlag ? contentContainer.innerText : fullText);
+                        resolve(currentText);
                         return;
                     }
 
-                    const { node, originalText } = textNodesToAnimate[nodeIndex];
-                    const characters = originalText.split('');
-                    let charIndex = 0;
-
-                    const cursor = document.createElement('span');
-                    cursor.className = 'typing-cursor';
-                    if(node.nextSibling) {
-                        node.parentNode.insertBefore(cursor, node.nextSibling);
-                    } else {
-                        node.parentNode.appendChild(cursor);
-                    }
-
-                    function typeCharacter() {
-                         // Check for user interruption within the character loop
-                        if (stopGenerationFlag) {
-                            animateNextNode(); // Jump to the end logic
-                            return;
-                        }
-                        if (charIndex < characters.length) {
-                            node.nodeValue += characters[charIndex];
-                            charIndex++;
-                            scrollToBottom();
-                            const delay = Math.random() * 12 + 4;
-                            setTimeout(typeCharacter, delay);
-                        } else {
-                            cursor.remove();
-                            nodeIndex++;
-                            animateNextNode();
-                        }
-                    }
-                    typeCharacter();
+                    currentText += fullText[index];
+                    index++;
+                    const tempHtml = marked.parse(currentText + '▋'); // Use block char as cursor
+                    contentContainer.innerHTML = tempHtml;
+                    scrollToBottom();
+                    setTimeout(type, typingSpeed);
                 }
-                animateNextNode();
+                type();
             });
         }
-        
-        /**
-         * Wraps tables in a div to make them horizontally scrollable on small screens.
-         * @param {HTMLElement} element The message container element.
-         */
+
         function makeTablesResponsive(element) {
             if (!element) return;
-            const tables = element.querySelectorAll('table');
-            tables.forEach(table => {
+            element.querySelectorAll('table').forEach(table => {
                 if (table.parentElement.classList.contains('table-responsive-wrapper')) return;
-                
                 const wrapper = document.createElement('div');
                 wrapper.className = 'table-responsive-wrapper';
                 table.parentNode.insertBefore(wrapper, table);
@@ -1218,16 +1115,15 @@
             const messageElement = document.getElementById(messageId);
             if (!messageElement) return;
 
-            const codeBlocks = messageElement.querySelectorAll('pre');
-            codeBlocks.forEach(block => {
+            messageElement.querySelectorAll('pre').forEach(block => {
                 const code = block.querySelector('code');
                 if (!code || block.querySelector('.code-btn-wrapper')) return;
 
                 const btnWrapper = document.createElement('div');
                 btnWrapper.className = 'code-btn-wrapper';
 
-                // Add Preview button for HTML content
-                if (code.classList.contains('language-html') || code.classList.contains('language-markup') || code.classList.contains('language-xml')) {
+                const language = Array.from(code.classList).find(c => c.startsWith('language-'))?.replace('language-', '');
+                if (['html', 'markup', 'xml'].includes(language)) {
                     const previewBtn = document.createElement('button');
                     previewBtn.className = 'code-action-btn';
                     previewBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> <span>Preview</span>`;
@@ -1235,7 +1131,6 @@
                     btnWrapper.appendChild(previewBtn);
                 }
 
-                // Add Copy button for all code blocks
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'code-action-btn';
                 copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg> <span>Copy</span>`;
@@ -1254,40 +1149,31 @@
                 block.appendChild(btnWrapper);
             });
         }
-        
+
         function updateSendButtonState() {
             const hasText = chatInput.value.trim().length > 0;
             submitButton.disabled = !hasText;
-            if (hasText) {
-                submitButton.classList.remove('bg-slate-700');
-                submitButton.classList.add('bg-cyan-600', 'hover:bg-cyan-700');
-            } else {
-                submitButton.classList.add('bg-slate-700');
-                submitButton.classList.remove('bg-cyan-600', 'hover:bg-cyan-700');
-            }
+            submitButton.classList.toggle('bg-slate-700', !hasText);
+            submitButton.classList.toggle('hover:bg-cyan-700', hasText);
+            submitButton.classList.toggle('bg-cyan-600', hasText);
         }
-        
+
         function renderHistorySidebar() {
             historyList.innerHTML = '';
-            const sortedChats = Object.values(allChats).sort((a, b) => {
-                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : 0;
-                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : 0;
-                return dateB - dateA;
-            });
-            
+            const sortedChats = Object.values(allChats).sort((a, b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
+
             clearAllBtn.style.display = sortedChats.length > 0 ? 'block' : 'none';
 
             sortedChats.forEach(chat => {
                 const li = document.createElement('li');
                 const isActive = chat.id === currentChatId;
-                const activeBg = isActive ? 'bg-slate-700' : 'hover:bg-slate-700/50';
-                li.className = `history-item-container flex items-center justify-between rounded-md ${activeBg}`;
-                
+                li.className = `history-item-container flex items-center justify-between rounded-md ${isActive ? 'bg-slate-700' : 'hover:bg-slate-700/50'}`;
+
                 const titleBtn = document.createElement('button');
                 titleBtn.className = `flex-1 text-left px-3 py-2 truncate ${isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'}`;
                 titleBtn.textContent = chat.title || 'New Chat';
                 titleBtn.addEventListener('click', () => loadChat(chat.id));
-                
+
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-chat-btn p-2 text-slate-500 hover:text-red-500 transition-opacity duration-200 opacity-0';
                 deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
@@ -1301,7 +1187,7 @@
                 historyList.appendChild(li);
             });
         }
-        
+
         function toggleSidebar() {
             sidebar.classList.toggle('open');
             sidebarOverlay.classList.toggle('hidden');
@@ -1319,7 +1205,8 @@
         }
 
         function scrollToBottom() {
-            chatContainer.parentElement.scrollTop = chatContainer.parentElement.scrollHeight;
+            const mainArea = chatContainer.parentElement;
+            mainArea.scrollTop = mainArea.scrollHeight;
         }
 
         // --- HISTORY & STATE MANAGEMENT (FIRESTORE) ---
@@ -1328,34 +1215,32 @@
             chatContainer.innerHTML = '';
             const userName = currentUser ? (currentUser.displayName || "there") : "there";
             const welcomeMessage = `Hello ${userName}! Welcome to Chat@AI. How can I help you today?`;
-            
+
             const messageId = appendMessage("", 'model');
             const messageElement = document.getElementById(messageId);
             const contentContainer = messageElement.querySelector('.prose');
-            
+
             streamResponse(contentContainer, welcomeMessage, messageId);
-            renderHistorySidebar(); // Renders sidebar with no chat selected
-            
+            renderHistorySidebar();
+
             if (window.innerWidth < 1024) {
                 sidebar.classList.remove('open');
                 sidebarOverlay.classList.add('hidden');
             }
         }
-        
+
         async function loadChat(chatId) {
             if (!currentUser || !allChats[chatId]) return;
             currentChatId = chatId;
             chatContainer.innerHTML = '';
-            
-            // Load messages from subcollection
+
             const messagesQuery = query(collection(db, "users", currentUser.uid, "chats", chatId, "messages"));
             const messagesSnapshot = await getDocs(messagesQuery);
-            const messages = messagesSnapshot.docs.map(doc => doc.data());
-            // You might want to sort messages by a timestamp if you add one
+            const messages = messagesSnapshot.docs.map(doc => doc.data()).sort((a,b) => a.timestamp.toMillis() - b.timestamp.toMillis());
             allChats[chatId].messages = messages;
 
             messages.forEach(msg => appendMessage(msg.parts[0].text, msg.role));
-            
+
             renderHistorySidebar();
             scrollToBottom();
             if (window.innerWidth < 1024) {
@@ -1367,22 +1252,16 @@
             if (!currentUser) return;
             const chatsQuery = query(collection(db, "users", currentUser.uid, "chats"));
             const querySnapshot = await getDocs(chatsQuery);
-            const chats = {};
+            allChats = {};
             querySnapshot.forEach((doc) => {
-                chats[doc.id] = { id: doc.id, ...doc.data(), messages: [] };
+                allChats[doc.id] = { id: doc.id, ...doc.data(), messages: [] };
             });
-            allChats = chats;
-            
+
             loadMostRecentChat();
         }
 
         function loadMostRecentChat() {
-            const sortedChats = Object.values(allChats).sort((a, b) => {
-                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : 0;
-                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : 0;
-                return dateB - dateA;
-            });
-            
+            const sortedChats = Object.values(allChats).sort((a, b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
             if (sortedChats.length > 0) {
                 loadChat(sortedChats[0].id);
             } else {
@@ -1392,13 +1271,8 @@
 
         function showDeleteModal(chatId) {
             chatIdToDelete = chatId;
-            if (chatId) {
-                 deleteModalTitle.textContent = "Delete Chat?";
-                 deleteModalText.textContent = "Are you sure you want to delete this chat? This action cannot be undone.";
-            } else {
-                 deleteModalTitle.textContent = "Delete All Chats?";
-                 deleteModalText.textContent = "This will permanently delete all conversations. This action cannot be undone.";
-            }
+            deleteModalTitle.textContent = chatId ? "Delete Chat?" : "Delete All Chats?";
+            deleteModalText.textContent = `This will permanently delete ${chatId ? 'this conversation' : 'all conversations'}. This action cannot be undone.`;
             deleteModal.classList.remove('hidden');
             deleteModal.classList.add('flex');
         }
@@ -1408,18 +1282,9 @@
             deleteModal.classList.add('hidden');
             deleteModal.classList.remove('flex');
         }
-        
+
         function showPreviewModal(htmlCode) {
-            // Basic sanitization to prevent script execution from the parent context
-            const fullHtml = `
-                <html>
-                <head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <script src="https://cdn.tailwindcss.com"><\/script>
-                </head>
-                <body>${htmlCode}</body>
-                </html>
-            `;
+            const fullHtml = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"><\/script></head><body>${htmlCode}</body></html>`;
             previewIframe.srcdoc = fullHtml;
             previewModal.classList.remove('hidden');
             previewModal.classList.add('flex');
@@ -1441,41 +1306,26 @@
 
         async function handleSingleDelete() {
             if (!chatIdToDelete || !currentUser) return;
-            
             const wasCurrentChat = chatIdToDelete === currentChatId;
-            
-            // Note: Deleting a document does not delete its subcollections.
-            // For a full cleanup, one would need a cloud function or recursive client-side deletes.
-            // For this app's purpose, deleting the chat document is sufficient.
             await deleteDoc(doc(db, "users", currentUser.uid, "chats", chatIdToDelete));
-            
             delete allChats[chatIdToDelete];
-            
             renderHistorySidebar();
-            
-            if (wasCurrentChat) {
-                loadMostRecentChat(); // BUG FIX: Load the next most recent chat
-            }
+            if (wasCurrentChat) loadMostRecentChat();
             hideDeleteModal();
         }
 
         async function handleDeleteAll() {
             if(!currentUser) return;
-
             const chatsQuery = query(collection(db, "users", currentUser.uid, "chats"));
             const querySnapshot = await getDocs(chatsQuery);
-            const deletePromises = [];
-            querySnapshot.forEach((doc) => {
-                deletePromises.push(deleteDoc(doc.ref));
-            });
+            const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
             await Promise.all(deletePromises);
-
             allChats = {};
             renderHistorySidebar();
             startNewChat();
             hideDeleteModal();
         }
-        
+
         // --- VOICE INPUT ---
         function toggleVoiceRecognition() {
             if (micIcon.classList.contains('mic-active')) {
@@ -1507,12 +1357,10 @@
                 </div>`;
             chatContainer.insertAdjacentHTML('beforeend', loadingHtml);
         }
-        
+
         function removeLoadingIndicator() {
             const indicator = document.getElementById('loading-indicator');
-            if (indicator) {
-                indicator.remove();
-            }
+            if (indicator) indicator.remove();
         }
 
         // --- GLOBAL HELPER FUNCTIONS ---
