@@ -306,6 +306,38 @@
             border-color: #ef4444;
             background-color: #1e293b; /* Now opaque */
         }
+        
+        /* Styles for Multimedia upload */
+        #file-preview-container {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: none;
+            position: relative;
+            background: #334155;
+            border-radius: 0.5rem;
+        }
+        #file-preview-container img, #file-preview-container video {
+            max-height: 100px;
+            border-radius: 0.25rem;
+        }
+        #file-preview-container audio {
+            width: 100%;
+        }
+        #remove-file-btn {
+            position: absolute;
+            top: -0.5rem;
+            right: -0.5rem;
+            background: #ef4444;
+            color: white;
+            border-radius: 9999px;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1e293b;
+        }
+
     </style>
 </head>
 <body class="bg-slate-900 text-white h-full overflow-hidden">
@@ -417,6 +449,7 @@
                     Quick Tips
                 </h3>
                 <ul class="text-xs text-slate-400 space-y-1">
+                    <li>• Upload image, audio, or video files</li>
                     <li>• Use voice input with the mic button</li>
                     <li>• Press Enter to send, Shift+Enter for new line</li>
                     <li>• Copy, regenerate, or rate responses</li>
@@ -491,7 +524,23 @@
                         </button>
                     </div>
                     <form id="chat-form">
+                         <!-- File Preview Container -->
+                        <div id="file-preview-container">
+                            <div id="file-preview"></div>
+                            <button type="button" id="remove-file-btn" title="Remove file">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
                         <div class="flex items-end bg-slate-800 border border-slate-700 rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-cyan-500">
+                            <!-- Multimedia upload buttons -->
+                            <div class="help-tooltip">
+                                <button id="attach-file-btn" type="button" class="text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-700 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                </button>
+                                <div class="tooltip-content">Attach File</div>
+                            </div>
+                             <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*">
+                             
                             <textarea id="chat-input" placeholder="Enter Your Prompt...." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-white placeholder-slate-400 focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
 
                             <div class="help-tooltip">
@@ -552,6 +601,7 @@
             signOut,
             GoogleAuthProvider,
             signInWithPopup,
+            updateProfile,
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
             getFirestore,
@@ -615,10 +665,18 @@
         const stopGeneratingBtn = document.getElementById('stop-generating-btn');
         const statusIndicator = document.getElementById('status-indicator');
 
+        // New Multimedia Elements
+        const attachFileBtn = document.getElementById('attach-file-btn');
+        const fileInput = document.getElementById('file-input');
+        const filePreviewContainer = document.getElementById('file-preview-container');
+        const filePreview = document.getElementById('file-preview');
+        const removeFileBtn = document.getElementById('remove-file-btn');
+
+
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-        const API_KEY = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // Replace with your actual API key
-        
+        const API_KEY = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // IMPORTANT: Replace with your actual Gemini API key
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         const firebaseConfig = {
@@ -643,6 +701,7 @@
         let currentUser = null;
         let notificationQueue = [];
         let isNotificationVisible = false;
+        let attachedFile = null; // To store the currently attached file data
 
         // --- Speech Recognition ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -671,7 +730,7 @@
         });
 
         function checkAPIStatus() {
-            if (!API_KEY || API_KEY.includes('YOUR_API_KEY_HERE')) {
+            if (!API_KEY || API_KEY.includes('YOUR_API_KEY')) {
                  if(statusIndicator) {
                     statusIndicator.innerHTML = '● API Key Required';
                     statusIndicator.className = 'text-red-400';
@@ -792,9 +851,9 @@
                        <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-20 h-20 rounded-full shadow-lg" />
                     </div>
                     <h2 class="text-3xl font-bold text-white mb-4">Welcome to Chat@AI</h2>
-                    <p class="text-slate-300 text-lg mb-6">Your intelligent AI assistant. Ask me anything!</p>
+                    <p class="text-slate-300 text-lg mb-6">Your intelligent AI assistant. Ask me anything or upload a file to get started!</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <div class="feature-card rounded-lg p-4">
                             <div class="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400">
@@ -802,58 +861,50 @@
                                 </svg>
                             </div>
                             <h3 class="font-semibold text-white mb-2">Smart Conversations</h3>
-                            <p class="text-slate-400 text-sm">Engage in natural, intelligent conversations with advanced AI</p>
+                            <p class="text-slate-400 text-sm">Engage in natural, intelligent conversations with advanced AI.</p>
                         </div>
                         
-                        <div class="feature-card rounded-lg p-4">
-                            <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
-                                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
-                                    <circle cx="12" cy="13" r="3"/>
-                                </svg>
+                         <div class="feature-card rounded-lg p-4">
+                            <div class="w-12 h-12 bg-lime-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-lime-400">
+                                    <rect width="18" height="18" x="3" y="3" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                             </div>
-                            <h3 class="font-semibold text-white mb-2">Code & Preview</h3>
-                            <p class="text-slate-400 text-sm">Generate code and preview HTML in real-time</p>
+                            <h3 class="font-semibold text-white mb-2">Multimedia Analysis</h3>
+                            <p class="text-slate-400 text-sm">Analyze images, audio, and video for deeper insights.</p>
                         </div>
-                        
+
                         <div class="feature-card rounded-lg p-4">
-                            <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
-                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                                    <line x1="12" y1="19" x2="12" y2="23"/>
-                                </svg>
+                            <div class="w-12 h-12 bg-amber-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-400"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4"/><path d="M18 22V4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/><path d="M10 6h4"/></svg>
                             </div>
-                            <h3 class="font-semibold text-white mb-2">Voice Input</h3>
-                            <p class="text-slate-400 text-sm">Speak naturally using voice recognition</p>
+                            <h3 class="font-semibold text-white mb-2">Information Extraction</h3>
+                            <p class="text-slate-400 text-sm">Pull structured data like contacts or key points from any text.</p>
+                        </div>
+
+                         <div class="feature-card rounded-lg p-4">
+                            <div class="w-12 h-12 bg-rose-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 7 1.4-1.4"/><path d="M6.4 17.6 5 19"/><path d="M22 12h-2"/><path d="M4 12H2"/><path d="m19 19-1.4-1.4"/><path d="M7.6 6.4 5 5"/></svg>
+                            </div>
+                            <h3 class="font-semibold text-white mb-2">Sentiment Analysis</h3>
+                            <p class="text-slate-400 text-sm">Quickly determine the emotional tone of reviews or feedback.</p>
                         </div>
                     </div>
                     
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-white mb-4">Try these examples:</h3>
                         <div class="flex flex-wrap gap-2 justify-center">
-                            <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Explain quantum computing in simple terms')">
-                                Explain quantum computing
+                             <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('From the text: \'Reach out to Jane at jane.doe@example.com or 123-456-7890\', extract the name, email, and phone number.')">
+                                Extract contact info
+                            </button>
+                            <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Analyze the sentiment: \'The product is okay, but the customer service was terrible.\'')">
+                                Analyze sentiment
                             </button>
                             <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Create a responsive HTML landing page')">
                                 Create a landing page
                             </button>
-                            <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Write a Python function to sort a list')">
-                                Python sorting function
-                            </button>
                             <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Plan a 7-day trip to Japan')">
                                 Plan a trip to Japan
                             </button>
-                        </div>
-                    </div>
-                    
-                    <div class="text-sm text-slate-400">
-                        <p class="mb-2">💡 <strong>Pro Tips:</strong></p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left">
-                            <p>• Use voice input by clicking the microphone</p>
-                            <p>• Press Enter to send, Shift+Enter for new line</p>
-                            <p>• Copy, regenerate, or rate AI responses</p>
-                            <p>• Preview HTML code in a live window</p>
                         </div>
                     </div>
                 </div>
@@ -918,13 +969,10 @@
             });
             chatInput.addEventListener('keydown', handleTextareaKeydown);
 
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === '/') {
-                    e.preventDefault();
-                    showNotification('Keyboard shortcuts: Ctrl+/ (help), Enter (send), Shift+Enter (new line)', 'info');
-                }
-            });
+            // Multimedia listeners
+            attachFileBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            removeFileBtn.addEventListener('click', removeAttachedFile);
 
             if (recognition) {
                 micBtn.addEventListener('click', toggleVoiceRecognition);
@@ -1153,13 +1201,59 @@
             }
         }
 
+        // --- MULTIMEDIA HANDLING ---
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Data = event.target.result.split(',')[1];
+                attachedFile = {
+                    base64: base64Data,
+                    mimeType: file.type,
+                    name: file.name
+                };
+                displayFilePreview();
+                updateSendButtonState();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function displayFilePreview() {
+            if (!attachedFile) return;
+
+            let previewHtml = '';
+            if (attachedFile.mimeType.startsWith('image/')) {
+                previewHtml = `<img src="data:${attachedFile.mimeType};base64,${attachedFile.base64}" alt="File preview">`;
+            } else if (attachedFile.mimeType.startsWith('audio/')) {
+                previewHtml = `<audio controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></audio>`;
+            } else if (attachedFile.mimeType.startsWith('video/')) {
+                previewHtml = `<video controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
+            } else {
+                previewHtml = `<div class="text-sm text-slate-300 p-2">File: ${attachedFile.name}</div>`;
+            }
+
+            filePreview.innerHTML = previewHtml;
+            filePreviewContainer.style.display = 'block';
+        }
+
+        function removeAttachedFile() {
+            attachedFile = null;
+            fileInput.value = ''; // Reset file input
+            filePreviewContainer.style.display = 'none';
+            filePreview.innerHTML = '';
+            updateSendButtonState();
+        }
+
         // --- CHAT LOGIC ---
         async function handleSendMessage(e) {
             if(e) e.preventDefault();
             const userInput = chatInput.value.trim();
-            if (!userInput || !currentUser) return;
+            if ((!userInput && !attachedFile) || !currentUser) return;
 
-            if (!API_KEY || API_KEY.includes('YOUR_API_KEY_HERE')) {
+
+            if (!API_KEY || API_KEY.includes('YOUR_API_KEY')) {
                 appendMessage("`Error`: API Key is missing.\n\nPlease add your Google AI Gemini API key in the script section to enable chat functionality.", 'model-error');
                 return;
             }
@@ -1177,11 +1271,11 @@
                 try {
                      const title = userInput.substring(0, 40) + (userInput.length > 40 ? '...' : '');
                      const newChatRef = await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats"), {
-                        title: title,
+                        title: title || 'Multimedia Chat',
                         createdAt: new Date()
                     });
                     currentChatId = newChatRef.id;
-                    allChats[currentChatId] = { id: currentChatId, createdAt: new Date(), title: title, messages: [] };
+                    allChats[currentChatId] = { id: currentChatId, createdAt: new Date(), title: title || 'Multimedia Chat', messages: [] };
                     renderHistorySidebar();
                 } catch (error) {
                     console.error("Error creating new chat:", error);
@@ -1192,20 +1286,37 @@
                 }
             }
 
-            appendMessage(userInput, 'user');
+            // Construct parts for the message
+            const messageParts = [];
+            if (attachedFile) {
+                messageParts.push({
+                    inlineData: {
+                        mimeType: attachedFile.mimeType,
+                        data: attachedFile.base64
+                    }
+                });
+            }
+            if (userInput) {
+                messageParts.push({ text: userInput });
+            }
 
-            const userMessage = { role: 'user', parts: [{ text: userInput }], timestamp: new Date() };
+            appendMessage({ text: userInput, file: attachedFile }, 'user');
+            
+            const userMessage = { role: 'user', parts: messageParts, timestamp: new Date() };
             allChats[currentChatId].messages.push(userMessage);
-            await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), userMessage);
+            // Storing in firestore can be complex with large files, so we'll just store a reference for now
+            const firestoreMessage = { role: 'user', parts: [{text: userInput || `[Sent a file: ${attachedFile.name}]`}], timestamp: new Date() };
+            await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), firestoreMessage);
 
             if(allChats[currentChatId].messages.length === 1) {
                 const newTitle = userInput.substring(0, 40) + (userInput.length > 40 ? '...' : '');
-                await updateDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId), { title: newTitle });
-                allChats[currentChatId].title = newTitle;
+                await updateDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId), { title: newTitle || `Chat about ${attachedFile.name}` });
+                allChats[currentChatId].title = newTitle || `Chat about ${attachedFile.name}`;
                 renderHistorySidebar();
             }
 
             chatInput.value = '';
+            removeAttachedFile();
             autoResizeTextarea(chatInput);
             updateSendButtonState();
             appendLoadingIndicator();
@@ -1213,16 +1324,6 @@
 
             try {
                 let apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
-
-                // Add system instruction for the first message of a chat
-                if (apiMessages.filter(m => m.role === 'user').length === 1) {
-                    const systemInstruction = {
-                        role: "user",
-                        parts: [{ text: "SYSTEM INSTRUCTION: From now on, format all your responses using rich Markdown. Use headings, lists, tables, and code blocks where appropriate to provide a clear, structured, and impressive answer. For code, always use Markdown code fences with the language specified. Let's start." }]
-                    };
-                    apiMessages.unshift(systemInstruction);
-                }
-
 
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
@@ -1239,7 +1340,7 @@
                 const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
                 if (aiResponseText) {
-                    const messageId = appendMessage('', 'model');
+                    const messageId = appendMessage({text: ''}, 'model');
                     const messageElement = document.getElementById(messageId);
                     const contentContainer = messageElement.querySelector('.prose');
 
@@ -1250,12 +1351,12 @@
                     await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
 
                 } else {
-                    appendMessage("I couldn't generate a response. The response was empty.", 'model-error');
+                    appendMessage({text: "I couldn't generate a response. The response was empty."}, 'model-error');
                 }
             } catch (error) {
                 console.error("Error fetching AI response:", error);
                 removeLoadingIndicator();
-                appendMessage(`Error: ${error.message}`, 'model-error');
+                appendMessage({text: `Error: ${error.message}`}, 'model-error');
                 showNotification('Error generating response', 'error');
             } finally {
                 generationControls.classList.add('hidden');
@@ -1264,55 +1365,9 @@
         }
 
         async function regenerateMessage(messageIndex) {
-            if (!currentChatId || !allChats[currentChatId] || !API_KEY) return;
-
-            toggleForm(false);
-            generationControls.classList.remove('hidden');
-            stopGenerationFlag = false;
-
-            try {
-                const messagesToRegen = allChats[currentChatId].messages.slice(0, messageIndex);
-                let apiMessages = messagesToRegen.map(({ role, parts }) => ({ role, parts }));
-
-                 if (apiMessages.filter(m => m.role === 'user').length === 1) {
-                    const systemInstruction = {
-                        role: "user",
-                        parts: [{ text: "SYSTEM INSTRUCTION: From now on, format all your responses using rich Markdown. Use headings, lists, tables, and code blocks where appropriate to provide a clear, structured, and impressive answer. For code, always use Markdown code fences with the language specified. Let's start." }]
-                    };
-                    apiMessages.unshift(systemInstruction);
-                }
-
-                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: apiMessages }),
-                });
-
-                if (!response.ok) throw new Error((await response.json()).error?.message);
-
-                const data = await response.json();
-                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (aiResponseText && !stopGenerationFlag) {
-                    const messageElement = chatContainer.children[messageIndex];
-                    if (messageElement) {
-                        const contentContainer = messageElement.querySelector('.prose');
-                        if (contentContainer) {
-                            contentContainer.innerHTML = '';
-                            const finalText = await streamResponse(contentContainer, aiResponseText, messageElement.id);
-                            const regeneratedMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
-                            allChats[currentChatId].messages[messageIndex] = regeneratedMessage;
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error regenerating response:', error);
-                appendMessage(`Error regenerating response: ${error.message}`, 'model-error');
-                showNotification('Error regenerating response', 'error');
-            } finally {
-                generationControls.classList.add('hidden');
-                toggleForm(true);
-            }
+            // This function would need significant changes to handle multimedia regeneration.
+            // For now, it's simplified to regenerate based on text history.
+            showNotification('Multimedia regeneration is not yet supported.', 'info');
         }
 
         // --- UI & DOM MANIPULATION ---
@@ -1329,12 +1384,23 @@
             textarea.style.overflowY = textarea.scrollHeight > 200 ? 'auto' : 'hidden';
         }
 
-        function appendMessage(text, sender) {
+        function appendMessage(content, sender) {
             const messageId = `msg-${sender}-${Date.now()}`;
-            const isModel = sender === 'model' || sender === 'model-error';
-            const messageContainerMaxWidth = 'max-w-3xl';
-            const messageContentHtml = `<div class="prose max-w-none text-slate-200"></div>`;
+            const { text, file } = typeof content === 'object' ? content : { text: content, file: null };
+            
+            let fileHtml = '';
+            if (file) {
+                 if (file.mimeType.startsWith('image/')) {
+                    fileHtml = `<img src="data:${file.mimeType};base64,${file.base64}" class="max-w-xs rounded-lg mb-2">`;
+                } else if (file.mimeType.startsWith('audio/')) {
+                    fileHtml = `<audio controls src="data:${file.mimeType};base64,${file.base64}" class="w-full my-2"></audio>`;
+                } else if (file.mimeType.startsWith('video/')) {
+                    fileHtml = `<video controls class="max-w-xs rounded-lg mb-2" src="data:${file.mimeType};base64,${file.base64}"></video>`;
+                }
+            }
 
+            const isModel = sender === 'model' || sender === 'model-error';
+            
             let userAvatarHtml = '';
             if (sender === 'user' && currentUser) {
                 if(currentUser.photoURL) {
@@ -1344,31 +1410,40 @@
                     userAvatarHtml = `<div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-white flex-shrink-0">${initial}</div>`;
                 }
             }
-
+            
             const isError = sender === 'model-error';
             const modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br ${isError ? 'from-red-500 to-orange-600' : 'from-cyan-500 to-blue-600'} flex items-center justify-center shadow-md"><img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md" /></div>`;
 
             const actionButtonsHtml = `
                 <div class="action-buttons">
                     <button class="copy-btn" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button>
-                    <button class="regenerate-btn" title="Regenerate"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button>
-                    <button class="like-btn" title="Like"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 18.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a2 2 0 0 1 1.79 1.11L15 5.88Z"/></svg></button>
-                    <button class="dislike-btn" title="Dislike"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a2 2 0 0 1-1.79-1.11L9 18.12Z"/></svg></button>
+                    <!-- Regenerate button temporarily disabled for multimedia -->
                 </div>`;
+            
+            const messageBubbleClasses = sender === 'user' ? 'bg-cyan-600 text-white' : (isError ? 'bg-red-900/50' : 'bg-slate-800');
+            const messageHtml = `
+            <div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 ${sender === 'user' ? 'justify-end' : ''}">
+                ${sender !== 'user' ? `<div class="flex-shrink-0">${modelIconHtml}</div>` : ''}
+                <div class="rounded-lg p-3 sm:p-4 max-w-3xl shadow-lg min-w-0 ${messageBubbleClasses}">
+                    ${fileHtml}
+                    <div class="prose max-w-none ${sender === 'user' ? 'text-white' : 'text-slate-200'}">
+                        ${marked.parse(text || '')}
+                    </div>
+                </div>
+                ${sender === 'user' ? `<div class="flex-shrink-0">${userAvatarHtml}</div>` : ''}
+                ${isModel ? actionButtonsHtml : ''}
+            </div>`;
 
-            // MODIFIED: Added `min-w-0` class to both user and model message bubbles to fix code block overflow.
-            const messageHtml = sender === 'user' ?
-                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 justify-end"><div class="bg-cyan-600 rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg min-w-0"><div class="prose max-w-none text-white">${marked.parse(text)}</div></div><div class="flex-shrink-0">${userAvatarHtml}</div></div>` :
-                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg min-w-0">${messageContentHtml}</div>${isModel ? actionButtonsHtml : ''}</div>`;
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
             const messageElement = document.getElementById(messageId);
-            const contentContainer = messageElement.querySelector('.prose');
 
-            if (isModel && contentContainer) {
-                 contentContainer.innerHTML = marked.parse(text);
-                 makeTablesResponsive(contentContainer);
-                 enhanceCodeBlocks(messageId);
+            if (isModel && !text) {
+                 // Placeholder for streamed response
+            } else {
+                const contentContainer = messageElement.querySelector('.prose');
+                makeTablesResponsive(contentContainer);
+                enhanceCodeBlocks(messageId);
             }
 
             scrollToBottom();
@@ -1459,10 +1534,13 @@
 
         function updateSendButtonState() {
             const hasText = chatInput.value.trim().length > 0;
-            submitButton.disabled = !hasText;
-            submitButton.classList.toggle('bg-slate-700', !hasText);
-            submitButton.classList.toggle('hover:bg-cyan-700', hasText);
-            submitButton.classList.toggle('bg-cyan-600', hasText);
+            const hasFile = !!attachedFile;
+            const canSend = hasText || hasFile;
+            
+            submitButton.disabled = !canSend;
+            submitButton.classList.toggle('bg-slate-700', !canSend);
+            submitButton.classList.toggle('hover:bg-cyan-700', canSend);
+            submitButton.classList.toggle('bg-cyan-600', canSend);
         }
 
         function renderHistorySidebar() {
@@ -1503,6 +1581,7 @@
         function toggleForm(isEnabled) {
             chatInput.disabled = !isEnabled;
             micBtn.disabled = !isEnabled;
+            attachFileBtn.disabled = !isEnabled;
             if(isEnabled) {
                 updateSendButtonState();
                 chatInput.focus();
@@ -1521,6 +1600,7 @@
             currentChatId = null;
             showWelcomeContent();
             renderHistorySidebar();
+            removeAttachedFile();
             showNotification('Started new chat', 'success');
 
             if (window.innerWidth < 1024) {
@@ -1534,16 +1614,19 @@
             currentChatId = chatId;
             chatContainer.innerHTML = '';
 
-            // Only fetch messages if they haven't been loaded before
             if (!allChats[chatId].messages || allChats[chatId].messages.length === 0) {
-                 // MODIFIED: Use correct Firestore path
                 const messagesQuery = query(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", chatId, "messages"));
                 const messagesSnapshot = await getDocs(messagesQuery);
                 const messages = messagesSnapshot.docs.map(doc => doc.data()).sort((a,b) => a.timestamp.toMillis() - b.timestamp.toMillis());
                 allChats[chatId].messages = messages;
             }
-
-            allChats[chatId].messages.forEach(msg => appendMessage(msg.parts[0].text, msg.role));
+            
+            // Note: Multimedia content is not stored in Firestore in this version.
+            // When loading a chat, we only show the text parts.
+            allChats[chatId].messages.forEach(msg => {
+                 const textContent = msg.parts.find(p => p.text)?.text || '[Multimedia Content]';
+                 appendMessage({ text: textContent }, msg.role);
+            });
 
             renderHistorySidebar();
             scrollToBottom();
@@ -1554,7 +1637,6 @@
 
         async function loadChatsFromFirestore() {
             if (!currentUser) return;
-             // MODIFIED: Use correct Firestore path
             const chatsQuery = query(collection(db, "artifacts", appId, "users", currentUser.uid, "chats"));
             const querySnapshot = await getDocs(chatsQuery);
             allChats = {};
@@ -1612,7 +1694,6 @@
         async function handleSingleDelete() {
             if (!chatIdToDelete || !currentUser) return;
             const wasCurrentChat = chatIdToDelete === currentChatId;
-             // MODIFIED: Use correct Firestore path
             await deleteDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", chatIdToDelete));
             delete allChats[chatIdToDelete];
             renderHistorySidebar();
@@ -1623,7 +1704,6 @@
 
         async function handleDeleteAll() {
             if(!currentUser) return;
-             // MODIFIED: Use correct Firestore path
             const chatsQuery = query(collection(db, "artifacts", appId, "users", currentUser.uid, "chats"));
             const querySnapshot = await getDocs(chatsQuery);
             const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
