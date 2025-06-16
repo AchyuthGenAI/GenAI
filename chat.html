@@ -24,7 +24,10 @@
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         html, body { font-family: 'Inter', sans-serif; }
-        .sidebar { transition: transform 0.3s ease-in-out; }
+        .sidebar { 
+            transition: transform 0.3s ease-in-out; 
+            z-index: 50; /* Increased z-index */
+        }
         .mic-active { color: #f43f5e; } /* rose-500 */
         #chat-input {
             max-height: 200px; /* Set max height for the textarea */
@@ -126,7 +129,7 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             border: 1px solid #334155; /* slate-700 */
             width: 200px;
-            z-index: 50;
+            z-index: 100; /* Increased z-index for dropdown */
             display: none;
         }
         .profile-dropdown.show { display: block; }
@@ -201,6 +204,25 @@
             color: #dc3545; /* red-500 */
             font-weight: bold;
             background-color: #1e293b; /* slate-800 */
+        }
+
+        /* Sidebar overlay improvements */
+        .sidebar-overlay {
+            z-index: 40; /* Ensure overlay is below sidebar but above content */
+        }
+
+        /* Ensure sidebar is properly positioned */
+        @media (max-width: 1023px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
@@ -281,9 +303,9 @@
         </div>
     </div>
     
-    <div id="chat-app" class="hidden w-full h-full flex">
+    <div id="chat-app" class="hidden w-full h-full flex relative">
         <!-- Sidebar for Chat History -->
-        <aside id="sidebar" class="sidebar bg-slate-800 w-72 flex-shrink-0 flex flex-col p-4 absolute lg:relative h-full z-30 -translate-x-full lg:translate-x-0">
+        <aside id="sidebar" class="sidebar bg-slate-800 w-72 flex-shrink-0 flex flex-col p-4 lg:relative lg:translate-x-0">
             <button id="new-chat-btn" class="flex items-center justify-center gap-2 w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 <span>New Chat</span>
@@ -304,7 +326,7 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col h-full relative z-10 bg-slate-900">
             <!-- Header -->
-            <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 shadow-lg sticky top-0">
+            <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 shadow-lg sticky top-0 z-30">
                 <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
                      <div class="flex items-center gap-4">
                         <button id="menu-btn" class="lg:hidden p-2 -ml-2 text-slate-300 hover:bg-slate-700 rounded-md">
@@ -370,11 +392,11 @@
                 </div>
             </footer>
         </div>
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-20 hidden lg:hidden"></div>
+        <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/50 backdrop-blur-sm hidden lg:hidden"></div>
     </div>
     
     <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="fixed inset-0 bg-black/60 z-40 hidden items-center justify-center p-4">
+    <div id="delete-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-sm">
             <h3 id="delete-modal-title" class="text-xl font-bold text-white mb-4">Delete Chat?</h3>
             <p id="delete-modal-text" class="text-slate-400 mb-6">Are you sure?</p>
@@ -606,7 +628,8 @@
             document.getElementById('signup-email').addEventListener('input', validateEmail);
             
             // Profile & Logout
-            profileBtn.addEventListener('click', () => {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 profileDropdown.classList.toggle('show');
             });
             logoutBtn.addEventListener('click', handleLogout);
@@ -674,11 +697,9 @@
                         button.textContent = originalEmoji; // Revert to original emoji
                     }, 1200);
                 } else if (button.classList.contains('regenerate-btn')) {
-                    // For now, this is a placeholder. Real regeneration requires fetching new content.
-                    // You would typically re-run the model query for this specific chat context.
-                    alert('Regenerate functionality would trigger a new AI response based on previous messages in this chat.');
-                    // Example: You might call handleSendMessage with the last user message,
-                    // or re-fetch for the current chat's full message history.
+                    // Get the message index for regeneration
+                    const messageIndex = Array.from(chatContainer.children).indexOf(messageElement);
+                    regenerateMessage(messageIndex);
                 } else if (button.classList.contains('like-btn')) {
                     const dislikeBtn = messageElement.querySelector('.dislike-btn');
                     button.classList.toggle('active-like');
@@ -912,7 +933,7 @@
             appendMessage(userInput, 'user');
 
             // Save user message to history
-            const userMessage = { role: 'user', parts: [{ text: userInput }] };
+            const userMessage = { role: 'user', parts: [{ text: userInput }], timestamp: new Date() };
             allChats[currentChatId].messages.push(userMessage);
             await addDoc(collection(db, "users", currentUser.uid, "chats", currentChatId, "messages"), userMessage);
             
@@ -932,10 +953,13 @@
             scrollToBottom();
 
             try {
+                // Filter out timestamp field for API call
+                const apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
+                
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: allChats[currentChatId].messages }),
+                    body: JSON.stringify({ contents: apiMessages }),
                 });
 
                 removeLoadingIndicator();
@@ -955,7 +979,7 @@
                     // Start streaming and wait for it to finish or be stopped
                     const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
                     
-                    const aiMessage = { role: 'model', parts: [{ text: finalText }] };
+                    const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
                     await addDoc(collection(db, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
 
@@ -970,6 +994,66 @@
                 // --- Restore UI to normal state ---
                 generationControls.classList.add('hidden'); // Hide stop button
                 toggleForm(true); // Re-enable form controls
+            }
+        }
+
+        // --- REGENERATE MESSAGE FUNCTION ---
+        async function regenerateMessage(messageIndex) {
+            if (!currentChatId || !allChats[currentChatId] || !API_KEY) return;
+
+            const chat = allChats[currentChatId];
+            const messages = chat.messages.slice(0, messageIndex); // Get context up to this message
+
+            // --- Change UI to "generating" state ---
+            toggleForm(false);
+            generationControls.classList.remove('hidden');
+            stopGenerationFlag = false;
+
+            try {
+                // Filter out timestamp field for API call
+                const apiMessages = messages.map(({ role, parts }) => ({ role, parts }));
+                
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: apiMessages }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'An unknown API error occurred.');
+                }
+
+                const data = await response.json();
+                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (aiResponseText && !stopGenerationFlag) {
+                    // Find the message element to replace
+                    const messageElements = chatContainer.children;
+                    const messageElement = messageElements[messageIndex];
+                    
+                    if (messageElement) {
+                        const contentContainer = messageElement.querySelector('.prose');
+                        if (contentContainer) {
+                            // Clear existing content and start streaming new response
+                            contentContainer.innerHTML = '';
+                            const finalText = await streamResponse(contentContainer, aiResponseText, messageElement.id);
+                            
+                            // Update the message in local state
+                            const regeneratedMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
+                            allChats[currentChatId].messages[messageIndex] = regeneratedMessage;
+                            
+                            // Note: In a full implementation, you'd also update the database
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error regenerating response:', error);
+                appendMessage(`Error regenerating response: ${error.message}`, 'model-error');
+            } finally {
+                // --- Restore UI to normal state ---
+                generationControls.classList.add('hidden');
+                toggleForm(true);
             }
         }
         
@@ -1217,7 +1301,7 @@
         }
         
         function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
+            sidebar.classList.toggle('open');
             sidebarOverlay.classList.toggle('hidden');
         }
 
@@ -1251,8 +1335,8 @@
             renderHistorySidebar(); // Renders sidebar with no chat selected
             
             if (window.innerWidth < 1024) {
-                 sidebar.classList.add('-translate-x-full');
-                 sidebarOverlay.classList.add('hidden');
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.add('hidden');
             }
         }
         
@@ -1410,7 +1494,7 @@
         }
 
         function appendLoadingIndicator() {
-            const loadingHtml = `<div id="loading-indicator" class="flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-white"><path d="m12 14 4-4"/><path d="m12 14 4 4"/><path d="M12 14H2.5"/><path d="M12 14v7.5"/><path d="m20 10-4-4"/><path d="m20 10-4 4"/><path d'M20 10h-7.5'/><path d="M4 14v-2.5"/><path d="M4 14H2.5"/><path d="M4 14l-1.5-1.5L4 11l1.5 1.5L4 14Z"/><path d="m12 6-2-2-2 2-2-2-2 2-2-2-2 2"/><path d="M12 6V2.5"/></svg></div><div class="bg-slate-800 rounded-lg p-4 max-w-lg shadow-lg flex items-center space-x-2"><span class="text-slate-400">Thinking</span><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.3s]"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.15s]"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></div></div></div>`;
+            const loadingHtml = `<div id="loading-indicator" class="flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-white"><path d="m12 14 4-4"/><path d="m12 14 4 4"/><path d="M12 14H2.5"/><path d="M12 14v7.5"/><path d="m20 10-4-4"/><path d="m20 10-4 4"/><path d='M20 10h-7.5'/><path d="M4 14v-2.5"/><path d="M4 14H2.5"/><path d="M4 14l-1.5-1.5L4 11l1.5 1.5L4 14Z"/><path d="m12 6-2-2-2 2-2-2-2 2-2-2-2 2"/><path d="M12 6V2.5"/></svg></div><div class="bg-slate-800 rounded-lg p-4 max-w-lg shadow-lg flex items-center space-x-2"><span class="text-slate-400">Thinking</span><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.3s]"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.15s]"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></div></div></div>`;
             chatContainer.insertAdjacentHTML('beforeend', loadingHtml);
         }
         
@@ -1422,18 +1506,7 @@
         }
 
         // --- GLOBAL HELPER FUNCTIONS ---
-        window.togglePasswordVisibility = (inputId) => {
-            const input = document.getElementById(inputId);
-            const button = input.nextElementSibling;
-            const icon = button.querySelector('svg');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 013.542-5.45m5.545-2.271A10.02 10.02 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.02 10.02 0 01-1.343 2.596m-3.41-3.41a3 3 0 11-4.243-4.243" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />`;
-            } else {
-                input.type = 'password';
-                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path  stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-            }
-        };
+        window.togglePasswordVisibility = togglePasswordVisibility;
 
     </script>
 </body>
