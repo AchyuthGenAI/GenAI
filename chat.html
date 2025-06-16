@@ -281,7 +281,7 @@
             }
         }
 
-        /* MODIFIED: Notification styles with opaque backgrounds */
+        /* Notification styles with opaque backgrounds */
         .notification {
             position: fixed;
             top: 1rem;
@@ -489,7 +489,7 @@
 
             <!-- Message Input Form & Controls -->
             <footer class="bg-slate-900/50 backdrop-blur-sm sticky bottom-0">
-                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
                      <!-- Stop Generating Button Container -->
                     <div id="generation-controls" class="text-center pb-2 hidden">
                         <button id="stop-generating-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
@@ -518,13 +518,6 @@
                         </div>
                     </form>
                     
-                    <!-- Status indicator -->
-                    <div class="text-center mt-2">
-                        <p class="text-xs text-slate-500">
-                            Chat@AI can make mistakes • So, Double check It
-                            <span id="status-indicator" class="text-green-400">● Live</span>
-                        </p>
-                    </div>
                 </div>
             </footer>
         </div>
@@ -688,11 +681,15 @@
 
         function checkAPIStatus() {
             if (!API_KEY || API_KEY.includes('YOUR_API_KEY_HERE')) {
-                statusIndicator.innerHTML = '● API Key Required';
-                statusIndicator.className = 'text-red-400';
+                 if(statusIndicator) {
+                    statusIndicator.innerHTML = '● API Key Required';
+                    statusIndicator.className = 'text-red-400';
+                 }
             } else {
-                statusIndicator.innerHTML = '● Online';
-                statusIndicator.className = 'text-green-400';
+                 if(statusIndicator) {
+                    statusIndicator.innerHTML = '● Online';
+                    statusIndicator.className = 'text-green-400';
+                 }
             }
         }
 
@@ -1368,9 +1365,10 @@
                     <button class="dislike-btn" title="Dislike"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a2 2 0 0 1-1.79-1.11L9 18.12Z"/></svg></button>
                 </div>`;
 
+            // MODIFIED: Added `min-w-0` class to both user and model message bubbles to fix code block overflow.
             const messageHtml = sender === 'user' ?
-                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 justify-end"><div class="bg-cyan-600 rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg"><div class="prose max-w-none text-white">${marked.parse(text)}</div></div><div class="flex-shrink-0">${userAvatarHtml}</div></div>` :
-                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg">${messageContentHtml}</div>${isModel ? actionButtonsHtml : ''}</div>`;
+                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 justify-end"><div class="bg-cyan-600 rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg min-w-0"><div class="prose max-w-none text-white">${marked.parse(text)}</div></div><div class="flex-shrink-0">${userAvatarHtml}</div></div>` :
+                `<div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0">${modelIconHtml}</div><div class="${isError ? 'bg-red-900/50' : 'bg-slate-800'} rounded-lg p-3 sm:p-4 ${messageContainerMaxWidth} shadow-lg min-w-0">${messageContentHtml}</div>${isModel ? actionButtonsHtml : ''}</div>`;
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
             const messageElement = document.getElementById(messageId);
