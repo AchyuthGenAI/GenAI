@@ -15,6 +15,8 @@
     <!-- highlight.js for syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Lottie Player Script -->
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
     <style>
         /* Custom scrollbar for a polished look */
@@ -1494,7 +1496,15 @@
         }
 
         function appendLoadingIndicator() {
-            const loadingHtml = `<div id="loading-indicator" class="flex items-start gap-2 sm:gap-3"><div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-white"><path d="m12 14 4-4"/><path d="m12 14 4 4"/><path d="M12 14H2.5"/><path d="M12 14v7.5"/><path d="m20 10-4-4"/><path d="m20 10-4 4"/><path d='M20 10h-7.5'/><path d="M4 14v-2.5"/><path d="M4 14H2.5"/><path d="M4 14l-1.5-1.5L4 11l1.5 1.5L4 14Z"/><path d="m12 6-2-2-2 2-2-2-2 2-2-2-2 2"/><path d="M12 6V2.5"/></svg></div><div class="bg-slate-800 rounded-lg p-4 max-w-lg shadow-lg flex items-center space-x-2"><span class="text-slate-400">Thinking</span><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.3s]"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.15s]"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></div></div></div>`;
+            const loadingHtml = `
+                <div id="loading-indicator" class="flex items-center gap-2 sm:gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-white"><path d="m12 14 4-4"/><path d="m12 14 4 4"/><path d="M12 14H2.5"/><path d="M12 14v7.5"/><path d="m20 10-4-4"/><path d="m20 10-4 4"/><path d='M20 10h-7.5'/><path d="M4 14v-2.5"/><path d="M4 14H2.5"/><path d="M4 14l-1.5-1.5L4 11l1.5 1.5L4 14Z"/><path d="m12 6-2-2-2 2-2-2-2 2-2-2-2 2"/><path d="M12 6V2.5"/></svg>
+                    </div>
+                    <div class="rounded-lg max-w-lg flex items-center justify-center">
+                        <dotlottie-player src="https://lottie.host/42a90344-ccc5-4d2a-92e2-1a62cef7473c/MqjsTEGKMS.lottie" background="transparent" speed="1" style="width: 120px; height: 120px;" loop autoplay></dotlottie-player>
+                    </div>
+                </div>`;
             chatContainer.insertAdjacentHTML('beforeend', loadingHtml);
         }
         
