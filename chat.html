@@ -15,6 +15,10 @@
     <!-- highlight.js for syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- D3.js for data visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- Lottie Player Script -->
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
@@ -167,6 +171,7 @@
         }
         .action-buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 0.5rem;
             position: absolute;
             bottom: 0.5rem;
@@ -183,7 +188,7 @@
             opacity: 1;
         }
 
-        .action-buttons button {
+        .action-buttons button, .action-buttons a {
             background-color: #334155;
             color: #cbd5e1;
             border: none;
@@ -196,12 +201,13 @@
             width: 32px;
             height: 32px;
             transition: background-color 0.2s, color 0.2s, transform 0.1s;
+            text-decoration: none;
         }
-        .action-buttons button:hover {
+        .action-buttons button:hover, .action-buttons a:hover {
             background-color: #475569;
             color: #f1f5f9;
         }
-        .action-buttons button:active {
+        .action-buttons button:active, .action-buttons a:active {
             transform: scale(0.95);
         }
         .action-buttons .active-like {
@@ -212,6 +218,15 @@
             background-color: #1e293b;
             color: #f87171;
         }
+        .action-buttons .interactive-btn {
+            width: auto;
+            padding: 0 0.5rem;
+        }
+         .action-buttons .interactive-btn span {
+            font-size: 0.75rem;
+            line-height: 1rem;
+            margin-left: 0.25rem;
+         }
 
         .sidebar-overlay {
             z-index: 40;
@@ -232,15 +247,20 @@
             border-color: #475569;
             transform: translateY(-2px);
         }
-
-        .suggestion-chip {
-            background: rgba(6, 182, 212, 0.1);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            transition: all 0.2s ease;
+        
+        .suggestion-card {
+            background-color: rgba(45, 55, 72, 0.5);
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            width: 100%;
         }
-        .suggestion-chip:hover {
-            background: rgba(6, 182, 212, 0.2);
-            border-color: rgba(6, 182, 212, 0.5);
+        .suggestion-card:hover {
+            background-color: rgba(56, 68, 87, 0.8);
+            border-color: #475569;
+            transform: translateY(-2px);
         }
 
         .help-tooltip {
@@ -338,6 +358,27 @@
             border: 2px solid #1e293b;
         }
 
+        /* JSON Explorer Styles */
+        .json-formatter { font-family: monospace; white-space: pre-wrap; font-size: 0.9rem; }
+        .json-formatter .string { color: #a5f3fc; }
+        .json-formatter .number { color: #fcd34d; }
+        .json-formatter .boolean { color: #fda4af; }
+        .json-formatter .null { color: #9ca3af; }
+        .json-formatter .key { color: #93c5fd; }
+        .json-formatter details { padding-left: 1.5rem; border-left: 1px solid #475569; }
+        .json-formatter summary { cursor: pointer; list-style: none; }
+        .json-formatter summary::-webkit-details-marker { display: none; }
+        .json-formatter summary::before {
+            content: '►';
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.1s;
+        }
+        .json-formatter details[open] > summary::before {
+            transform: rotate(90deg);
+        }
+
+
     </style>
 </head>
 <body class="bg-slate-900 text-white h-full overflow-hidden">
@@ -376,7 +417,7 @@
                 <div class="relative">
                     <label for="login-password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
                     <input type="password" id="login-password" required class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition pr-10">
-                    <button type="button" class="absolute inset-y-0 right-0 top-7 flex items-center pr-3 text-slate-400 hover:text-white" onclick="togglePasswordVisibility('login-password')">
+                    <button type="button" id="login-password-toggle" class="absolute inset-y-0 right-0 top-7 flex items-center pr-3 text-slate-400 hover:text-white">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path  stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     </button>
                 </div>
@@ -409,7 +450,7 @@
                 <div class="relative">
                     <label for="signup-password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
                     <input type="password" id="signup-password" required class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition pr-10">
-                     <button type="button" class="absolute inset-y-0 right-0 top-7 flex items-center pr-3 text-slate-400 hover:text-white" onclick="togglePasswordVisibility('signup-password')">
+                     <button type="button" id="signup-password-toggle" class="absolute inset-y-0 right-0 top-7 flex items-center pr-3 text-slate-400 hover:text-white">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path  stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     </button>
                 </div>
@@ -442,7 +483,6 @@
                 <span>New Chat</span>
             </button>
             
-            <!-- Quick Tips Section -->
             <div class="mb-4 p-3 bg-slate-700/50 rounded-lg border border-slate-600">
                 <h3 class="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
@@ -453,7 +493,7 @@
                     <li>• Use voice input with the mic button</li>
                     <li>• Press Enter to send, Shift+Enter for new line</li>
                     <li>• Copy, regenerate, or rate responses</li>
-                    <li>• Preview HTML code in real-time</li>
+                    <li>• Preview HTML, see charts, maps & more!</li>
                 </ul>
             </div>
 
@@ -474,7 +514,7 @@
         <div class="main-content flex-1 flex flex-col h-full relative z-10 bg-slate-900">
             <!-- Header -->
             <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 shadow-lg sticky top-0 z-30">
-                <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+                 <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
                      <div class="flex items-center gap-4">
                         <button id="menu-btn" class="lg:hidden p-2 -ml-2 text-slate-300 hover:bg-slate-700 rounded-md">
                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -513,8 +553,7 @@
 
             <!-- Message Input Form & Controls -->
             <footer class="bg-slate-900/50 backdrop-blur-sm sticky bottom-0">
-                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-                     <!-- Stop Generating Button Container -->
+                 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
                     <div id="generation-controls" class="text-center pb-2 hidden">
                         <button id="stop-generating-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
@@ -524,7 +563,6 @@
                         </button>
                     </div>
                     <form id="chat-form">
-                         <!-- File Preview Container -->
                         <div id="file-preview-container">
                             <div id="file-preview"></div>
                             <button type="button" id="remove-file-btn" title="Remove file">
@@ -532,14 +570,13 @@
                             </button>
                         </div>
                         <div class="flex items-end bg-slate-800 border border-slate-700 rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-cyan-500">
-                            <!-- Multimedia upload buttons -->
                             <div class="help-tooltip">
                                 <button id="attach-file-btn" type="button" class="text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-700 transition-colors duration-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
                                 </button>
                                 <div class="tooltip-content">Attach File</div>
                             </div>
-                             <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*">
+                             <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*,.csv,.txt">
                              
                             <textarea id="chat-input" placeholder="Enter Your Prompt...." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-white placeholder-slate-400 focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
 
@@ -578,7 +615,7 @@
 
     <!-- Code Preview Modal -->
     <div id="preview-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
-        <div class="bg-slate-800 rounded-lg shadow-xl w-full h-full max-w-4xl max-h-[80vh] flex flex-col">
+         <div class="bg-slate-800 rounded-lg shadow-xl w-full h-full max-w-4xl max-h-[80vh] flex flex-col">
             <header class="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
                 <h3 class="text-xl font-bold text-white">Live Preview</h3>
                 <button id="close-preview-btn" class="p-2 rounded-full hover:bg-slate-700 transition-colors">
@@ -590,6 +627,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Interactive Feature Modal -->
+    <div id="interactive-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-full h-full max-w-4xl max-h-[80vh] flex flex-col">
+            <header class="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
+                <h3 id="interactive-modal-title" class="text-xl font-bold text-white"></h3>
+                <button id="close-interactive-modal-btn" class="p-2 rounded-full hover:bg-slate-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </header>
+            <div id="interactive-modal-body" class="flex-1 p-0 overflow-auto bg-slate-900">
+                <!-- Content will be injected here -->
+            </div>
+            <footer id="interactive-modal-footer" class="p-2 border-t border-slate-700 flex-shrink-0 hidden justify-center gap-2">
+                <!-- Footer content like buttons will be injected here -->
+            </footer>
+        </div>
+    </div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -627,6 +683,7 @@
         const googleLoginBtn = document.getElementById('google-login-btn');
         const googleSignupBtn = document.getElementById('google-signup-btn');
         const signupNameInput = document.getElementById('signup-name');
+        const signupEmailInput = document.getElementById('signup-email');
         const signupPasswordInput = document.getElementById('signup-password');
         const passwordStrengthBar = document.getElementById('password-strength-bar');
         const emailError = document.getElementById('email-error');
@@ -640,7 +697,6 @@
         const notification = document.getElementById('notification');
         const notificationIcon = document.getElementById('notification-icon');
         const notificationText = document.getElementById('notification-text');
-
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
         const chatContainer = document.getElementById('chat-container');
@@ -663,16 +719,17 @@
         const previewIframe = document.getElementById('preview-iframe');
         const generationControls = document.getElementById('generation-controls');
         const stopGeneratingBtn = document.getElementById('stop-generating-btn');
-        const statusIndicator = document.getElementById('status-indicator');
-
-        // New Multimedia Elements
         const attachFileBtn = document.getElementById('attach-file-btn');
         const fileInput = document.getElementById('file-input');
         const filePreviewContainer = document.getElementById('file-preview-container');
         const filePreview = document.getElementById('file-preview');
         const removeFileBtn = document.getElementById('remove-file-btn');
-
-
+        const interactiveModal = document.getElementById('interactive-modal');
+        const interactiveModalTitle = document.getElementById('interactive-modal-title');
+        const interactiveModalBody = document.getElementById('interactive-modal-body');
+        const interactiveModalFooter = document.getElementById('interactive-modal-footer');
+        const closeInteractiveModalBtn = document.getElementById('close-interactive-modal-btn');
+        
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
         const API_KEY = 'AIzaSyDirhQ899FnmcWCuwfHfzS05TEenhZntwA'; // IMPORTANT: Replace with your actual Gemini API key
@@ -688,7 +745,7 @@
             appId: "1:574568827002:web:7ed038c10c3fe0bc3953c3"
         };
         
-        // Initialize Firebase
+        // --- Firebase Initialization ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -701,7 +758,8 @@
         let currentUser = null;
         let notificationQueue = [];
         let isNotificationVisible = false;
-        let attachedFile = null; // To store the currently attached file data
+        let attachedFile = null;
+        let chartInstance = null;
 
         // --- Speech Recognition ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -713,33 +771,12 @@
             recognition.interimResults = false;
         }
 
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            marked.setOptions({
-                gfm: true,
-                breaks: true,
-                sanitizer: (html) => html,
-                highlight: function (code, lang) {
-                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                    return hljs.highlight(code, { language }).value;
-                }
-            });
-            addEventListeners();
-            checkAPIStatus();
-            checkAuthState();
-        });
-
+        // --- FUNCTION DEFINITIONS ---
+        
         function checkAPIStatus() {
             if (!API_KEY || API_KEY.includes('YOUR_API_KEY')) {
-                 if(statusIndicator) {
-                    statusIndicator.innerHTML = '● API Key Required';
-                    statusIndicator.className = 'text-red-400';
-                 }
-            } else {
-                 if(statusIndicator) {
-                    statusIndicator.innerHTML = '● Online';
-                    statusIndicator.className = 'text-green-400';
-                 }
+                 console.warn("API Key is missing. Please add your Google AI Gemini API key.");
+                 showNotification("API Key is not configured.", "error");
             }
         }
 
@@ -749,16 +786,11 @@
         }
         
         function processNotificationQueue() {
-            if (isNotificationVisible || notificationQueue.length === 0) {
-                return;
-            }
-
+            if (isNotificationVisible || notificationQueue.length === 0) return;
             isNotificationVisible = true;
             const { message, type } = notificationQueue.shift();
-
             notificationText.textContent = message;
             notification.className = `notification ${type}`;
-            
             if (type === 'success') {
                 notificationIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>';
             } else if (type === 'error') {
@@ -766,10 +798,8 @@
             } else {
                 notificationIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>';
             }
-            
             notification.classList.remove('hidden');
             notification.classList.add('show');
-            
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => {
@@ -803,7 +833,6 @@
                         });
                         currentUser = { ...user, displayName, photoURL };
                     }
-
                     showChatApp();
                     setupUserProfile(currentUser);
                     await loadChatsFromFirestore();
@@ -814,7 +843,7 @@
                 }
             });
         }
-
+        
         function showAuthPage() {
             authPage.classList.remove('hidden');
             authPage.classList.add('flex');
@@ -836,11 +865,9 @@
 
             if (user.photoURL) {
                 profileAvatarContainer.innerHTML = `<img src="${user.photoURL}" class="w-8 h-8 rounded-full">`;
-                profileAvatarContainer.className = 'w-8 h-8 rounded-full overflow-hidden';
             } else {
                 const initial = (user.displayName || 'A').charAt(0).toUpperCase();
                 profileAvatarContainer.innerHTML = initial;
-                profileAvatarContainer.className = 'w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center font-bold text-white overflow-hidden';
             }
         }
 
@@ -852,199 +879,54 @@
                     </div>
                     <h2 class="text-3xl font-bold text-white mb-4">Welcome to Chat@AI</h2>
                     <p class="text-slate-300 text-lg mb-6">Your intelligent AI assistant. Ask me anything or upload a file to get started!</p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <div class="feature-card rounded-lg p-4">
-                            <div class="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                </svg>
-                            </div>
-                            <h3 class="font-semibold text-white mb-2">Smart Conversations</h3>
-                            <p class="text-slate-400 text-sm">Engage in natural, intelligent conversations with advanced AI.</p>
-                        </div>
-                        
-                         <div class="feature-card rounded-lg p-4">
-                            <div class="w-12 h-12 bg-lime-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-lime-400">
-                                    <rect width="18" height="18" x="3" y="3" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                            </div>
-                            <h3 class="font-semibold text-white mb-2">Multimedia Analysis</h3>
-                            <p class="text-slate-400 text-sm">Analyze images, audio, and video for deeper insights.</p>
-                        </div>
-
-                        <div class="feature-card rounded-lg p-4">
-                            <div class="w-12 h-12 bg-amber-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-400"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4"/><path d="M18 22V4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/><path d="M10 6h4"/></svg>
-                            </div>
-                            <h3 class="font-semibold text-white mb-2">Information Extraction</h3>
-                            <p class="text-slate-400 text-sm">Pull structured data like contacts or key points from any text.</p>
-                        </div>
-
-                         <div class="feature-card rounded-lg p-4">
-                            <div class="w-12 h-12 bg-rose-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 7 1.4-1.4"/><path d="M6.4 17.6 5 19"/><path d="M22 12h-2"/><path d="M4 12H2"/><path d="m19 19-1.4-1.4"/><path d="M7.6 6.4 5 5"/></svg>
-                            </div>
-                            <h3 class="font-semibold text-white mb-2">Sentiment Analysis</h3>
-                            <p class="text-slate-400 text-sm">Quickly determine the emotional tone of reviews or feedback.</p>
-                        </div>
-                    </div>
-                    
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-white mb-4">Try these examples:</h3>
-                        <div class="flex flex-wrap gap-2 justify-center">
-                             <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('From the text: \'Reach out to Jane at jane.doe@example.com or 123-456-7890\', extract the name, email, and phone number.')">
-                                Extract contact info
-                            </button>
-                            <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Analyze the sentiment: \'The product is okay, but the customer service was terrible.\'')">
-                                Analyze sentiment
-                            </button>
-                            <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Create a responsive HTML landing page')">
-                                Create a landing page
-                            </button>
-                            <button class="suggestion-chip px-4 py-2 rounded-full text-sm text-cyan-300 hover:text-cyan-200 transition-colors" onclick="fillSuggestion('Plan a 7-day trip to Japan')">
-                                Plan a trip to Japan
-                            </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                           <button class="suggestion-card" data-suggestion="From the text: 'Reach out to Jane at jane.doe@example.com or 123-456-7890', extract the name, email, and phone number.">
+                             <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 flex-shrink-0 bg-sky-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-400"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 14v-2"/><path d="M16 12H8"/></svg>
+                                </div>
+                                <span class="text-slate-300">Extract contact info</span>
+                             </div>
+                           </button>
+                           <button class="suggestion-card" data-suggestion="Create a responsive HTML landing page for a new tech startup.">
+                             <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 flex-shrink-0 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                </div>
+                                <span class="text-slate-300">Create a landing page</span>
+                             </div>
+                           </button>
+                           <button class="suggestion-card" data-suggestion="Plan a 7-day trip to Japan, focusing on cultural experiences in Kyoto and Tokyo.">
+                             <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 flex-shrink-0 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                                </div>
+                                <span class="text-slate-300">Plan a trip to Japan</span>
+                             </div>
+                           </button>
+                           <button class="suggestion-card" data-suggestion="Generate a Java script bar chart showing the population of the 5 largest cities in India.">
+                             <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 flex-shrink-0 bg-rose-500/20 rounded-lg flex items-center justify-center">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                                </div>
+                                <span class="text-slate-300">Visualize population data</span>
+                             </div>
+                           </button>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
             chatContainer.innerHTML = welcomeHtml;
         }
 
-        function addEventListeners() {
-            // Auth form switching
-            showSignupBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
-                authError.classList.add('hidden');
-            });
-            showLoginBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                signupForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-                authError.classList.add('hidden');
-            });
-
-            // Auth form submission
-            loginForm.addEventListener('submit', handleLogin);
-            signupForm.addEventListener('submit', handleSignup);
-            googleLoginBtn.addEventListener('click', handleGoogleSignIn);
-            googleSignupBtn.addEventListener('click', handleGoogleSignIn);
-
-            // Advanced Auth UI Listeners
-            signupPasswordInput.addEventListener('input', updatePasswordStrength);
-            document.getElementById('signup-email').addEventListener('input', validateEmail);
-
-            // Profile & Logout
-            profileBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-            logoutBtn.addEventListener('click', handleLogout);
-            document.addEventListener('click', (e) => {
-                 if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                    profileDropdown.classList.remove('show');
-                }
-            });
-
-            // Chat app event listeners
-            chatForm.addEventListener('submit', handleSendMessage);
-            newChatBtn.addEventListener('click', startNewChat);
-            menuBtn.addEventListener('click', toggleSidebar);
-            sidebarOverlay.addEventListener('click', toggleSidebar);
-            clearAllBtn.addEventListener('click', () => showDeleteModal(null));
-            confirmDeleteBtn.addEventListener('click', confirmDeletion);
-            cancelDeleteBtn.addEventListener('click', hideDeleteModal);
-            closePreviewBtn.addEventListener('click', hidePreviewModal);
-            stopGeneratingBtn.addEventListener('click', () => {
-                stopGenerationFlag = true;
-                showNotification('Generation stopped', 'info');
-            });
-
-            chatInput.addEventListener('input', () => {
-                autoResizeTextarea(chatInput);
-                updateSendButtonState();
-            });
-            chatInput.addEventListener('keydown', handleTextareaKeydown);
-
-            // Multimedia listeners
-            attachFileBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', handleFileSelect);
-            removeFileBtn.addEventListener('click', removeAttachedFile);
-
-            if (recognition) {
-                micBtn.addEventListener('click', toggleVoiceRecognition);
-                recognition.onresult = handleVoiceResult;
-                recognition.onend = () => {
-                    micIcon.classList.remove('mic-active', 'animate-pulse');
-                    showNotification('Voice input ended', 'info');
-                };
-                recognition.onerror = (event) => {
-                    console.error('Speech recognition error', event.error);
-                    micIcon.classList.remove('mic-active', 'animate-pulse');
-                    showNotification('Voice recognition error', 'error');
-                };
-            } else {
-                 micBtn.disabled = true;
-            }
-
-            // Event delegation for action buttons
-            chatContainer.addEventListener('click', (e) => {
-                const button = e.target.closest('button.copy-btn, button.regenerate-btn, button.like-btn, button.dislike-btn');
-                if (!button) return;
-
-                const messageElement = button.closest('.chat-message');
-                if (!messageElement) return;
-
-                const proseElement = messageElement.querySelector('.prose');
-                const responseText = proseElement ? proseElement.innerText : '';
-
-                if (button.classList.contains('copy-btn')) {
-                    const originalIcon = button.innerHTML;
-                    navigator.clipboard.writeText(responseText).then(() => {
-                        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                        showNotification('Response copied to clipboard', 'success');
-                    }).catch(err => {
-                        console.error('Failed to copy text: ', err);
-                        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-                        showNotification('Failed to copy text', 'error');
-                    });
-                    setTimeout(() => {
-                        button.innerHTML = originalIcon;
-                    }, 1500);
-                } else if (button.classList.contains('regenerate-btn')) {
-                    const messageIndex = Array.from(chatContainer.children).indexOf(messageElement);
-                    regenerateMessage(messageIndex);
-                    showNotification('Regenerating response...', 'info');
-                } else if (button.classList.contains('like-btn')) {
-                    const dislikeBtn = messageElement.querySelector('.dislike-btn');
-                    button.classList.toggle('active-like');
-                    if (button.classList.contains('active-like')) {
-                        dislikeBtn.classList.remove('active-dislike');
-                        showNotification('Thanks for the feedback!', 'success');
-                    }
-                } else if (button.classList.contains('dislike-btn')) {
-                    const likeBtn = messageElement.querySelector('.like-btn');
-                    button.classList.toggle('active-dislike');
-                    if (button.classList.contains('active-dislike')) {
-                        likeBtn.classList.remove('active-like');
-                        showNotification('Feedback noted. I\'ll try to improve!', 'info');
-                    }
-                }
-            });
-        }
-
-        // Global function for suggestion chips
-        window.fillSuggestion = function(text) {
+        function fillSuggestion(text) {
             chatInput.value = text;
             autoResizeTextarea(chatInput);
             updateSendButtonState();
             chatInput.focus();
         };
 
-        // --- AUTHENTICATION LOGIC ---
         async function handleLogin(e) {
             e.preventDefault();
             const submitBtn = loginForm.querySelector('button[type="submit"]');
@@ -1072,8 +954,8 @@
             toggleButtonLoading(submitBtn, true);
 
             const fullName = signupNameInput.value.trim();
-            const email = signupForm['signup-email'].value;
-            const password = signupForm['signup-password'].value;
+            const email = signupEmailInput.value;
+            const password = signupPasswordInput.value;
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 await updateProfile(userCredential.user, { displayName: fullName });
@@ -1113,7 +995,6 @@
             }
         }
 
-        // --- ADVANCED AUTH UI & HELPERS ---
         function getFriendlyAuthError(error) {
             switch(error.code) {
                 case 'auth/invalid-email': return 'Please enter a valid email address.';
@@ -1128,7 +1009,7 @@
 
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
-            const button = input.nextElementSibling;
+            const button = document.getElementById(`${inputId}-toggle`);
             const icon = button.querySelector('svg');
             if (input.type === 'password') {
                 input.type = 'text';
@@ -1159,7 +1040,7 @@
         }
 
         function validateEmail() {
-            const email = document.getElementById('signup-email').value;
+            const email = signupEmailInput.value;
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if (!re.test(String(email).toLowerCase())) {
                 emailError.textContent = 'Please enter a valid email address.';
@@ -1201,23 +1082,37 @@
             }
         }
 
-        // --- MULTIMEDIA HANDLING ---
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const base64Data = event.target.result.split(',')[1];
-                attachedFile = {
-                    base64: base64Data,
-                    mimeType: file.type,
-                    name: file.name
+            if (file.type === "text/plain" || file.type === "text/csv") {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const textContent = event.target.result;
+                    attachedFile = {
+                        base64: btoa(textContent), // Base64 encode the text content
+                        mimeType: "text/plain", // Treat as plain text
+                        name: file.name
+                    };
+                    displayFilePreview();
+                    updateSendButtonState();
                 };
-                displayFilePreview();
-                updateSendButtonState();
-            };
-            reader.readAsDataURL(file);
+                reader.readAsText(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Data = event.target.result.split(',')[1];
+                    attachedFile = {
+                        base64: base64Data,
+                        mimeType: file.type,
+                        name: file.name
+                    };
+                    displayFilePreview();
+                    updateSendButtonState();
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function displayFilePreview() {
@@ -1231,7 +1126,7 @@
             } else if (attachedFile.mimeType.startsWith('video/')) {
                 previewHtml = `<video controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
             } else {
-                previewHtml = `<div class="text-sm text-slate-300 p-2">File: ${attachedFile.name}</div>`;
+                previewHtml = `<div class="text-sm text-slate-300 p-2 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${attachedFile.name}</span></div>`;
             }
 
             filePreview.innerHTML = previewHtml;
@@ -1240,13 +1135,12 @@
 
         function removeAttachedFile() {
             attachedFile = null;
-            fileInput.value = ''; // Reset file input
+            fileInput.value = '';
             filePreviewContainer.style.display = 'none';
             filePreview.innerHTML = '';
             updateSendButtonState();
         }
 
-        // --- CHAT LOGIC ---
         async function handleSendMessage(e) {
             if(e) e.preventDefault();
             const userInput = chatInput.value.trim();
@@ -1258,7 +1152,6 @@
                 return;
             }
 
-            // Clear welcome content if it exists
             if (chatContainer.querySelector('.welcome-card')) {
                 chatContainer.innerHTML = '';
             }
@@ -1286,7 +1179,6 @@
                 }
             }
 
-            // Construct parts for the message
             const messageParts = [];
             if (attachedFile) {
                 messageParts.push({
@@ -1304,7 +1196,6 @@
             
             const userMessage = { role: 'user', parts: messageParts, timestamp: new Date() };
             allChats[currentChatId].messages.push(userMessage);
-            // Storing in firestore can be complex with large files, so we'll just store a reference for now
             const firestoreMessage = { role: 'user', parts: [{text: userInput || `[Sent a file: ${attachedFile.name}]`}], timestamp: new Date() };
             await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), firestoreMessage);
 
@@ -1345,6 +1236,8 @@
                     const contentContainer = messageElement.querySelector('.prose');
 
                     const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
+                    
+                    enhanceResponseMessage(messageElement, finalText);
 
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
@@ -1362,26 +1255,6 @@
                 generationControls.classList.add('hidden');
                 toggleForm(true);
             }
-        }
-
-        async function regenerateMessage(messageIndex) {
-            // This function would need significant changes to handle multimedia regeneration.
-            // For now, it's simplified to regenerate based on text history.
-            showNotification('Multimedia regeneration is not yet supported.', 'info');
-        }
-
-        // --- UI & DOM MANIPULATION ---
-        function handleTextareaKeydown(e) {
-            if (e.key === 'Enter' && !e.shiftKey && !submitButton.disabled) {
-                e.preventDefault();
-                handleSendMessage();
-            }
-        }
-
-        function autoResizeTextarea(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-            textarea.style.overflowY = textarea.scrollHeight > 200 ? 'auto' : 'hidden';
         }
 
         function appendMessage(content, sender) {
@@ -1413,12 +1286,6 @@
             
             const isError = sender === 'model-error';
             const modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br ${isError ? 'from-red-500 to-orange-600' : 'from-cyan-500 to-blue-600'} flex items-center justify-center shadow-md"><img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md" /></div>`;
-
-            const actionButtonsHtml = `
-                <div class="action-buttons">
-                    <button class="copy-btn" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button>
-                    <!-- Regenerate button temporarily disabled for multimedia -->
-                </div>`;
             
             const messageBubbleClasses = sender === 'user' ? 'bg-cyan-600 text-white' : (isError ? 'bg-red-900/50' : 'bg-slate-800');
             const messageHtml = `
@@ -1431,16 +1298,14 @@
                     </div>
                 </div>
                 ${sender === 'user' ? `<div class="flex-shrink-0">${userAvatarHtml}</div>` : ''}
-                ${isModel ? actionButtonsHtml : ''}
+                ${isModel ? '<div class="action-buttons"></div>' : ''}
             </div>`;
 
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
             const messageElement = document.getElementById(messageId);
 
-            if (isModel && !text) {
-                 // Placeholder for streamed response
-            } else {
+            if (isModel && text) {
                 const contentContainer = messageElement.querySelector('.prose');
                 makeTablesResponsive(contentContainer);
                 enhanceCodeBlocks(messageId);
@@ -1450,7 +1315,7 @@
             return messageId;
         }
 
-        function streamResponse(contentContainer, fullText, messageId) {
+        async function streamResponse(contentContainer, fullText, messageId) {
             return new Promise((resolve) => {
                 let currentText = '';
                 let index = 0;
@@ -1476,7 +1341,288 @@
                 type();
             });
         }
+        
+        function enhanceResponseMessage(messageElement, textContent) {
+            const actionContainer = messageElement.querySelector('.action-buttons');
+            if (!actionContainer) return;
 
+            addStandardActionButtons(actionContainer, textContent);
+
+            const table = messageElement.querySelector('table');
+            if (table) {
+                addChartButton(actionContainer, table);
+            }
+
+            const jsonCodeBlock = messageElement.querySelector('code.language-json');
+            if (jsonCodeBlock) {
+                addJsonExplorerButton(actionContainer, jsonCodeBlock.innerText);
+            }
+
+            const locationMatches = textContent.match(/([A-Z][a-zA-Z\s]+,\s[A-Z][a-zA-Z\s]+)/g);
+            if (locationMatches) {
+                addMapButton(actionContainer, locationMatches[0]);
+            }
+            
+            const dateRegex = /(?:schedule|meeting on|deadline for)\s(.*?)(?:\.|at\s\d{1,2}:\d{2}\s[AP]M|next\s\w+)/i;
+            const dateMatch = textContent.match(dateRegex);
+            if (dateMatch) {
+                addCalendarButton(actionContainer, dateMatch[0], textContent);
+            }
+        }
+        
+        function addStandardActionButtons(container, text) {
+            const copyBtn = document.createElement('button');
+            copyBtn.title = "Copy";
+            copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(text);
+                showNotification('Copied to clipboard', 'success');
+            };
+            container.appendChild(copyBtn);
+        }
+
+        function addChartButton(container, tableElement) {
+             const chartBtn = document.createElement('button');
+             chartBtn.title = "Visualize Chart";
+             chartBtn.className = "interactive-btn";
+             chartBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><span>Visualize</span>`;
+             chartBtn.onclick = () => showChartModal(tableElement);
+             container.appendChild(chartBtn);
+        }
+
+        function addJsonExplorerButton(container, jsonText) {
+            const jsonBtn = document.createElement('button');
+            jsonBtn.title = "View JSON";
+            jsonBtn.className = "interactive-btn";
+            jsonBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>View JSON</span>`;
+            jsonBtn.onclick = () => showJsonExplorerModal(jsonText);
+            container.appendChild(jsonBtn);
+        }
+        
+        function addMapButton(container, location) {
+            const mapBtn = document.createElement('button');
+            mapBtn.title = `Show ${location} on Map`;
+            mapBtn.className = "interactive-btn";
+            mapBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Show Map</span>`;
+            mapBtn.onclick = () => showMapModal(location);
+            container.appendChild(mapBtn);
+        }
+        
+        function addCalendarButton(container, eventText, fullContext) {
+            const calendarLink = createGoogleCalendarLink(eventText, fullContext);
+            if (!calendarLink) return;
+
+            const calendarBtn = document.createElement('a');
+            calendarBtn.href = calendarLink;
+            calendarBtn.target = "_blank";
+            calendarBtn.rel = "noopener noreferrer";
+            calendarBtn.title = "Add to Calendar";
+            calendarBtn.className = "interactive-btn";
+            calendarBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg><span>Add to Calendar</span>`;
+            container.appendChild(calendarBtn);
+        }
+
+        function showInteractiveModal(title) {
+            interactiveModalTitle.textContent = title;
+            interactiveModal.classList.remove('hidden');
+            interactiveModal.classList.add('flex');
+        }
+
+        function hideInteractiveModal() {
+            interactiveModal.classList.add('hidden');
+            interactiveModal.classList.remove('flex');
+            interactiveModalBody.innerHTML = '';
+            interactiveModalFooter.innerHTML = '';
+            interactiveModalFooter.classList.add('hidden');
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+        }
+        
+        function showChartModal(table) {
+            showInteractiveModal("Chart Visualization");
+            interactiveModalBody.innerHTML = '<div class="p-4 h-full"><canvas id="chart-canvas"></canvas></div>';
+            interactiveModalFooter.classList.remove('hidden');
+
+            const ctx = document.getElementById('chart-canvas').getContext('2d');
+            const data = parseTableForChart(table);
+            if (!data) {
+                hideInteractiveModal();
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { color: '#e2e8f0' }, grid: { color: '#334155'} },
+                        x: { ticks: { color: '#e2e8f0' }, grid: { color: '#334155'} }
+                    },
+                    plugins: { legend: { labels: { color: '#e2e8f0' } } }
+                }
+            });
+
+            ['bar', 'line', 'pie', 'doughnut'].forEach(type => {
+                const btn = document.createElement('button');
+                btn.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                btn.className = 'px-3 py-1 rounded-md bg-slate-600 hover:bg-slate-500 transition-colors text-white text-sm';
+                btn.onclick = () => {
+                    chartInstance.config.type = type;
+                    chartInstance.update();
+                };
+                interactiveModalFooter.appendChild(btn);
+            });
+        }
+        
+        function showMapModal(location) {
+            showInteractiveModal(`Map: ${location}`);
+            interactiveModalBody.innerHTML = `<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(location)}&hl=es;z=14&amp&output=embed" class="w-full h-full border-0" loading="lazy"></iframe>`;
+        }
+
+        function showJsonExplorerModal(jsonText) {
+             showInteractiveModal("JSON Explorer");
+             interactiveModalBody.classList.add('p-4');
+            try {
+                const jsonObj = JSON.parse(jsonText);
+                const formattedHtml = formatJsonToHtml(jsonObj);
+                interactiveModalBody.innerHTML = `<div class="json-formatter">${formattedHtml}</div>`;
+            } catch (e) {
+                interactiveModalBody.innerHTML = `<p class="text-red-400">Error parsing JSON: ${e.message}</p><pre class="mt-4 text-slate-400">${jsonText}</pre>`;
+            }
+        }
+
+        function showCodeVisualizationModal(code, language) {
+            showInteractiveModal("Code Visualization");
+            const bodyContent = language === 'javascript' ? `<canvas id="chartCanvas"></canvas><script>${code}<\/script>` : code;
+            const fullHtml = `
+                <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+                        <script src="https://d3js.org/d3.v7.min.js"><\/script>
+                        <style>body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #fff; overflow: hidden; } canvas { display: block; }</style>
+                    </head>
+                    <body>
+                        ${bodyContent}
+                    </body>
+                </html>`;
+            interactiveModalBody.innerHTML = `<iframe srcdoc='${fullHtml.replace(/'/g, "&apos;")}' class="w-full h-full border-0" ></iframe>`;
+        }
+        
+        function parseTableForChart(table) {
+            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            
+            if (headers.length < 2 || rows.length === 0) {
+                showNotification("Table not suitable for charting.", "error");
+                return null;
+            }
+
+            const labels = rows.map(row => row.cells[0].textContent.trim());
+            const datasets = [];
+
+            for (let i = 1; i < headers.length; i++) {
+                const data = rows.map(row => parseFloat(row.cells[i].textContent.trim().replace(/[^0-9.-]+/g,"")) || 0);
+                const colorVal1 = Math.floor(Math.random() * 256);
+                const colorVal2 = Math.floor(Math.random() * 256);
+                const colorVal3 = Math.floor(Math.random() * 256);
+                datasets.push({
+                    label: headers[i],
+                    data: data,
+                    backgroundColor: `rgba(${colorVal1}, ${colorVal2}, ${colorVal3}, 0.5)`,
+                    borderColor: `rgba(${colorVal1}, ${colorVal2}, ${colorVal3}, 1)`,
+                    borderWidth: 1
+                });
+            }
+
+            return { labels, datasets };
+        }
+        
+        function formatJsonToHtml(obj) {
+            if (obj === null) return `<span class="null">null</span>`;
+            if (typeof obj === 'string') return `<span class="string">"${obj.replace(/"/g, '\\"')}"</span>`;
+            if (typeof obj === 'number') return `<span class="number">${obj}</span>`;
+            if (typeof obj === 'boolean') return `<span class="boolean">${obj}</span>`;
+
+            if (Array.isArray(obj)) {
+                if (obj.length === 0) return '[]';
+                let content = obj.map(item => `<li>${formatJsonToHtml(item)}</li>`).join('');
+                return `<details open><summary class="inline-block">Array(${obj.length}) [</summary><ul class="pl-4">${content}</ul>]</details>`;
+            }
+
+            if (typeof obj === 'object') {
+                const keys = Object.keys(obj);
+                if (keys.length === 0) return '{}';
+                let content = keys.map(key => `<li><span class="key">"${key}"</span>: ${formatJsonToHtml(obj[key])}</li>`).join('');
+                return `<details open><summary class="inline-block">Object {</summary><ul class="pl-4">${content}</ul>}</details>`;
+            }
+            
+            return obj.toString();
+        }
+
+        function createGoogleCalendarLink(text, context) {
+            let date = new Date();
+            let title = "New Event";
+            const titleMatch = context.match(/(?:deadline for|meeting on|schedule)\s(.*?)(?=\sfor|\son|\sat)/i);
+            if (titleMatch) title = titleMatch[1];
+
+            const timeMatch = text.match(/(\d{1,2})(?::(\d{2}))?\s?(am|pm)/i);
+            if (timeMatch) {
+                let hours = parseInt(timeMatch[1]);
+                const minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+                const ampm = timeMatch[3].toLowerCase();
+                if (ampm === 'pm' && hours < 12) hours += 12;
+                if (ampm === 'am' && hours === 12) hours = 0;
+                date.setHours(hours, minutes, 0, 0);
+            }
+
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const dayMatch = text.match(new RegExp(`next (${days.join('|')})`, 'i'));
+            if (dayMatch) {
+                const targetDay = days.indexOf(dayMatch[1].toLowerCase());
+                const currentDay = date.getDay();
+                let dayDifference = targetDay - currentDay;
+                if (dayDifference <= 0) dayDifference += 7;
+                date.setDate(date.getDate() + dayDifference);
+            }
+
+            const startDate = date.toISOString().replace(/-|:|\.\d{3}/g, '');
+            date.setHours(date.getHours() + 1);
+            const endDate = date.toISOString().replace(/-|:|\.\d{3}/g, '');
+
+            const details = `Event details: ${context}`;
+            const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(details)}`;
+            return url;
+        }
+
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey && !submitButton.disabled) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        }
+
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+            textarea.style.overflowY = textarea.scrollHeight > 200 ? 'auto' : 'hidden';
+        }
+
+        function updateSendButtonState() {
+            const hasText = chatInput.value.trim().length > 0;
+            const hasFile = !!attachedFile;
+            const canSend = hasText || hasFile;
+            
+            submitButton.disabled = !canSend;
+            submitButton.classList.toggle('bg-slate-700', !canSend);
+            submitButton.classList.toggle('hover:bg-cyan-700', canSend);
+            submitButton.classList.toggle('bg-cyan-600', canSend);
+        }
+        
         function makeTablesResponsive(element) {
             if (!element) return;
             element.querySelectorAll('table').forEach(table => {
@@ -1498,51 +1644,45 @@
 
                 const btnWrapper = document.createElement('div');
                 btnWrapper.className = 'code-btn-wrapper';
-
+                
+                const codeText = code.innerText;
                 const language = Array.from(code.classList).find(c => c.startsWith('language-'))?.replace('language-', '');
+
+                // Preview for HTML
                 if (['html', 'markup', 'xml'].includes(language)) {
                     const previewBtn = document.createElement('button');
                     previewBtn.className = 'code-action-btn';
                     previewBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> <span>Preview</span>`;
-                    previewBtn.addEventListener('click', () => {
-                        showPreviewModal(code.innerText);
-                        showNotification('Opening HTML preview', 'info');
-                    });
+                    previewBtn.addEventListener('click', () => showPreviewModal(codeText));
                     btnWrapper.appendChild(previewBtn);
                 }
+                
+                // Visualize for JS/HTML containing charting libraries
+                if (['javascript', 'html'].includes(language) && /(new Chart|d3\.select)/.test(codeText)) {
+                     const vizBtn = document.createElement('button');
+                    vizBtn.className = 'code-action-btn';
+                    vizBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><span>Visualize</span>`;
+                    vizBtn.addEventListener('click', () => showCodeVisualizationModal(codeText, language));
+                    btnWrapper.appendChild(vizBtn);
+                }
 
+                // Copy button for all code blocks
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'code-action-btn';
                 copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg> <span>Copy</span>`;
                 copyBtn.addEventListener('click', () => {
-                    const originalContent = copyBtn.innerHTML;
-                    navigator.clipboard.writeText(code.innerText).then(() => {
-                        copyBtn.innerHTML = `<span>Copied!</span>`;
+                    navigator.clipboard.writeText(codeText).then(() => {
                         showNotification('Code copied to clipboard', 'success');
                     }).catch(err => {
-                        console.error('Failed to copy text: ', err);
-                        copyBtn.innerHTML = `<span>Error</span>`;
                         showNotification('Failed to copy code', 'error');
                     });
-                    setTimeout(() => { copyBtn.innerHTML = originalContent; }, 2000);
                 });
                 btnWrapper.appendChild(copyBtn);
 
                 block.appendChild(btnWrapper);
             });
         }
-
-        function updateSendButtonState() {
-            const hasText = chatInput.value.trim().length > 0;
-            const hasFile = !!attachedFile;
-            const canSend = hasText || hasFile;
-            
-            submitButton.disabled = !canSend;
-            submitButton.classList.toggle('bg-slate-700', !canSend);
-            submitButton.classList.toggle('hover:bg-cyan-700', canSend);
-            submitButton.classList.toggle('bg-cyan-600', canSend);
-        }
-
+        
         function renderHistorySidebar() {
             historyList.innerHTML = '';
             const sortedChats = Object.values(allChats).sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
@@ -1595,7 +1735,6 @@
             mainArea.scrollTop = mainArea.scrollHeight;
         }
 
-        // --- HISTORY & STATE MANAGEMENT ---
         function startNewChat() {
             currentChatId = null;
             showWelcomeContent();
@@ -1617,15 +1756,14 @@
             if (!allChats[chatId].messages || allChats[chatId].messages.length === 0) {
                 const messagesQuery = query(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", chatId, "messages"));
                 const messagesSnapshot = await getDocs(messagesQuery);
-                const messages = messagesSnapshot.docs.map(doc => doc.data()).sort((a,b) => a.timestamp.toMillis() - b.timestamp.toMillis());
+                const messages = messagesSnapshot.docs.map(doc => doc.data()).sort((a,b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
                 allChats[chatId].messages = messages;
             }
             
-            // Note: Multimedia content is not stored in Firestore in this version.
-            // When loading a chat, we only show the text parts.
             allChats[chatId].messages.forEach(msg => {
                  const textContent = msg.parts.find(p => p.text)?.text || '[Multimedia Content]';
-                 appendMessage({ text: textContent }, msg.role);
+                 const messageElementId = appendMessage({ text: textContent }, msg.role);
+                 enhanceResponseMessage(document.getElementById(messageElementId), textContent);
             });
 
             renderHistorySidebar();
@@ -1693,12 +1831,15 @@
 
         async function handleSingleDelete() {
             if (!chatIdToDelete || !currentUser) return;
-            const wasCurrentChat = chatIdToDelete === currentChatId;
-            await deleteDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", chatIdToDelete));
-            delete allChats[chatIdToDelete];
-            renderHistorySidebar();
-            if (wasCurrentChat) loadMostRecentChat();
+            const idToDelete = chatIdToDelete;
+            const wasCurrentChat = idToDelete === currentChatId;
+            await deleteDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", idToDelete));
+            delete allChats[idToDelete];
             hideDeleteModal();
+            renderHistorySidebar();
+            if (wasCurrentChat) {
+                loadMostRecentChat();
+            }
             showNotification('Chat deleted', 'success');
         }
 
@@ -1709,13 +1850,12 @@
             const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
             await Promise.all(deletePromises);
             allChats = {};
+            hideDeleteModal();
             renderHistorySidebar();
             startNewChat();
-            hideDeleteModal();
             showNotification('All chats deleted', 'success');
         }
 
-        // --- VOICE INPUT ---
         function toggleVoiceRecognition() {
             if (micIcon.classList.contains('mic-active')) {
                 recognition.stop();
@@ -1757,8 +1897,117 @@
             if (indicator) indicator.remove();
         }
 
-        // --- GLOBAL HELPER FUNCTIONS ---
-        window.togglePasswordVisibility = togglePasswordVisibility;
+        function addEventListeners() {
+            // Auth form switching
+            showSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                authError.classList.add('hidden');
+            });
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                signupForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                authError.classList.add('hidden');
+            });
+
+            // Auth form submission
+            loginForm.addEventListener('submit', handleLogin);
+            signupForm.addEventListener('submit', handleSignup);
+            googleLoginBtn.addEventListener('click', handleGoogleSignIn);
+            googleSignupBtn.addEventListener('click', handleGoogleSignIn);
+
+            // Password visibility toggle
+            document.getElementById('login-password-toggle').addEventListener('click', () => togglePasswordVisibility('login-password'));
+            document.getElementById('signup-password-toggle').addEventListener('click', () => togglePasswordVisibility('signup-password'));
+
+            // Advanced Auth UI Listeners
+            signupPasswordInput.addEventListener('input', updatePasswordStrength);
+            signupEmailInput.addEventListener('input', validateEmail);
+
+            // Profile & Logout
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+            logoutBtn.addEventListener('click', handleLogout);
+            document.addEventListener('click', (e) => {
+                 if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.remove('show');
+                }
+            });
+
+            // Chat app event listeners
+            chatForm.addEventListener('submit', handleSendMessage);
+            newChatBtn.addEventListener('click', startNewChat);
+            menuBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+            clearAllBtn.addEventListener('click', () => showDeleteModal(null));
+            confirmDeleteBtn.addEventListener('click', confirmDeletion);
+            cancelDeleteBtn.addEventListener('click', hideDeleteModal);
+            closePreviewBtn.addEventListener('click', hidePreviewModal);
+            stopGeneratingBtn.addEventListener('click', () => {
+                stopGenerationFlag = true;
+                showNotification('Generation stopped', 'info');
+            });
+
+            chatInput.addEventListener('input', () => {
+                autoResizeTextarea(chatInput);
+                updateSendButtonState();
+            });
+            chatInput.addEventListener('keydown', handleTextareaKeydown);
+
+            // Multimedia listeners
+            attachFileBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            removeFileBtn.addEventListener('click', removeAttachedFile);
+
+            if (recognition) {
+                micBtn.addEventListener('click', toggleVoiceRecognition);
+                recognition.onresult = handleVoiceResult;
+                recognition.onend = () => {
+                    micIcon.classList.remove('mic-active', 'animate-pulse');
+                    showNotification('Voice input ended', 'info');
+                };
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error', event.error);
+                    micIcon.classList.remove('mic-active', 'animate-pulse');
+                    showNotification('Voice recognition error', 'error');
+                };
+            } else {
+                 micBtn.disabled = true;
+            }
+
+            // Delegated Listeners for dynamic content
+            chatContainer.addEventListener('click', (e) => {
+                const suggestionCard = e.target.closest('.suggestion-card');
+                if (suggestionCard) {
+                    fillSuggestion(suggestionCard.dataset.suggestion);
+                    return;
+                }
+            });
+            
+            closeInteractiveModalBtn.addEventListener('click', hideInteractiveModal);
+        }
+
+        // --- INITIALIZATION ---
+        function init() {
+            marked.setOptions({
+                gfm: true,
+                breaks: true,
+                sanitizer: (html) => html,
+                highlight: function (code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                }
+            });
+            addEventListeners();
+            checkAPIStatus();
+            checkAuthState();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
 
     </script>
 </body>
