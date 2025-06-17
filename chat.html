@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- highlight.js for syntax highlighting -->
@@ -65,7 +65,10 @@
             position: relative;
             overflow-x: auto; 
         }
-        .prose code { font-size: 0.9rem; }
+        .prose code { 
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem; 
+        }
 
         .code-btn-wrapper {
             position: absolute;
@@ -383,7 +386,7 @@
         }
 
         /* JSON Explorer Styles */
-        .json-formatter { font-family: monospace; white-space: pre-wrap; font-size: 0.9rem; }
+        .json-formatter { font-family: 'Fira Code', monospace; white-space: pre-wrap; font-size: 0.9rem; }
         .json-formatter .string { color: #a5f3fc; }
         .json-formatter .number { color: #fcd34d; }
         .json-formatter .boolean { color: #fda4af; }
@@ -400,6 +403,65 @@
         }
         .json-formatter details[open] > summary::before {
             transform: rotate(90deg);
+        }
+
+        /* Code Visualizer Styles */
+        #code-visualizer-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 1rem;
+            height: 100%;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+        }
+        #visualizer-code-pane {
+            grid-column: 1 / 2;
+            grid-row: 1 / 3;
+            background: #0f172a;
+            border-radius: 0.5rem;
+            overflow: auto;
+            padding: 0.5rem;
+            border: 1px solid #334155;
+        }
+        #visualizer-code-pane .line {
+            padding: 0 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s;
+        }
+        #visualizer-code-pane .line.highlighted {
+            background-color: #334155;
+        }
+        #visualizer-explanation-pane {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+        #visualizer-state-pane {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-y: auto;
+        }
+        #visualizer-state-pane h4 {
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+        #visualizer-state-pane .variable {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        #visualizer-state-pane .var-name {
+            color: #93c5fd;
+        }
+        #visualizer-state-pane .var-value {
+            color: #a5f3fc;
         }
 
 
@@ -614,9 +676,9 @@
                                 </button>
                                 <div class="tooltip-content">Attach File</div>
                             </div>
-                             <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*,.csv,.txt">
+                             <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*,.csv,.txt,.py,.js,.java,.c,.cpp">
                              
-                            <textarea id="chat-input" placeholder="Enter Your Prompt...." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-white placeholder-slate-400 focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
+                            <textarea id="chat-input" placeholder="Enter Your Prompt or paste code to visualize..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-white placeholder-slate-400 focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
 
                             <div class="help-tooltip">
                                 <button id="mic-btn" type="button" class="text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-700 transition-colors duration-200 disabled:opacity-50">
@@ -667,8 +729,8 @@
     </div>
 
     <!-- Interactive Feature Modal -->
-    <div id="interactive-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-full h-full max-w-4xl max-h-[80vh] flex flex-col">
+    <div id="interactive-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] hidden items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-full h-full max-w-6xl max-h-[90vh] flex flex-col">
             <header class="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
                 <h3 id="interactive-modal-title" class="text-xl font-bold text-white"></h3>
                 <button id="close-interactive-modal-btn" class="p-2 rounded-full hover:bg-slate-700 transition-colors">
@@ -678,7 +740,7 @@
             <div id="interactive-modal-body" class="flex-1 p-0 overflow-auto bg-slate-900">
                 <!-- Content will be injected here -->
             </div>
-            <footer id="interactive-modal-footer" class="p-2 border-t border-slate-700 flex-shrink-0 hidden justify-center gap-2">
+            <footer id="interactive-modal-footer" class="p-2 border-t border-slate-700 flex-shrink-0 hidden justify-center items-center gap-2">
                 <!-- Footer content like buttons will be injected here -->
             </footer>
         </div>
@@ -801,6 +863,18 @@
         let isNotificationVisible = false;
         let attachedFile = null;
         let chartInstance = null;
+        // Code visualizer state
+        let visualizerSteps = [];
+        let currentVisStep = 0;
+        const vizLanguages = ['python', 'javascript', 'java', 'c', 'c++'];
+        const fileExtensionMap = {
+            '.py': 'python',
+            '.js': 'javascript',
+            '.java': 'java',
+            '.c': 'c',
+            '.cpp': 'c++'
+        };
+
 
         // --- Speech Recognition ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -919,24 +993,24 @@
                        <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-20 h-20 rounded-full shadow-lg" />
                     </div>
                     <h2 class="text-3xl font-bold text-white mb-4">Welcome to Chat@AI</h2>
-                    <p class="text-slate-300 text-lg mb-6">Your intelligent AI assistant. Ask me anything or upload a file to get started!</p>
+                    <p class="text-slate-300 text-lg mb-6">Your intelligent AI assistant. Ask me anything, upload a file, or paste code to visualize!</p>
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-white mb-4">Try these examples:</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                           <button class="suggestion-card" data-suggestion="From the text: 'Reach out to Jane at jane.doe@example.com or 123-456-7890', extract the name, email, and phone number.">
+                           <button class="suggestion-card" data-suggestion="Visualize this python code:\n\nx = 5\nitems = [1, 2, 3]\nfor i in range(x):\n  items.append(i * 2)\nprint(items)">
                              <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 flex-shrink-0 bg-sky-500/20 rounded-lg flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-400"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 14v-2"/><path d="M16 12H8"/></svg>
+                                <div class="w-8 h-8 flex-shrink-0 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></svg>
                                 </div>
-                                <span class="text-slate-300">Extract contact info</span>
+                                <span class="text-slate-300">Visualize Python code</span>
                              </div>
                            </button>
-                           <button class="suggestion-card" data-suggestion="Create a responsive HTML landing page for a new tech startup.">
+                           <button class="suggestion-card" data-suggestion="Visualize this javascript code:\n\nlet message = 'Hello';\nfor (let i = 0; i < 3; i++) {\n  console.log(message[i]);\n}">
                              <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 flex-shrink-0 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                <div class="w-8 h-8 flex-shrink-0 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></svg>
                                 </div>
-                                <span class="text-slate-300">Create a landing page</span>
+                                <span class="text-slate-300">Visualize JS code</span>
                              </div>
                            </button>
                            <button class="suggestion-card" data-suggestion="Plan a 7-day trip to Japan, focusing on cultural experiences in Kyoto and Tokyo.">
@@ -947,7 +1021,7 @@
                                 <span class="text-slate-300">Plan a trip to Japan</span>
                              </div>
                            </button>
-                           <button class="suggestion-card" data-suggestion="Generate a Java script bar chart showing the population of the 5 largest cities in India.">
+                           <button class="suggestion-card" data-suggestion="Generate a JavaScript bar chart showing the population of the 5 largest cities in India.">
                              <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 flex-shrink-0 bg-rose-500/20 rounded-lg flex items-center justify-center">
                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
@@ -1127,7 +1201,23 @@
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
+            
+            // Check if it's a code file for visualization
+            const extension = '.' + file.name.split('.').pop();
+            const language = fileExtensionMap[extension];
+            
+            if (language) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const codeContent = event.target.result;
+                    showCodeVisualizationModal(codeContent, language);
+                };
+                reader.readAsText(file);
+                fileInput.value = ''; // Reset file input
+                return;
+            }
 
+            // Handle other file types
             if (file.type === "text/plain" || file.type === "text/csv") {
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -1166,7 +1256,7 @@
             } else if (attachedFile.mimeType.startsWith('audio/')) {
                 previewHtml = `<audio controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></audio>`;
             } else if (attachedFile.mimeType.startsWith('video/')) {
-                previewHtml = `<video controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
+                previewHtml = `<video controls class="max-w-xs rounded-lg mb-2" src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
             } else {
                 previewHtml = `<div class="text-sm text-slate-300 p-2 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${attachedFile.name}</span></div>`;
             }
@@ -1186,8 +1276,23 @@
         async function handleSendMessage(e) {
             if(e) e.preventDefault();
             const userInput = chatInput.value.trim();
+            
+            // Check for Python visualization command
+            const vizRegex = /^visualize this (\w+\+*\w*) code:/i;
+            const match = userInput.match(vizRegex);
+            if (match) {
+                const language = match[1].toLowerCase();
+                const code = userInput.substring(match[0].length).trim();
+                if (vizLanguages.includes(language)){
+                    showCodeVisualizationModal(code, language);
+                    chatInput.value = '';
+                    autoResizeTextarea(chatInput);
+                    updateSendButtonState();
+                    return;
+                }
+            }
+            
             if ((!userInput && !attachedFile) || !currentUser) return;
-
 
             if (!API_KEY || API_KEY.includes('YOUR_API_KEY')) {
                 appendMessage("`Error`: API Key is missing.\n\nPlease add your Google AI Gemini API key in the script section to enable chat functionality.", 'model-error');
@@ -1480,6 +1585,9 @@
                 chartInstance.destroy();
                 chartInstance = null;
             }
+            // Reset visualizer state
+            visualizerSteps = [];
+            currentVisStep = 0;
         }
         
         function showChartModal(table) {
@@ -1537,8 +1645,8 @@
             }
         }
 
-        function showCodeVisualizationModal(code, language) {
-            showInteractiveModal("Code Visualization");
+        function showCodePreviewModal(code, language) {
+            showInteractiveModal("Live Code Preview");
             const bodyContent = language === 'javascript' ? `<canvas id="chartCanvas"></canvas><script>${code}<\/script>` : code;
             const fullHtml = `
                 <html>
@@ -1546,7 +1654,7 @@
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
                         <script src="https://d3js.org/d3.v7.min.js"><\/script>
-                        <style>body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #fff; overflow: hidden; } canvas { display: block; }</style>
+                        <style>body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #fff; color: #000; overflow: auto; } canvas { display: block; }</style>
                     </head>
                     <body>
                         ${bodyContent}
@@ -1555,6 +1663,180 @@
             interactiveModalBody.innerHTML = `<iframe srcdoc='${fullHtml.replace(/'/g, "&apos;")}' class="w-full h-full border-0" ></iframe>`;
         }
         
+        // --- START: New Code Visualizer Functions ---
+        
+        async function showCodeVisualizationModal(code, language) {
+            showInteractiveModal(`${language.charAt(0).toUpperCase() + language.slice(1)} Code Visualizer`);
+            interactiveModalBody.innerHTML = `<div class="flex items-center justify-center h-full">
+                <dotlottie-player src="https://lottie.host/42a90344-ccc5-4d2a-92e2-1a62cef7473c/MqjsTEGKMS.lottie" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></dotlottie-player>
+            </div>`;
+
+            const prompt = `
+                Analyze the following ${language} code and generate a step-by-step execution trace.
+                For each step, provide the line number being executed, a simple one-sentence explanation of what the line does, the state of global variables as an array of objects (where each object has a 'key' and a stringified 'value'), and any text that is printed to standard output.
+                Only include variables that have been initialized.
+                The very first step should be "Initial State" on line 0, showing the state before any code runs.
+                The very last step should be "Final State", showing the final variable values and the complete output after the script finishes.
+            `;
+            
+            const payload = {
+              contents: [{
+                role: 'user',
+                parts: [
+                  { text: prompt },
+                  { text: `\`\`\`${language}\n${code}\n\`\`\`` }
+                ]
+              }],
+              generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                  type: "OBJECT",
+                  properties: {
+                    "steps": {
+                      type: "ARRAY",
+                      items: {
+                        type: "OBJECT",
+                        properties: {
+                          "line": { "type": "INTEGER" },
+                          "explanation": { "type": "STRING" },
+                          "globals": {
+                            "type": "ARRAY",
+                            "items": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "key": { "type": "STRING" },
+                                    "value": { "type": "STRING" }
+                                }
+                            }
+                          },
+                          "output": { "type": "STRING" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            };
+
+            try {
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'API error during visualization.');
+                }
+                const data = await response.json();
+                const traceText = data.candidates[0].content.parts[0].text;
+                const trace = JSON.parse(traceText);
+                
+                if (trace.steps && trace.steps.length > 0) {
+                    visualizerSteps = trace.steps;
+                    currentVisStep = 0;
+                    renderVisualizerUI(code, language);
+                    updateVisualizerStep();
+                } else {
+                    throw new Error("AI could not generate a valid visualization trace.");
+                }
+
+            } catch (error) {
+                console.error("Code visualization error:", error);
+                interactiveModalBody.innerHTML = `<div class="p-4 text-red-400">Error: Could not visualize code. ${error.message}</div>`;
+            }
+        }
+
+        function renderVisualizerUI(code, language) {
+            interactiveModalBody.innerHTML = `
+                <div id="code-visualizer-container">
+                    <div id="visualizer-code-pane"></div>
+                    <div id="visualizer-explanation-pane"></div>
+                    <div id="visualizer-state-pane"></div>
+                </div>
+            `;
+            
+            const codePane = document.getElementById('visualizer-code-pane');
+            const codeLines = code.split('\n');
+            codeLines.forEach((line, index) => {
+                const lineEl = document.createElement('div');
+                lineEl.className = 'line';
+                lineEl.id = `vis-line-${index + 1}`;
+                // Using a table for alignment of line number and code
+                lineEl.innerHTML = `<table class="w-full"><tr>
+                    <td class="w-8 text-right pr-2 text-slate-500">${index + 1}</td>
+                    <td><pre><code class="language-${language} !p-0 !bg-transparent">${hljs.highlight(line, {language}).value}</code></pre></td>
+                </tr></table>`;
+                codePane.appendChild(lineEl);
+            });
+
+            // Setup footer controls
+            interactiveModalFooter.innerHTML = `
+                <button id="vis-prev-btn" class="px-4 py-2 rounded-md bg-slate-600 hover:bg-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                <span id="vis-step-counter" class="text-sm text-slate-400">Step 0/0</span>
+                <button id="vis-next-btn" class="px-4 py-2 rounded-md bg-slate-600 hover:bg-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+            `;
+            interactiveModalFooter.classList.remove('hidden');
+
+            document.getElementById('vis-prev-btn').addEventListener('click', () => {
+                if(currentVisStep > 0) {
+                    currentVisStep--;
+                    updateVisualizerStep();
+                }
+            });
+            document.getElementById('vis-next-btn').addEventListener('click', () => {
+                if(currentVisStep < visualizerSteps.length - 1) {
+                    currentVisStep++;
+                    updateVisualizerStep();
+                }
+            });
+        }
+
+        function updateVisualizerStep() {
+            const step = visualizerSteps[currentVisStep];
+            if (!step) return;
+
+            // Update explanation
+            document.getElementById('visualizer-explanation-pane').textContent = step.explanation;
+
+            // Update state
+            const statePane = document.getElementById('visualizer-state-pane');
+            let stateHtml = '<h4>Variables</h4>';
+            const globalsArray = step.globals || [];
+            if (globalsArray.length > 0) {
+                for (const variable of globalsArray) {
+                    stateHtml += `<div class="variable"><span class="var-name">${variable.key}</span> <span class="var-value">${variable.value}</span></div>`;
+                }
+            } else {
+                stateHtml += '<p class="text-slate-500 text-sm">No variables initialized yet.</p>';
+            }
+            if (step.output) {
+                stateHtml += `<h4 class="mt-4">Output</h4><pre class="text-white">${step.output}</pre>`;
+            }
+            statePane.innerHTML = stateHtml;
+
+            // Highlight code line
+            document.querySelectorAll('#visualizer-code-pane .line').forEach(l => l.classList.remove('highlighted'));
+            // For final state, don't highlight any line.
+            if(step.explanation !== "Final State") {
+                const lineEl = document.getElementById(`vis-line-${step.line}`);
+                if(lineEl) {
+                    lineEl.classList.add('highlighted');
+                    lineEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            }
+
+
+            // Update controls
+            document.getElementById('vis-step-counter').textContent = `Step ${currentVisStep + 1} of ${visualizerSteps.length}`;
+            document.getElementById('vis-prev-btn').disabled = currentVisStep === 0;
+            document.getElementById('vis-next-btn').disabled = currentVisStep === visualizerSteps.length - 1;
+        }
+
+        // --- END: New Code Visualizer Functions ---
+
+
         function parseTableForChart(table) {
             const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
             const rows = Array.from(table.querySelectorAll('tbody tr'));
@@ -1695,7 +1977,7 @@
                     const previewBtn = document.createElement('button');
                     previewBtn.className = 'code-action-btn';
                     previewBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg> <span>Preview</span>`;
-                    previewBtn.addEventListener('click', () => showPreviewModal(codeText));
+                    previewBtn.addEventListener('click', () => showCodePreviewModal(codeText, language));
                     btnWrapper.appendChild(previewBtn);
                 }
                 
@@ -1704,6 +1986,15 @@
                      const vizBtn = document.createElement('button');
                     vizBtn.className = 'code-action-btn';
                     vizBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><span>Visualize</span>`;
+                    vizBtn.addEventListener('click', () => showCodePreviewModal(codeText, language));
+                    btnWrapper.appendChild(vizBtn);
+                }
+                
+                // Visualize for supported languages
+                if (vizLanguages.includes(language)) {
+                     const vizBtn = document.createElement('button');
+                    vizBtn.className = 'code-action-btn';
+                    vizBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m10 8 6 4-6 4z"/></svg><span>Visualize</span>`;
                     vizBtn.addEventListener('click', () => showCodeVisualizationModal(codeText, language));
                     btnWrapper.appendChild(vizBtn);
                 }
@@ -1856,7 +2147,7 @@
 
             if (!allChats[chatId].messages || allChats[chatId].messages.length === 0) {
                 const messagesQuery = query(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", chatId, "messages"));
-                const messagesSnapshot = await getDocs(messagesQuery);
+                const messagesSnapshot = await getDocs(chatsQuery);
                 const messages = messagesSnapshot.docs.map(doc => doc.data()).sort((a,b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
                 allChats[chatId].messages = messages;
             }
