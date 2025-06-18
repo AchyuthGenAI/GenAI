@@ -615,6 +615,56 @@
         #visualizer-state-pane .var-value {
             color: rgb(var(--text-accent));
         }
+
+        /* Edit message styles */
+        .edit-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.5rem;
+            background-color: rgb(var(--bg-primary));
+            color: rgb(var(--text-primary));
+            font-family: inherit;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .edit-textarea:focus {
+            outline: none;
+            border-color: rgb(var(--border-accent));
+            box-shadow: 0 0 0 2px rgba(var(--bg-accent), 0.1);
+        }
+        .edit-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            justify-content: flex-end;
+        }
+        .edit-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .edit-save-btn {
+            background-color: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+            border: none;
+        }
+        .edit-save-btn:hover {
+            background-color: rgb(var(--bg-accent-hover));
+        }
+        .edit-cancel-btn {
+            background-color: rgb(var(--bg-tertiary));
+            color: rgb(var(--text-secondary));
+            border: 1px solid rgb(var(--border-primary));
+        }
+        .edit-cancel-btn:hover {
+            background-color: rgb(var(--bg-quaternary));
+        }
     </style>
 </head>
 <body class="bg-theme-primary text-theme-primary h-full overflow-hidden">
@@ -1622,9 +1672,10 @@
             }
 
             const isModel = sender === 'model' || sender === 'model-error';
+            const isUser = sender === 'user';
             
             let userAvatarHtml = '';
-            if (sender === 'user' && currentUser) {
+            if (isUser && currentUser) {
                 if(currentUser.photoURL) {
                     userAvatarHtml = `<img src="${currentUser.photoURL}" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full">`;
                 } else {
@@ -1636,18 +1687,18 @@
             const isError = sender === 'model-error';
             const modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full ${isError ? 'bg-theme-error' : 'bg-theme-accent'} flex items-center justify-center shadow-md"><img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md" /></div>`;
             
-            const messageBubbleClasses = sender === 'user' ? 'bg-theme-accent text-theme-inverse' : (isError ? 'bg-theme-error/10' : 'bg-theme-secondary');
+            const messageBubbleClasses = isUser ? 'bg-theme-accent text-theme-inverse' : (isError ? 'bg-theme-error/10' : 'bg-theme-secondary');
             const messageHtml = `
-            <div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 ${sender === 'user' ? 'justify-end' : ''}">
-                ${sender !== 'user' ? `<div class="flex-shrink-0">${modelIconHtml}</div>` : ''}
+            <div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 ${isUser ? 'justify-end user' : ''}">
+                ${!isUser ? `<div class="flex-shrink-0">${modelIconHtml}</div>` : ''}
                 <div class="rounded-lg p-3 sm:p-4 max-w-3xl shadow-lg min-w-0 ${messageBubbleClasses}">
                     ${fileHtml}
-                    <div class="prose max-w-none ${sender === 'user' ? 'text-theme-inverse' : 'text-theme-primary'}">
+                    <div class="prose max-w-none ${isUser ? 'text-theme-inverse' : 'text-theme-primary'}">
                         ${marked.parse(text || '')}
                     </div>
                 </div>
-                ${sender === 'user' ? `<div class="flex-shrink-0">${userAvatarHtml}</div>` : ''}
-                ${isModel ? '<div class="action-buttons"></div>' : ''}
+                ${isUser ? `<div class="flex-shrink-0">${userAvatarHtml}</div>` : ''}
+                <div class="action-buttons"></div>
             </div>`;
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
@@ -1659,8 +1710,216 @@
                 enhanceCodeBlocks(messageId);
             }
 
+            // Add action buttons for both user and model messages
+            if (isUser) {
+                addUserActionButtons(messageElement, text);
+            }
+
             scrollToBottom();
             return messageId;
+        }
+
+        // New function to add edit button for user messages
+        function addUserActionButtons(messageElement, text) {
+            const actionContainer = messageElement.querySelector('.action-buttons');
+            if (!actionContainer) return;
+
+            // Edit button
+            const editBtn = document.createElement('button');
+            editBtn.title = "Edit message";
+            editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+            editBtn.onclick = () => handleEditMessage(messageElement, text);
+            actionContainer.appendChild(editBtn);
+
+            // Copy button
+            const copyBtn = document.createElement('button');
+            copyBtn.title = "Copy";
+            copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(text);
+                showNotification('Copied to clipboard', 'success');
+            };
+            actionContainer.appendChild(copyBtn);
+        }
+
+        // New function to handle message editing
+        async function handleEditMessage(messageElement, originalText) {
+            const messageId = messageElement.id;
+            const contentContainer = messageElement.querySelector('.prose');
+            const actionContainer = messageElement.querySelector('.action-buttons');
+            
+            // Hide action buttons during edit
+            actionContainer.style.display = 'none';
+            
+            // Replace message content with textarea
+            const editContainer = document.createElement('div');
+            editContainer.innerHTML = `
+                <textarea class="edit-textarea">${originalText}</textarea>
+                <div class="edit-buttons">
+                    <button class="edit-cancel-btn">Cancel</button>
+                    <button class="edit-save-btn">Save & Regenerate</button>
+                </div>
+            `;
+            
+            contentContainer.replaceWith(editContainer);
+            const textarea = editContainer.querySelector('.edit-textarea');
+            const cancelBtn = editContainer.querySelector('.edit-cancel-btn');
+            const saveBtn = editContainer.querySelector('.edit-save-btn');
+            
+            // Focus and select text
+            textarea.focus();
+            textarea.select();
+            
+            // Auto-resize textarea
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+            textarea.addEventListener('input', () => {
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            });
+            
+            // Cancel edit
+            cancelBtn.onclick = () => {
+                const newContentContainer = document.createElement('div');
+                newContentContainer.className = 'prose max-w-none text-theme-inverse';
+                newContentContainer.innerHTML = marked.parse(originalText);
+                editContainer.replaceWith(newContentContainer);
+                actionContainer.style.display = 'flex';
+            };
+            
+            // Save and regenerate
+            saveBtn.onclick = async () => {
+                const newText = textarea.value.trim();
+                if (!newText) {
+                    showNotification('Message cannot be empty', 'error');
+                    return;
+                }
+                
+                if (newText === originalText) {
+                    // No changes, just restore
+                    cancelBtn.click();
+                    return;
+                }
+                
+                try {
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'Saving...';
+                    
+                    await regenerateFromMessage(messageId, newText);
+                    showNotification('Message updated and regenerated', 'success');
+                } catch (error) {
+                    console.error('Error regenerating:', error);
+                    showNotification('Error regenerating response', 'error');
+                    cancelBtn.click();
+                }
+            };
+        }
+
+        // New function to regenerate conversation from a specific message
+        async function regenerateFromMessage(messageId, newText) {
+            if (!currentChatId || !currentUser) return;
+            
+            // Find the message index in the current chat
+            const currentMessages = allChats[currentChatId].messages || [];
+            let messageIndex = -1;
+            
+            // Find message by comparing text content (since we don't store message IDs in Firestore)
+            for (let i = 0; i < currentMessages.length; i++) {
+                const message = currentMessages[i];
+                if (message.role === 'user') {
+                    const textPart = message.parts.find(p => p.text);
+                    if (textPart && messageId.includes('user')) {
+                        messageIndex = i;
+                        break;
+                    }
+                }
+            }
+            
+            if (messageIndex === -1) return;
+            
+            // Remove messages from this point forward (both from memory and UI)
+            const messagesToRemove = currentMessages.splice(messageIndex);
+            
+            // Remove corresponding messages from UI
+            const allMessageElements = chatContainer.querySelectorAll('.chat-message');
+            let userMessageCount = 0;
+            for (let i = 0; i < allMessageElements.length; i++) {
+                const element = allMessageElements[i];
+                if (element.classList.contains('user')) {
+                    userMessageCount++;
+                    if (userMessageCount > messageIndex) {
+                        // Remove this message and all subsequent messages
+                        for (let j = i; j < allMessageElements.length; j++) {
+                            allMessageElements[j].remove();
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            // Create new user message with updated text
+            const messageParts = [{ text: newText }];
+            const userMessage = { role: 'user', parts: messageParts, timestamp: new Date() };
+            allChats[currentChatId].messages.push(userMessage);
+            
+            // Add updated message to UI
+            const messageId_new = appendMessage({ text: newText }, 'user');
+            
+            // Generate new AI response
+            toggleForm(false);
+            generationControls.classList.remove('hidden');
+            stopGenerationFlag = false;
+            
+            appendLoadingIndicator();
+            scrollToBottom();
+            
+            try {
+                const apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
+                
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: apiMessages }),
+                });
+                
+                removeLoadingIndicator();
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'An unknown API error occurred.');
+                }
+                
+                const data = await response.json();
+                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (aiResponseText) {
+                    const aiMessageId = appendMessage({text: ''}, 'model');
+                    const aiMessageElement = document.getElementById(aiMessageId);
+                    const contentContainer = aiMessageElement.querySelector('.prose');
+                    
+                    const finalText = await streamResponse(contentContainer, aiResponseText, aiMessageId);
+                    
+                    enhanceResponseMessage(aiMessageElement, finalText);
+                    
+                    const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
+                    allChats[currentChatId].messages.push(aiMessage);
+                    
+                    // Update Firestore - remove old messages and add new ones
+                    // For simplicity, we'll just add the new messages (Firestore cleanup can be done separately)
+                    await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), userMessage);
+                    await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
+                } else {
+                    appendMessage({text: "I couldn't generate a response. The response was empty."}, 'model-error');
+                }
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+                removeLoadingIndicator();
+                appendMessage({text: `Error: ${error.message}`}, 'model-error');
+                showNotification('Error generating response', 'error');
+            } finally {
+                generationControls.classList.add('hidden');
+                toggleForm(true);
+            }
         }
 
         async function streamResponse(contentContainer, fullText, messageId) {
@@ -1766,7 +2025,7 @@
             calendarBtn.rel = "noopener noreferrer";
             calendarBtn.title = "Add to Calendar";
             calendarBtn.className = "interactive-btn";
-            calendarBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg><span>Add to Calendar</span>`;
+            calendarBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8"  x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg><span>Add to Calendar</span>`;
             container.appendChild(calendarBtn);
         }
 
@@ -2352,7 +2611,10 @@
             allChats[chatId].messages.forEach(msg => {
                  const textContent = msg.parts.find(p => p.text)?.text || '[Multimedia Content]';
                  const messageElementId = appendMessage({ text: textContent }, msg.role);
-                 enhanceResponseMessage(document.getElementById(messageElementId), textContent);
+                 const messageElement = document.getElementById(messageElementId);
+                 if (msg.role === 'model') {
+                     enhanceResponseMessage(messageElement, textContent);
+                 }
             });
 
             renderHistorySidebar();
