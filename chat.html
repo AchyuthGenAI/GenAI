@@ -684,6 +684,54 @@
             border: 1px solid rgb(var(--border-primary));
         }
 
+        /* Scroll to Bottom Button */
+        .scroll-to-bottom-btn {
+            position: fixed;
+            bottom: 150px;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background-color: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+            border: none;
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+        }
+
+        .scroll-to-bottom-btn.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-bottom-btn:hover {
+            background-color: rgb(var(--bg-accent-hover));
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.15), 0 6px 8px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .scroll-to-bottom-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .scroll-to-bottom-btn {
+                right: 1rem;
+                bottom: 120px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
         @media (max-width: 1023px) {
             .sidebar {
                 position: fixed;
@@ -946,6 +994,14 @@
         </div>
     </div>
 
+    <!-- Scroll to Bottom Button -->
+    <button id="scroll-to-bottom-btn" class="scroll-to-bottom-btn" title="Scroll to bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 13l3 3 3-3"/>
+            <path d="M7 6l3 3 3-3"/>
+        </svg>
+    </button>
+
     <!-- Auth Page -->
     <div id="auth-page" class="w-full h-full flex items-center justify-center auth-container p-4">
         <div class="w-full max-w-md">
@@ -1021,7 +1077,7 @@
                 </button>
                 <div class="divider">OR</div>
                  <button type="button" id="google-signup-btn" class="w-full bg-white text-slate-700 font-semibold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center hover:bg-slate-200">
-                    <svg class="w-5 h-5 mr-2" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
                     Continue with Google
                 </button>
                 <p class="text-center text-theme-quaternary">
@@ -1137,7 +1193,7 @@
             </header>
 
             <!-- Main Chat Area -->
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <main id="chat-main-area" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                 <div id="chat-container" class="max-w-4xl mx-auto space-y-6">
                     <!-- Welcome content will be shown here initially -->
                 </div>
@@ -1293,6 +1349,7 @@
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
         const chatContainer = document.getElementById('chat-container');
+        const chatMainArea = document.getElementById('chat-main-area');
         const submitButton = chatForm.querySelector('button[type="submit"]');
         const micBtn = document.getElementById('mic-btn');
         const micIcon = document.getElementById('mic-icon');
@@ -1325,6 +1382,7 @@
         const closeInteractiveModalBtn = document.getElementById('close-interactive-modal-btn');
         const themeBtn = document.getElementById('theme-btn');
         const themeDropdown = document.getElementById('theme-dropdown');
+        const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
         
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
@@ -1370,6 +1428,12 @@
             '.c': 'c',
             '.cpp': 'c++'
         };
+
+        // Smart scrolling state
+        let isUserScrolledUp = false;
+        let isGenerating = false;
+        let lastScrollPosition = 0;
+        let autoScrollThreshold = 100; // pixels from bottom to be considered "at bottom"
 
         // Theme Management
         let currentTheme = 'light';
@@ -1434,6 +1498,56 @@
                 default:
                     return 'vs';
             }
+        }
+
+        // --- SMART SCROLLING FUNCTIONS ---
+        
+        function isAtBottom() {
+            const scrollTop = chatMainArea.scrollTop;
+            const scrollHeight = chatMainArea.scrollHeight;
+            const clientHeight = chatMainArea.clientHeight;
+            return scrollHeight - scrollTop - clientHeight < autoScrollThreshold;
+        }
+
+        function updateScrollState() {
+            isUserScrolledUp = !isAtBottom();
+            updateScrollButton();
+        }
+
+        function updateScrollButton() {
+            if (isUserScrolledUp && isGenerating) {
+                scrollToBottomBtn.classList.add('show');
+            } else {
+                scrollToBottomBtn.classList.remove('show');
+            }
+        }
+
+        function scrollToBottomSmooth() {
+            chatMainArea.scrollTo({
+                top: chatMainArea.scrollHeight,
+                behavior: 'smooth'
+            });
+            // Update state after a short delay to allow scroll to complete
+            setTimeout(() => {
+                isUserScrolledUp = false;
+                updateScrollButton();
+            }, 300);
+        }
+
+        function scrollToBottomInstant() {
+            chatMainArea.scrollTop = chatMainArea.scrollHeight;
+            isUserScrolledUp = false;
+            updateScrollButton();
+        }
+
+        function initializeScrollHandling() {
+            // Handle scroll events
+            chatMainArea.addEventListener('scroll', () => {
+                updateScrollState();
+            });
+
+            // Handle scroll to bottom button click
+            scrollToBottomBtn.addEventListener('click', scrollToBottomSmooth);
         }
 
         // --- THEME FUNCTIONS ---
@@ -1888,6 +2002,8 @@
             toggleForm(false);
             generationControls.classList.remove('hidden');
             stopGenerationFlag = false;
+            isGenerating = true;
+            updateScrollButton();
 
             if (!currentChatId) {
                 try {
@@ -1904,6 +2020,8 @@
                     appendMessage("Error: Could not start a new chat session.", "model-error");
                     toggleForm(true);
                     generationControls.classList.add('hidden');
+                    isGenerating = false;
+                    updateScrollButton();
                     return;
                 }
             }
@@ -1940,7 +2058,11 @@
             autoResizeTextarea(chatInput);
             updateSendButtonState();
             appendLoadingIndicator();
-            scrollToBottom();
+            
+            // Smart scroll to bottom only if user was already at bottom
+            if (!isUserScrolledUp) {
+                scrollToBottomInstant();
+            }
 
             try {
                 let apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
@@ -1983,6 +2105,8 @@
             } finally {
                 generationControls.classList.add('hidden');
                 toggleForm(true);
+                isGenerating = false;
+                updateScrollButton();
             }
         }
 
@@ -2045,7 +2169,11 @@
                 addUserActionButtons(messageElement, text);
             }
 
-            scrollToBottom();
+            // Smart scroll to bottom only if user was already at bottom
+            if (!isUserScrolledUp) {
+                scrollToBottomInstant();
+            }
+            
             return messageId;
         }
 
@@ -2055,7 +2183,7 @@
             if (!actionContainer) return;
 
             // Edit button
-            const editBtn = document.createElement('button');
+            const editBtn =   document.createElement('button');
             editBtn.title = "Edit message";
             editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
             editBtn.onclick = () => handleEditMessage(messageElement, text);
@@ -2199,9 +2327,15 @@
             toggleForm(false);
             generationControls.classList.remove('hidden');
             stopGenerationFlag = false;
+            isGenerating = true;
+            updateScrollButton();
             
             appendLoadingIndicator();
-            scrollToBottom();
+            
+            // Smart scroll to bottom only if user was already at bottom
+            if (!isUserScrolledUp) {
+                scrollToBottomInstant();
+            }
             
             try {
                 const apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
@@ -2249,6 +2383,8 @@
             } finally {
                 generationControls.classList.add('hidden');
                 toggleForm(true);
+                isGenerating = false;
+                updateScrollButton();
             }
         }
 
@@ -2272,7 +2408,12 @@
                     index++;
                     const tempHtml = marked.parse(currentText + '▋');
                     contentContainer.innerHTML = tempHtml;
-                    scrollToBottom();
+                    
+                    // Smart scroll to bottom only if user was already at bottom
+                    if (!isUserScrolledUp) {
+                        scrollToBottomInstant();
+                    }
+                    
                     setTimeout(type, typingSpeed);
                 }
                 type();
@@ -3026,11 +3167,6 @@
             }
         }
 
-        function scrollToBottom() {
-            const mainArea = chatContainer.parentElement;
-            mainArea.scrollTop = mainArea.scrollHeight;
-        }
-
         function startNewChat() {
             currentChatId = null;
             showWelcomeContent();
@@ -3068,7 +3204,7 @@
             });
 
             renderHistorySidebar();
-            scrollToBottom();
+            scrollToBottomInstant();
             if (window.innerWidth < 1024) {
                 toggleSidebar();
             }
@@ -3419,6 +3555,7 @@
             });
             initializeTheme();
             initializeMonaco();
+            initializeScrollHandling();
             addEventListeners();
             checkAPIStatus();
             checkAuthState();
