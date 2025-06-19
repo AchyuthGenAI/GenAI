@@ -148,15 +148,15 @@
 
         /* Medical mode specific styles */
         .medical-mode-indicator {
+            width: 2rem;
+            height: 2rem;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 0.5rem 1rem;
             border-radius: 0.75rem;
-            font-weight: 600;
-            font-size: 0.875rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         .medical-disclaimer {
@@ -1135,6 +1135,14 @@
                 </svg>
                 <span>AI Medical</span>
             </button>
+
+            <!-- Chat@AI Mode Button (shown when in medical mode) -->
+            <button id="chat-ai-btn" class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 mb-4 hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>Chat@AI</span>
+            </button>
             
             <div class="relative mb-4">
                 <input type="text" id="search-history-input" placeholder="Search history..." class="w-full bg-theme-tertiary/50 border border-theme-primary rounded-md pl-10 pr-4 py-2 text-sm text-theme-primary placeholder-theme-quaternary focus:outline-none focus:ring-2 focus:ring-theme-accent">
@@ -1169,13 +1177,12 @@
                            <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-8 h-8 rounded-full shadow" />
                         </div>
                         <h1 class="text-xl sm:text-2xl font-bold text-theme-primary">Chat@AI</h1>
-                        <!-- Medical Mode Indicator -->
-                        <div id="medical-mode-indicator" class="medical-mode-indicator hidden">
+                        <!-- Medical Mode Indicator (just icon, no text) -->
+                        <div id="medical-mode-indicator" class="medical-mode-indicator hidden" title="Medical AI Mode Active">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
                                 <path d="M12 5L8 21l4-7 4 7-4-16"/>
                             </svg>
-                            <span>Medical AI Mode</span>
                         </div>
                      </div>
                      <div class="flex items-center gap-2 sm:gap-4">
@@ -1231,6 +1238,10 @@
                                     <p class="font-bold text-theme-primary truncate" id="profile-name"></p>
                                     <p class="text-sm text-theme-quaternary truncate" id="profile-email"></p>
                                 </div>
+                                <a href="index.html" class="dropdown-item w-full text-theme-secondary">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    <span>Home</span>
+                                </a>
                                 <button id="logout-btn" class="dropdown-item w-full text-theme-error font-medium">
                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                                     <span>Logout</span>
@@ -1406,6 +1417,7 @@
         const menuBtn = document.getElementById('menu-btn');
         const newChatBtn = document.getElementById('new-chat-btn');
         const medicalAiBtn = document.getElementById('medical-ai-btn');
+        const chatAiBtn = document.getElementById('chat-ai-btn'); // New Chat@AI button
         const medicalModeIndicator = document.getElementById('medical-mode-indicator');
         const historyList = document.getElementById('history-list');
         const searchHistoryInput = document.getElementById('search-history-input');
@@ -1507,19 +1519,33 @@
             isMedicalMode = !isMedicalMode;
             medicalModeIndicator.classList.toggle('hidden', !isMedicalMode);
             
+            // Toggle button visibility
             if (isMedicalMode) {
                 medicalAiBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.add('bg-green-800', 'hover:bg-green-900');
+                chatAiBtn.classList.remove('hidden'); // Show Chat@AI button
                 showMedicalWelcomeContent();
                 showNotification('Medical AI Mode activated', 'success');
                 updateInputPlaceholder('Ask about symptoms, medications, health advice...');
             } else {
                 medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
+                chatAiBtn.classList.add('hidden'); // Hide Chat@AI button
                 showWelcomeContent();
                 showNotification('Medical AI Mode deactivated', 'info');
                 updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
             }
+        }
+
+        function switchToChatAI() {
+            isMedicalMode = false;
+            medicalModeIndicator.classList.add('hidden');
+            medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+            medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
+            chatAiBtn.classList.add('hidden'); // Hide Chat@AI button
+            showWelcomeContent();
+            showNotification('Switched to Chat@AI mode', 'success');
+            updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
         }
 
         function updateInputPlaceholder(placeholder) {
@@ -2002,6 +2028,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 medicalModeIndicator.classList.add('hidden');
                 medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
+                chatAiBtn.classList.add('hidden');
                 showNotification('Logged out successfully', 'success');
             } catch (error) {
                 console.error("Logout error", error);
@@ -3441,10 +3468,12 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 if (isMedicalMode) {
                     medicalAiBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
                     medicalAiBtn.classList.add('bg-green-800', 'hover:bg-green-900');
+                    chatAiBtn.classList.remove('hidden'); // Show Chat@AI button
                     updateInputPlaceholder('Ask about symptoms, medications, health advice...');
                 } else {
                     medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                     medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
+                    chatAiBtn.classList.add('hidden'); // Hide Chat@AI button
                     updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
                 }
             }
@@ -3774,7 +3803,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
             // Chat app event listeners
             chatForm.addEventListener('submit', handleSendMessage);
             newChatBtn.addEventListener('click', startNewChat);
-            medicalAiBtn.addEventListener('click', toggleMedicalMode); // New medical mode toggle
+            medicalAiBtn.addEventListener('click', toggleMedicalMode); // Medical mode toggle
+            chatAiBtn.addEventListener('click', switchToChatAI); // New Chat@AI button
             menuBtn.addEventListener('click', toggleSidebar);
             sidebarOverlay.addEventListener('click', toggleSidebar);
             searchHistoryInput.addEventListener('input', () => renderHistorySidebar());
