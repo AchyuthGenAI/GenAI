@@ -722,51 +722,6 @@
         .output-line.success {
             color: rgb(var(--text-success));
         }
-        /* Base style for desktop and large screens */
-        #chat-app {
-            font-size: 1rem;
-            padding: 0;
-            max-width: 100vw;
-            max-height: 100vh;
-            overflow: hidden;
-            transition: transform 0.2s ease-in-out, font-size 0.2s ease-in-out;
-            transform-origin: top center;
-        }
-        
-        /* Tablets (width ≤ 900px) */
-        @media (max-width: 900px) {
-            #chat-app {
-                transform: scale(0.95);
-                font-size: 0.95rem;
-                padding: 0 2vw;
-            }
-        }
-        
-        /* Large mobile (width ≤ 600px) */
-        @media (max-width: 600px) {
-            #chat-app {
-                transform: scale(0.9);
-                font-size: 0.9rem;
-                padding: 0 2vw;
-            }
-        }
-        
-        /* Small mobile (width ≤ 400px) */
-        @media (max-width: 400px) {
-            #chat-app {
-                transform: scale(0.85);
-                font-size: 0.85rem;
-                padding: 0 1vw;
-            }
-        }
-        /* Very small mobile (width ≤ 100px) */
-        @media (max-width: 320px) {
-            #chat-app {
-                transform: scale(0.8);
-                font-size: 0.8rem;
-                padding: 0 1vw;
-            }
-        }
 
     </style>
 </head>
