@@ -1015,6 +1015,43 @@
         .output-line.success {
             color: rgb(var(--text-success));
         }
+
+        /* Mobile responsiveness for code visualizer */
+        @media (max-width: 768px) {
+            #code-visualizer-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
+            
+            #monaco-editor-container {
+                grid-column: 1;
+                grid-row: 1;
+                min-height: 300px;
+            }
+            
+            #visualizer-explanation-pane {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            #visualizer-state-pane {
+                grid-column: 1;
+                grid-row: 3;
+                max-height: 200px;
+            }
+            
+            #editor-toolbar {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: stretch;
+            }
+            
+            #editor-toolbar > div {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body class="bg-theme-primary text-theme-primary h-full overflow-hidden">
@@ -1069,11 +1106,6 @@
                     <span class="button-text">Log In</span>
                     <svg class="animate-spin h-5 w-5 ml-3 hidden button-loader" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </button>
-                <div class="divider">OR</div>
-                <button type="button" id="google-login-btn" class="w-full bg-white text-slate-700 font-semibold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center hover:bg-slate-200">
-                    <svg class="w-5 h-5 mr-2" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
-                    Continue with Google
-                </button>
                 <p class="text-center text-theme-quaternary">
                     Don't have an account? <a href="#" id="show-signup" class="font-semibold text-theme-accent hover:text-theme-accent">Sign up</a>
                 </p>
@@ -1106,11 +1138,6 @@
                 <button type="submit" class="w-full bg-theme-accent hover:bg-theme-accent text-theme-inverse font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
                     <span class="button-text">Sign Up</span>
                     <svg class="animate-spin h-5 w-5 ml-3 hidden button-loader" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                </button>
-                <div class="divider">OR</div>
-                 <button type="button" id="google-signup-btn" class="w-full bg-white text-slate-700 font-semibold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center hover:bg-slate-200">
-                    <svg class="w-5 h-5 mr-2" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
-                    Continue with Google
                 </button>
                 <p class="text-center text-theme-quaternary">
                     Already have an account? <a href="#" id="show-login" class="font-semibold text-theme-accent hover:text-theme-accent">Log in</a>
@@ -1362,8 +1389,6 @@
             createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
             signOut,
-            GoogleAuthProvider,
-            signInWithPopup,
             updateProfile,
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
@@ -1387,8 +1412,6 @@
         const showSignupBtn = document.getElementById('show-signup');
         const showLoginBtn = document.getElementById('show-login');
         const authError = document.getElementById('auth-error');
-        const googleLoginBtn = document.getElementById('google-login-btn');
-        const googleSignupBtn = document.getElementById('google-signup-btn');
         const signupNameInput = document.getElementById('signup-name');
         const signupEmailInput = document.getElementById('signup-email');
         const signupPasswordInput = document.getElementById('signup-password');
@@ -2002,18 +2025,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 authError.classList.remove('hidden');
             } finally {
                 toggleButtonLoading(submitBtn, false);
-            }
-        }
-
-        async function handleGoogleSignIn() {
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-                authError.classList.add('hidden');
-            } catch (error) {
-                console.error("Google Sign-in error", error);
-                authError.textContent = getFriendlyAuthError(error);
-                authError.classList.remove('hidden');
             }
         }
 
@@ -2694,9 +2705,17 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 addJsonExplorerButton(actionContainer, jsonCodeBlock.innerText);
             }
 
-            const locationMatches = textContent.match(/([A-Z][a-zA-Z\s]+,\s[A-Z][a-zA-Z\s]+)/g);
-            if (locationMatches) {
-                addMapButton(actionContainer, locationMatches[0]);
+            // Only show map button for geography/location-related content
+            const locationKeywords = ['city', 'country', 'location', 'place', 'travel', 'visit', 'destination', 'geography', 'map', 'directions', 'address'];
+            const hasLocationContext = locationKeywords.some(keyword => 
+                textContent.toLowerCase().includes(keyword)
+            );
+            
+            if (hasLocationContext) {
+                const locationMatches = textContent.match(/([A-Z][a-zA-Z\s]+,\s[A-Z][a-zA-Z\s]+)/g);
+                if (locationMatches) {
+                    addMapButton(actionContainer, locationMatches[0]);
+                }
             }
             
             const dateRegex = /(?:schedule|meeting on|deadline for)\s(.*?)(?:\.|at\s\d{1,2}:\d{2}\s[AP]M|next\s\w+)/i;
@@ -2704,6 +2723,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
             if (dateMatch) {
                 addCalendarButton(actionContainer, dateMatch[0], textContent);
             }
+
+            // Add regenerate button for all AI responses
+            addRegenerateButton(actionContainer, messageElement);
         }
         
         function addStandardActionButtons(container, text) {
@@ -2715,6 +2737,105 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 showNotification('Copied to clipboard', 'success');
             };
             container.appendChild(copyBtn);
+        }
+
+        function addRegenerateButton(container, messageElement) {
+            const regenerateBtn = document.createElement('button');
+            regenerateBtn.title = "Regenerate response";
+            regenerateBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>`;
+            regenerateBtn.onclick = () => handleRegenerateResponse(messageElement);
+            container.appendChild(regenerateBtn);
+        }
+
+        async function handleRegenerateResponse(messageElement) {
+            if (!currentChatId || !currentUser) return;
+            
+            // Find the last user message before this AI response
+            const currentMessages = allChats[currentChatId].messages || [];
+            let lastUserMessageIndex = -1;
+            
+            // Find the last user message
+            for (let i = currentMessages.length - 1; i >= 0; i--) {
+                if (currentMessages[i].role === 'user') {
+                    lastUserMessageIndex = i;
+                    break;
+                }
+            }
+            
+            if (lastUserMessageIndex === -1) return;
+            
+            // Remove the AI response from memory
+            const aiMessageIndex = lastUserMessageIndex + 1;
+            if (aiMessageIndex < currentMessages.length) {
+                currentMessages.splice(aiMessageIndex, 1);
+            }
+            
+            // Remove the AI message from UI
+            messageElement.remove();
+            
+            // Generate new AI response
+            toggleForm(false);
+            generationControls.classList.remove('hidden');
+            stopGenerationFlag = false;
+            isGenerating = true;
+            updateScrollButton();
+            
+            appendLoadingIndicator();
+            
+            // Smart scroll to bottom only if user was already at bottom
+            if (!isUserScrolledUp) {
+                scrollToBottomInstant();
+            }
+            
+            try {
+                const apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
+                
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: apiMessages }),
+                });
+                
+                removeLoadingIndicator();
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'An unknown API error occurred.');
+                }
+                
+                const data = await response.json();
+                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (aiResponseText) {
+                    const aiMessageId = appendMessage({text: ''}, 'model');
+                    const aiMessageElement = document.getElementById(aiMessageId);
+                    const contentContainer = aiMessageElement.querySelector('.prose');
+                    
+                    const finalText = await streamResponse(contentContainer, aiResponseText, aiMessageId);
+                    
+                    enhanceResponseMessage(aiMessageElement, finalText);
+                    
+                    const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
+                    allChats[currentChatId].messages.push(aiMessage);
+                    
+                    // Add to Firestore
+                    await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
+                    
+                    showNotification('Response regenerated', 'success');
+                } else {
+                    appendMessage({text: "I couldn't generate a response. The response was empty."}, 'model-error');
+                }
+            } catch (error) {
+                console.error("Error regenerating response:", error);
+                removeLoadingIndicator();
+                appendMessage({text: `Error: ${error.message}`}, 'model-error');
+                showNotification('Error regenerating response', 'error');
+            } finally {
+                generationControls.classList.add('hidden');
+                toggleForm(true);
+                isGenerating = false;
+                updateScrollButton();
+            }
         }
 
         function addChartButton(container, tableElement) {
@@ -3740,8 +3861,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             // Auth form submission
             loginForm.addEventListener('submit', handleLogin);
             signupForm.addEventListener('submit', handleSignup);
-            googleLoginBtn.addEventListener('click', handleGoogleSignIn);
-            googleSignupBtn.addEventListener('click', handleGoogleSignIn);
 
             // Password visibility toggle
             document.getElementById('login-password-toggle').addEventListener('click', () => togglePasswordVisibility('login-password'));
