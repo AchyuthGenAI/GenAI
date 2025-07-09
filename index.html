@@ -2,1607 +2,690 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/webp" href="https://i.ibb.co/JWjgFGH4/chat-AI.jpg">
-    <title>Chat@AI - Revolutionary AI Communication Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Home-AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Reset and Base Styles */
+        /* Reset and Basic Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --cosmic-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.8);
-            --text-tertiary: rgba(255, 255, 255, 0.6);
-            --shadow-glow: 0 0 40px rgba(102, 126, 234, 0.3);
-            --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.3);
-            --mobile-padding: 1rem;
-            --desktop-padding: 2rem;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
-            color: var(--text-primary);
+            background-color: #f9f9f9;
+            color: #333;
             line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
         }
 
-        /* Touch-friendly tap targets */
-        button, a, [role="button"] {
-            min-height: 44px;
-            min-width: 44px;
-            touch-action: manipulation;
-        }
-
-        /* Cosmic Background with Particles */
-        .cosmic-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
-        }
-
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.8) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
-            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-toggle:hover {
-            background: var(--glass-bg);
-        }
-
-        /* Header Styles */
+        /* Header */
         header {
-            position: fixed;
+            background: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+            padding: 10px 15px; /* Reduced padding for mobile */
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
             z-index: 1000;
-            background: rgba(12, 12, 12, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            padding: var(--mobile-padding);
-            transition: all 0.3s ease;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            box-shadow: var(--shadow-glow);
-            transition: all 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 0 60px rgba(102, 126, 234, 0.6);
-        }
-
-        .logo-text {
+        header h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            background: var(--cosmic-gradient);
+            font-size: 1.5rem; /* Slightly smaller for mobile */
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(45deg, #00c6ff, #0072ff, #ff00ff, #ff6f61);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: gradientShift 4s ease-in-out infinite;
+            animation: geminiGradient 6s infinite linear;
         }
-
-        @keyframes gradientShift {
-            0%, 100% { filter: hue-rotate(0deg); }
-            50% { filter: hue-rotate(45deg); }
-        }
-
-        /* Navigation Styles */
-        nav {
-            position: relative;
-        }
-
         nav ul {
-            display: flex;
             list-style: none;
-            gap: 1rem;
-            align-items: center;
+            display: flex;
+            gap: 15px; /* Reduced gap for mobile */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
-
         nav ul li {
-            position: relative;
-        }
-
-        nav ul li a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.75rem 1rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: block;
-            white-space: nowrap;
-        }
-
-        /* Different hover effects for each nav item */
-        nav ul li:nth-child(1) a:hover {
-            color: #4facfe;
-            background: rgba(79, 172, 254, 0.15);
-            box-shadow: 0 0 25px rgba(79, 172, 254, 0.4);
-            transform: translateY(-2px);
-        }
-
-        nav ul li:nth-child(2) a:hover {
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.15);
-            box-shadow: 0 0 25px rgba(102, 126, 234, 0.4);
-            transform: translateY(-2px);
-        }
-
-        nav ul li:nth-child(3) a:hover {
-            color: #f093fb;
-            background: rgba(240, 147, 251, 0.15);
-            box-shadow: 0 0 25px rgba(240, 147, 251, 0.4);
-            transform: translateY(-2px);
-        }
-
-        nav ul li:nth-child(4) a:hover {
-            color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.15);
-            box-shadow: 0 0 25px rgba(255, 107, 107, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .voice-nav-btn {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 0.75rem 1rem;
-            border-radius: 25px;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            font-size: 0.9rem;
-            white-space: nowrap;
+            position: relative;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
-
-        .voice-nav-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: var(--shadow-glow);
-            transform: translateY(-2px);
-        }
-
-        .voice-nav-btn.active {
-            background: var(--secondary-gradient);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* Mobile Navigation */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(12, 12, 12, 0.98);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass-border);
-            padding: 1rem;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
-            z-index: 999;
-        }
-
-        .mobile-nav.active {
-            transform: translateY(0);
-        }
-
-        .mobile-nav ul {
-            flex-direction: column;
-            gap: 0.5rem;
-            width: 100%;
-        }
-
-        .mobile-nav ul li {
-            width: 100%;
-        }
-
-        .mobile-nav ul li a {
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-            border-radius: 12px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-        }
-
-        .mobile-nav .voice-nav-btn {
-            width: 100%;
+        nav ul li a {
+            font-size: 1rem; /* Adjusted for mobile */
+            color: #555;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
             justify-content: center;
-            margin-top: 1rem;
+            align-items: center;
+            width: 40px; /* Smaller for mobile */
+            height: 40px;
+            background-color: #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        /* Navigation Colors */
+        nav ul li:nth-child(1) a { background-color: #ff6f61; }
+        nav ul li:nth-child(2) a { background-color: #6f61ff; }
+        nav ul li:nth-child(3) a { background-color: #61ff6f; }
+        nav ul li:nth-child(4) a { background-color: #ffa500; }
+        nav ul li a:hover {
+            background-color: #333;
+            color: white;
+            transform: translateY(-5px);
+        }
+        nav ul li a i {
+            font-size: 1.2rem; /* Slightly smaller for mobile */
+        }
+        nav ul li span {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem; /* Smaller tooltip for mobile */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        nav ul li:hover span {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 6rem var(--mobile-padding) 4rem;
-            position: relative;
-            overflow: hidden;
+            padding: 40px 15px; /* Reduced padding for mobile */
+            background: linear-gradient(to bottom right, #0078d4, #005bb5);
+            color: white;
         }
-
-        .hero-content {
-            max-width: 900px;
-            z-index: 2;
-            position: relative;
-            width: 100%;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 1s ease-out;
-            font-size: 0.9rem;
-        }
-
-        .hero-title {
+        .hero h2 {
+            font-size: 2rem; /* Smaller for mobile */
             font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 8vw, 4.5rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: var(--cosmic-gradient);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeInUp 1s ease-out 0.2s both;
+            margin-bottom: 10px;
+            animation: typing 3s steps(30) 1s 1 normal both;
+            overflow: hidden;
+            white-space: nowrap;
         }
-
-        .hero-subtitle {
-            font-size: clamp(1rem, 4vw, 1.3rem);
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            max-width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeInUp 1s ease-out 0.4s both;
-            line-height: 1.6;
+        @keyframes typing {
+            0% { width: 0; }
+            100% { width: 100%; }
         }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.6s both;
+        .hero p {
+            font-size: 1rem; /* Adjusted for mobile */
+            max-width: 90%; /* Wider for mobile readability */
+            margin-bottom: 20px;
         }
-
-        .cta-primary, .cta-secondary {
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
+        .cta-button {
+            background: #ffffff;
+            color: #0078d4;
             font-size: 1rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            font-weight: 600;
+            padding: 12px 24px; /* Slightly smaller for mobile */
+            border: 2px solid #0078d4;
+            border-radius: 100px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
-            min-width: 200px;
-            text-align: center;
+            gap: 8px;
+            transition: all 0.3s ease-in-out;
+            min-width: 120px; /* Ensures tap target size */
         }
-
-        .cta-primary {
-            background: var(--primary-gradient);
-            color: var(--text-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .cta-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 60px rgba(102, 126, 234, 0.6);
-        }
-
-        .cta-secondary {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            backdrop-filter: blur(10px);
-        }
-
-        .cta-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* Floating Elements */
-        .floating-element {
-            position: absolute;
-            opacity: 0.1;
-            animation: float 8s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        .floating-element:nth-child(1) {
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-element:nth-child(2) {
-            top: 60%;
-            right: 15%;
-            animation-delay: 2s;
-        }
-
-        .floating-element:nth-child(3) {
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        /* Stats Section */
-        .stats {
-            padding: 4rem var(--mobile-padding);
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(20px);
-        }
-
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .stat-item {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 2rem 1rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
+        .cta-button:hover {
+            background: #0078d4;
+            color: #ffffff;
+            border-color: #005bb5;
             transform: translateY(-5px);
-            box-shadow: var(--shadow-glow);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            animation: glowing 1.5s ease-in-out infinite alternate;
         }
-
-        .stat-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            background: var(--accent-gradient);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+        @keyframes glowing {
+            0% { box-shadow: 0 0 5px #0078d4, 0 0 10px #0078d4, 0 0 15px #0078d4; }
+            100% { box-shadow: 0 0 20px #00c8ff, 0 0 30px #00c8ff, 0 0 40px #00c8ff; }
         }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: clamp(0.9rem, 2vw, 1rem);
+        .cta-button:hover span { transform: translateX(5px); }
+        .cta-button span {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
         }
 
         /* Features Section */
         .features {
-            padding: 6rem var(--mobile-padding);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 700;
-            background: var(--cosmic-gradient);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .section-subtitle {
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        .features-grid {
-            max-width: 1400px;
-            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted for mobile */
+            gap: 15px;
+            padding: 30px 15px; /* Reduced padding */
+            background: white;
         }
-
-        .feature-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 2rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        .feature-item {
+            background: #f9f9f9;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-card:hover {
+        .feature-item:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-glow);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .feature-item h4 {
+            font-size: 1.1rem; /* Slightly smaller */
+            color: #0078d4;
+            margin-bottom: 8px;
+        }
+        .feature-item p {
+            font-size: 0.9rem; /* Adjusted for mobile */
+            color: #555;
         }
 
-        .feature-icon {
-            width: 70px;
-            height: 70px;
-            background: var(--primary-gradient);
-            border-radius: 20px;
+        /* How It Works Section */
+        .how-it-works {
+            padding: 30px 15px; /* Reduced padding */
+            background: #f0f4f8;
+            text-align: center;
+        }
+        .how-it-works h3 {
+            font-size: 1.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
+        }
+        .how-it-works p {
+            font-size: 1rem; /* Adjusted */
+            max-width: 90%;
+            margin: 0 auto 20px;
+        }
+        .steps {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-glow);
+            gap: 15px;
+        }
+        .step {
+            background: white;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 15px;
+            max-width: 250px; /* Smaller for mobile */
+            text-align: center;
+            flex: 1 1 100%; /* Stack on very small screens */
+        }
+        .step h4 {
+            color: #0078d4;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
-        .feature-title {
-            font-size: clamp(1.2rem, 3vw, 1.4rem);
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .feature-description {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-        }
-
-        /* Testimonials Section */
+        /* Testimonials */
         .testimonials {
-            padding: 6rem var(--mobile-padding);
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px);
+            padding: 30px 15px; /* Reduced padding */
+            background: white;
         }
-
-        .testimonials-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .testimonial-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 2rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .author-info h5 {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-        }
-
-        .author-info span {
-            color: var(--text-tertiary);
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 6rem var(--mobile-padding);
+        .testimonials h3 {
             text-align: center;
-            background: var(--cosmic-gradient);
-            position: relative;
-            overflow: hidden;
+            font-size: 1.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
+            color: white;
+        }
+        .testimonial-item {
+            background: #f9f9f9;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px auto;
+            max-width: 90%; /* Adjusted for mobile */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .testimonial-item p {
+            font-style: italic;
+            font-size: 0.9rem; /* Smaller for mobile */
+        }
+        .testimonial-item .author {
+            text-align: right;
+            font-weight: bold;
+            font-size: 0.9rem;
         }
 
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
+        /* FAQ Section Styles */
+        .faq {
+            padding: 0 15px 30px 15px; /* Adjusted for mobile, no top padding */
+            background: #f9f9f9;
+            text-align: center;
         }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            margin: 0 auto;
+        .faq h3 {
+            font-size: 1.8rem; /* Smaller for mobile */
+            margin-bottom: 15px;
         }
-
-        .cta-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
+        .faq-item {
+            max-width: 90%; /* Adjusted for mobile */
+            margin: 15px auto;
+            text-align: left;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
-
-        .cta-description {
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            line-height: 1.6;
+        .faq-item h4 {
+            color: #0078d4;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .faq-item p {
+            font-size: 0.9rem; /* Smaller for mobile */
         }
 
         /* Footer */
         footer {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 4rem var(--mobile-padding) 2rem;
-            text-align: center;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            padding: 0.5rem;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-        }
-
-        .footer-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-links a {
-            width: 50px;
-            height: 50px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .social-links a:hover {
-            background: var(--primary-gradient);
+            background: #222;
             color: white;
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-glow);
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem; /* Smaller for mobile */
         }
-
-        .footer-bottom {
-            color: var(--text-tertiary);
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            line-height: 1.6;
+        footer a {
+            color: #0078d4;
         }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-up {
+        .scroll-fade {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
+            transform: translateY(50px);
+            transition: all 0.5s ease-out;
         }
-
-        .fade-in-up.visible {
+        .scroll-fade.in-view {
             opacity: 1;
             transform: translateY(0);
         }
+        .scroll-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s ease-out;
+        }
+        .scroll-slide-up.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo {
+            width: 30px; /* Smaller for mobile */
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .voice-nav-btn {
+            background-color: #0078d4;
+            color: white;
+            font-size: 0.9rem; /* Adjusted */
+            font-weight: 600;
+            padding: 10px 20px; /* Smaller for mobile */
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            min-width: 120px; /* Ensures tap target size */
+        }
+        .voice-nav-btn i {
+            font-size: 1.1rem;
+        }
+        .voice-nav-btn:hover { background-color: #005bb5; }
+        .voice-nav-btn.active { background-color: #ff4d4d; }
 
-        /* Mobile-First Responsive Design */
-        @media (min-width: 768px) {
-            :root {
-                --mobile-padding: var(--desktop-padding);
+        /* Media Queries for Mobile Optimization */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 10px;
             }
-
-            .mobile-menu-toggle {
-                display: none !important;
+            nav ul {
+                justify-content: center;
+                margin-top: 10px;
             }
-
-            .mobile-nav {
-                display: none !important;
+            .hero {
+                padding: 30px 10px;
             }
-
-            .logo {
-                width: 50px;
-                height: 50px;
-            }
-
-            .logo-text {
+            .hero h2 {
                 font-size: 1.8rem;
             }
-
-            .hero {
-                padding: 8rem var(--desktop-padding) 4rem;
+            .hero p {
+                font-size: 0.9rem;
             }
-
-            .stats {
-                padding: 6rem var(--desktop-padding);
-            }
-
             .features {
-                padding: 8rem var(--desktop-padding);
+                padding: 20px 10px;
+                grid-template-columns: 1fr; /* Stack features on small screens */
             }
-
-            .testimonials {
-                padding: 8rem var(--desktop-padding);
+            .how-it-works {
+                padding: 20px 10px;
             }
-
-            .cta-section {
-                padding: 8rem var(--desktop-padding);
-            }
-
-            .footer {
-                padding: 4rem var(--desktop-padding) 2rem;
-            }
-
-            .features-grid {
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: 2.5rem;
-            }
-
-            .feature-card {
-                padding: 2.5rem;
-            }
-
-            .feature-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 2rem;
-            }
-
-            .stats-container {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 3rem;
-            }
-
-            .stat-item {
-                padding: 2.5rem 1.5rem;
-            }
-        }
-
-        /* Mobile Navigation Styles */
-        @media (max-width: 767px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            nav ul {
-                display: none;
-            }
-
-            .mobile-nav {
-                display: block;
-            }
-
-            .hero-cta {
+            .steps {
                 flex-direction: column;
                 align-items: center;
             }
-
-            .cta-primary, .cta-secondary {
-                width: 100%;
-                max-width: 280px;
+            .step {
+                max-width: 100%;
             }
-
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
+            .testimonials {
+                padding: 20px 10px;
             }
-
-            .features-grid,
-            .testimonials-grid {
-                grid-template-columns: 1fr;
+            .faq {
+                padding: 0 10px 20px 10px;
             }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
+            .faq h3 {
+                font-size: 1.6rem;
+            }
+            footer {
+                padding: 10px;
             }
         }
-
         @media (max-width: 480px) {
-            .stats-container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            header h1 {
+                font-size: 1.2rem;
             }
-
-            .hero-badge {
-                font-size: 0.8rem;
-                padding: 0.5rem 1rem;
+            nav ul {
+                gap: 10px;
             }
-
-            .feature-card,
-            .testimonial-card {
-                padding: 1.5rem;
+            nav ul li a {
+                width: 35px;
+                height: 35px;
             }
-
-            .feature-icon {
-                width: 60px;
-                height: 60px;
+            nav ul li a i {
+                font-size: 1rem;
+            }
+            .hero h2 {
                 font-size: 1.5rem;
             }
-        }
-
-        /* High DPI Display Support */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .logo {
-                image-rendering: -webkit-optimize-contrast;
-                image-rendering: crisp-edges;
+            .cta-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
-        }
-
-        /* Reduced Motion Support */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+            .voice-nav-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
             }
-            
-            .particle {
-                animation: none;
-            }
-            
-            .floating-element {
-                animation: none;
-            }
-        }
-
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            /* Already optimized for dark theme */
-        }
-
-        /* Focus Styles for Accessibility */
-        button:focus,
-        a:focus {
-            outline: 2px solid #667eea;
-            outline-offset: 2px;
-        }
-
-        /* Loading State */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <!-- Cosmic Background -->
-    <div class="cosmic-bg"></div>
-    <div class="particles" id="particles"></div>
 
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <div class="logo-container">
-                <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat@AI Logo" class="logo">
-                <div class="logo-text">Chat@AI</div>
-            </div>
-            
-            <!-- Desktop Navigation -->
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li>
-                        <button id="voice-btn" class="voice-nav-btn">
-                            <i class="fas fa-microphone"></i>
-                            <span>Voice</span>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
+<header>
+    <div class="logo-container">
+        <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="CoreIntelli Logo" class="logo">
+        <h1>Chat @AI</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#home"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="#features"><i class="fas fa-cogs"></i><span>Features</span></a></li>
+            <li><a href="#how-it-works"><i class="fas fa-info-circle"></i><span>About</span></a></li>
+            <li><a href="#testimonials"><i class="fas fa-comments"></i><span>Testimonials</span></a></li>
+            <li><a href="#faq"><i class="fas fa-question-circle"></i><span>FAQ</span></a></li>
+            <li>
+                <button id="voice-btn" class="voice-nav-btn">
+                    <i class="fas fa-microphone"></i> Voice Navigation
+                </button>
+            </li>
+        </ul>
+    </nav>
+</header>
 
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+<section id="vanta-background" class="hero scroll-fade">
+    <h2>Empower Your Business with Chat @AI</h2>
+    <p>Our AI-powered chatbot delivers personalized, 24/7 support to engage customers, streamline workflows, and boost productivity. Discover the future of smart communication.</p>
+    <ul style="list-style: none; padding: 0; margin: 20px 0;">
+        <li><i class="fas fa-check-circle"></i> Context-aware responses</li>
+        <li><i class="fas fa-check-circle"></i> Seamless integrations</li>
+        <li><i class="fas fa-check-circle"></i> Scalable solutions</li>
+    </ul>
+    <a href="chat.html" class="cta-button">Get Started <span><i class="fas fa-robot"></i></span></a>
+</section>
 
-        <!-- Mobile Navigation -->
-        <div class="mobile-nav" id="mobile-nav">
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
-            </ul>
-            <button id="voice-btn-mobile" class="voice-nav-btn">
-                <i class="fas fa-microphone"></i>
-                <span>Voice Navigation</span>
-            </button>
-        </div>
-    </header>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+<script>
+    VANTA.WAVES({
+        el: "#vanta-background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00
+    });
+</script>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="floating-element">
-            <i class="fas fa-robot" style="font-size: 4rem; color: rgba(102, 126, 234, 0.3);"></i>
-        </div>
-        <div class="floating-element">
-            <i class="fas fa-brain" style="font-size: 3rem; color: rgba(240, 147, 251, 0.3);"></i>
-        </div>
-        <div class="floating-element">
-            <i class="fas fa-comments" style="font-size: 3.5rem; color: rgba(79, 172, 254, 0.3);"></i>
-        </div>
+<section id="features" class="features">
+    <div class="feature-item scroll-slide-up">
+        <i class="fas fa-comment-dots" style="font-size: 2rem; color: #0078d4;"></i>
+        <h4>Personalized Responses</h4>
+        <p>Our AI understands context and delivers tailored answers, making every interaction meaningful. Perfect for customer support, FAQs, and more.</p>
+    </div>
+    <div class="feature-item scroll-slide-up">
+        <i class="fas fa-clock" style="font-size: 2rem; color: #0078d4;"></i>
+        <h4>24/7 Availability</h4>
+        <p>Never miss a query with round-the-clock assistance, ensuring your customers are always supported.</p>
+    </div>
+    <div class="feature-item scroll-slide-up">
+        <i class="fas fa-plug" style="font-size: 2rem; color: #0078d4;"></i>
+        <h4>Smart Integration</h4>
+        <p>Connects effortlessly with your website, CRM, or messaging platforms like Slack and WhatsApp.</p>
+    </div>
+</section>
 
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fas fa-sparkles"></i>
-                <span>Revolutionary AI Technology</span>
-            </div>
-            <h1 class="hero-title">The Future of AI Communication</h1>
-            <p class="hero-subtitle">
-                Experience the next generation of artificial intelligence with Chat@AI. 
-                Advanced conversational AI, code visualization, medical assistance, and more - all in one powerful platform.
-            </p>
-            <div class="hero-cta">
-                <a href="chat.html" class="cta-primary">
-                    <i class="fas fa-rocket"></i>
-                    Launch Chat@AI
-                </a>
-                <a href="#features" class="cta-secondary">
-                    <i class="fas fa-play"></i>
-                    Explore Features
-                </a>
-            </div>
+<section id="how-it-works" class="how-it-works">
+    <h3>How Chat @AI Works</h3>
+    <p>Built on cutting-edge AI technology, Chat @AI simplifies communication and enhances user experiences. Here's the process:</p>
+    <div class="steps">
+        <div class="step">
+            <h4>Step 1: Input</h4>
+            <p>Ask a question or provide a task via text or voice input.</p>
         </div>
-    </section>
+        <div class="step">
+            <h4>Step 2: Processing</h4>
+            <p>Our AI analyzes the request using natural language processing and contextual understanding.</p>
+        </div>
+        <div class="step">
+            <h4>Step 3: Response</h4>
+            <p>Get instant, accurate, and conversational replies tailored to your needs.</p>
+        </div>
+    </div>
+</section>
 
-    <!-- Stats Section -->
-    <section class="stats">
-        <div class="stats-container">
-            <div class="stat-item fade-in-up">
-                <div class="stat-number" data-count="99.9">0</div>
-                <div class="stat-label">% Uptime</div>
-            </div>
-            <div class="stat-item fade-in-up">
-                <div class="stat-number" data-count="50000">0</div>
-                <div class="stat-label">Active Users</div>
-            </div>
-            <div class="stat-item fade-in-up">
-                <div class="stat-number" data-count="1000000">0</div>
-                <div class="stat-label">Messages Processed</div>
-            </div>
-            <div class="stat-item fade-in-up">
-                <div class="stat-number" data-count="150">0</div>
-                <div class="stat-label">Languages Supported</div>
-            </div>
-        </div>
-    </section>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+<script>
+    VANTA.FOG({
+        el: "#how-it-works",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00
+    });
+</script>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="section-header fade-in-up">
-            <h2 class="section-title">Powerful AI Features</h2>
-            <p class="section-subtitle">
-                Discover the advanced capabilities that make Chat@AI the ultimate AI communication platform
-            </p>
-        </div>
+<section id="testimonials" class="testimonials scroll-slide-up">
+    <h3>What Our Users Say</h3>
+    <div class="testimonial-item">
+        <p>"Chat @AI transformed our customer support, reducing response times and improving satisfaction!"</p>
+        <div class="author">John Doe, Business Owner</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"The integration was seamless, and the AI's ability to handle complex queries is impressive."</p>
+        <div class="author">Jane Smith, Tech Lead</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"It's like having a personal assistant available 24/7. My productivity has skyrocketed!"</p>
+        <div class="author">Michael Lee, Freelancer</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"The multilingual support helped us reach a global audience effortlessly."</p>
+        <div class="author">Sofia Martinez, Marketing Manager</div>
+    </div>
+    <div class="testimonial-item">
+        <p>"A game-changer for our e-commerce platform—customers love the instant replies!"</p>
+        <div class="author">Alex Patel, E-commerce Entrepreneur</div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+<script>
+    VANTA.BIRDS({
+        el: "#testimonials",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00
+    });
+</script>
+
+<section id="faq" class="faq">
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item">
+        <h4>What is Chat @AI?</h4>
+        <p>Chat @AI is an advanced AI chatbot designed to provide personalized, 24/7 support for businesses and individuals, enhancing communication and productivity.</p>
+    </div>
+    <div class="faq-item">
+        <h4>How do I integrate it with my website?</h4>
+        <p>Simply add our provided script to your site's HTML, and Chat @AI will be operational in minutes. No coding expertise required!</p>
+    </div>
+    <div class="faq-item">
+        <h4>Can it handle multiple languages?</h4>
+        <p>Yes, Chat @AI supports multiple languages and can be customized to suit your audience, making it ideal for global businesses.</p>
+    </div>
+    <div class="faq-item">
+        <h4>What kind of businesses can benefit from Chat @AI?</h4>
+        <p>From e-commerce and customer service to education and healthcare, any industry needing efficient communication can leverage Chat @AI.</p>
+    </div>
+    <div class="faq-item">
+        <h4>Is it secure and private?</h4>
+        <p>Absolutely. Chat @AI uses advanced encryption and complies with data privacy regulations to keep your information safe.</p>
+    </div>
+    <div class="faq-item">
+        <h4>Can I customize the chatbot's responses?</h4>
+        <p>Yes, you can train Chat @AI with specific responses, tone, and branding to align with your business needs.</p>
+    </div>
+    <div class="faq-item">
+        <h4>What happens if the AI doesn't understand a query?</h4>
+        <p>Chat @AI is designed to escalate complex queries to human agents if needed, ensuring no question goes unanswered.</p>
+    </div>
+    <div class="faq-item">
+        <h4>How much does it cost?</h4>
+        <p>We offer flexible pricing plans, including a free tier for basic use and premium options for advanced features. Contact us for details!</p>
+    </div>
+</section>
+
+<script>
+    let recognition;
+    let isListening = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
         
-        <div class="features-grid">
-            <div class="feature-card fade-in-up">
-                <div class="feature-icon">
-                    <i class="fas fa-brain"></i>
-                </div>
-                <h3 class="feature-title">Advanced AI Intelligence</h3>
-                <p class="feature-description">
-                    Powered by cutting-edge neural networks that understand context, sentiment, and intent to deliver human-like conversations.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in-up">
-                <div class="feature-icon">
-                    <i class="fas fa-code"></i>
-                </div>
-                <h3 class="feature-title">Code Visualization</h3>
-                <p class="feature-description">
-                    Interactive code editor with step-by-step execution visualization for Python, JavaScript, Java, C, and C++.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in-up">
-                <div class="feature-icon">
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-                <h3 class="feature-title">Medical AI Assistant</h3>
-                <p class="feature-description">
-                    Specialized medical AI mode for health information, symptom analysis, and wellness guidance with proper disclaimers.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in-up">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3 class="feature-title">Data Visualization</h3>
-                <p class="feature-description">
-                    Transform data into interactive charts, graphs, and visualizations with real-time chart generation capabilities.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in-up">
-                <div class="feature-icon">
-                    <i class="fas fa-microphone"></i>
-                </div>
-                <h3 class="feature-title">Voice Integration</h3>
-                <p class="feature-description">
-                    Natural voice commands and speech recognition for hands-free interaction and accessibility.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in-up">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3 class="feature-title">Enterprise Security</h3>
-                <p class="feature-description">
-                    Bank-level encryption, secure authentication, and privacy-first design to protect your conversations.
-                </p>
-            </div>
-        </div>
-    </section>
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials">
-        <div class="section-header fade-in-up">
-            <h2 class="section-title">What Our Users Say</h2>
-            <p class="section-subtitle">
-                Join thousands of satisfied users who have transformed their AI experience
-            </p>
-        </div>
-        
-        <div class="testimonials-grid">
-            <div class="testimonial-card fade-in-up">
-                <p class="testimonial-text">
-                    "Chat@AI has revolutionized how I approach coding. The code visualization feature is incredible - it's like having a personal tutor that shows me exactly how my code executes step by step."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">JD</div>
-                    <div class="author-info">
-                        <h5>John Davidson</h5>
-                        <span>Software Engineer</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial-card fade-in-up">
-                <p class="testimonial-text">
-                    "The medical AI assistant is a game-changer. It provides reliable health information while being clear about its limitations. Perfect for quick health queries and understanding medical concepts."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">SM</div>
-                    <div class="author-info">
-                        <h5>Dr. Sarah Mitchell</h5>
-                        <span>Healthcare Professional</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial-card fade-in-up">
-                <p class="testimonial-text">
-                    "As a data analyst, the visualization capabilities are outstanding. I can quickly turn complex datasets into beautiful, interactive charts that help me communicate insights effectively."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">ML</div>
-                    <div class="author-info">
-                        <h5>Michael Lee</h5>
-                        <span>Data Analyst</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial-card fade-in-up">
-                <p class="testimonial-text">
-                    "The voice navigation feature makes Chat@AI incredibly accessible. I can interact naturally without typing, which is perfect for when I'm multitasking or need hands-free operation."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">RJ</div>
-                    <div class="author-info">
-                        <h5>Rachel Johnson</h5>
-                        <span>Product Manager</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial-card fade-in-up">
-                <p class="testimonial-text">
-                    "The security and privacy features give me confidence to use Chat@AI for sensitive work. The authentication system is robust, and I love the export capabilities for documentation."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">AP</div>
-                    <div class="author-info">
-                        <h5>Alex Patel</h5>
-                        <span>Security Consultant</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial-card fade-in-up">
-                <p class="testimonial-text">
-                    "Chat@AI's multi-modal capabilities are impressive. From text to voice to file uploads, it handles everything seamlessly. It's like having a super-intelligent assistant at my fingertips."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">LW</div>
-                    <div class="author-info">
-                        <h5>Lisa Wang</h5>
-                        <span>Research Scientist</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-content">
-            <h2 class="cta-title">Start Your AI Journey Today</h2>
-            <p class="cta-description">
-                Experience the future of artificial intelligence. Join thousands of users who are already transforming their workflow with Chat@AI.
-            </p>
-            <div class="hero-cta">
-                <a href="chat.html" class="cta-primary">
-                    <i class="fas fa-rocket"></i>
-                    Start Your AI Journey
-                </a>
-                <a href="#features" class="cta-secondary">
-                    <i class="fas fa-info-circle"></i>
-                    Learn More
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="about">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-                <a href="#api">API Documentation</a>
-                <a href="#blog">Blog</a>
-                <a href="#careers">Careers</a>
-            </div>
-            
-            <div class="social-links">
-                <a href="#" aria-label="Twitter">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a href="#" aria-label="GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="#" aria-label="Discord">
-                    <i class="fab fa-discord"></i>
-                </a>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>© 2024 Chat@AI. All rights reserved.</p>
-                <p>Contact us at <a href="mailto:hello@chatai.com" style="color: #667eea;">hello@chatai.com</a></p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile menu functionality
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mobileNav = document.getElementById('mobile-nav');
-        const mobileMenuIcon = mobileMenuToggle.querySelector('i');
-
-        mobileMenuToggle.addEventListener('click', () => {
-            mobileNav.classList.toggle('active');
-            
-            if (mobileNav.classList.contains('active')) {
-                mobileMenuIcon.className = 'fas fa-times';
-                document.body.style.overflow = 'hidden';
-            } else {
-                mobileMenuIcon.className = 'fas fa-bars';
-                document.body.style.overflow = '';
-            }
-        });
-
-        // Close mobile menu when clicking on links
-        mobileNav.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') {
-                mobileNav.classList.remove('active');
-                mobileMenuIcon.className = 'fas fa-bars';
-                document.body.style.overflow = '';
-            }
-        });
-
-        // Close mobile menu on window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 767) {
-                mobileNav.classList.remove('active');
-                mobileMenuIcon.className = 'fas fa-bars';
-                document.body.style.overflow = '';
-            }
-        });
-
-        // Create floating particles with mobile optimization
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const isMobile = window.innerWidth <= 768;
-            const particleCount = isMobile ? 25 : 50; // Reduce particles on mobile
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const size = Math.random() * (isMobile ? 3 : 4) + 2;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        // Optimized scroll animations with Intersection Observer
-        function handleScrollAnimations() {
-            const elements = document.querySelectorAll('.fade-in-up');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target); // Stop observing once animated
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-
-            elements.forEach(element => {
-                observer.observe(element);
-            });
-        }
-
-        // Optimized counter animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-number');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const counter = entry.target;
-                        const target = parseFloat(counter.dataset.count);
-                        const duration = 2000;
-                        const step = target / (duration / 16);
-                        let current = 0;
-                        
-                        const timer = setInterval(() => {
-                            current += step;
-                            if (current >= target) {
-                                current = target;
-                                clearInterval(timer);
-                            }
-                            
-                            if (target >= 1000000) {
-                                counter.textContent = (current / 1000000).toFixed(1) + 'M+';
-                            } else if (target >= 1000) {
-                                counter.textContent = (current / 1000).toFixed(0) + 'K+';
-                            } else {
-                                counter.textContent = current.toFixed(1);
-                            }
-                        }, 16);
-                        
-                        observer.unobserve(counter);
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            counters.forEach(counter => {
-                observer.observe(counter);
-            });
-        }
-
-        // Voice navigation with mobile support
-        let recognition;
-        let isListening = false;
-
-        function initVoiceNavigation() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.lang = 'en-US';
-
-                // Desktop voice button
-                const voiceBtn = document.getElementById('voice-btn');
-                if (voiceBtn) {
-                    voiceBtn.addEventListener('click', toggleVoiceRecognition);
-                }
-
-                // Mobile voice button
-                const voiceBtnMobile = document.getElementById('voice-btn-mobile');
-                if (voiceBtnMobile) {
-                    voiceBtnMobile.addEventListener('click', toggleVoiceRecognition);
-                }
-
-                recognition.onresult = function (event) {
-                    const command = event.results[0][0].transcript.toLowerCase().trim();
-                    console.log('Voice Command:', command);
-                    handleVoiceCommand(command);
-                };
-
-                recognition.onend = function () {
-                    isListening = false;
-                    updateVoiceButtons(false);
-                };
-
-                recognition.onerror = function (event) {
-                    console.error('Speech Recognition Error:', event.error);
-                    isListening = false;
-                    updateVoiceButtons(false);
-                };
-            }
-        }
-
-        function toggleVoiceRecognition() {
+        document.getElementById('voice-btn').addEventListener('click', function () {
             if (!isListening) {
                 recognition.start();
                 isListening = true;
-                updateVoiceButtons(true);
+                this.classList.add('active');
+                this.innerHTML = '<i class="fas fa-microphone-slash"></i> Stop Voice Navigation';
             } else {
                 recognition.stop();
                 isListening = false;
-                updateVoiceButtons(false);
-            }
-        }
-
-        function updateVoiceButtons(active) {
-            const voiceBtn = document.getElementById('voice-btn');
-            const voiceBtnMobile = document.getElementById('voice-btn-mobile');
-            
-            [voiceBtn, voiceBtnMobile].forEach(btn => {
-                if (btn) {
-                    if (active) {
-                        btn.classList.add('active');
-                        btn.innerHTML = '<i class="fas fa-microphone-slash"></i><span>Stop</span>';
-                    } else {
-                        btn.classList.remove('active');
-                        btn.innerHTML = '<i class="fas fa-microphone"></i><span>Voice</span>';
-                    }
-                }
-            });
-        }
-
-        function handleVoiceCommand(command) {
-            if (command.includes('home')) {
-                document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
-            } else if (command.includes('features')) {
-                document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-            } else if (command.includes('about')) {
-                document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
-            } else if (command.includes('testimonials')) {
-                document.getElementById('testimonials').scrollIntoView({ behavior: 'smooth' });
-            } else if (command.includes('launch') || command.includes('chat') || command.includes('start')) {
-                window.location.href = 'chat.html';
-            } else {
-                // Create a mobile-friendly notification
-                showNotification('Try saying "Home", "Features", "About", "Testimonials", or "Launch Chat"');
-            }
-        }
-
-        // Mobile-friendly notification system
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(102, 126, 234, 0.9);
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 25px;
-                z-index: 10000;
-                font-weight: 500;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-                max-width: 90vw;
-                text-align: center;
-                font-size: 0.9rem;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.style.opacity = '1';
-            }, 100);
-            
-            // Remove after delay
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Optimized header scroll effect
-        let ticking = false;
-        function updateHeader() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(12, 12, 12, 0.98)';
-            } else {
-                header.style.background = 'rgba(12, 12, 12, 0.95)';
-            }
-            ticking = false;
-        }
-
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateHeader);
-                ticking = true;
+                this.classList.remove('active');
+                this.innerHTML = '<i class="fas fa-microphone"></i> Voice Navigation';
             }
         });
 
-        // Touch event optimization for mobile
-        let touchStartY = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
+        recognition.onresult = function (event) {
+            const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+            console.log('Voice Command:', command);
+            handleVoiceCommand(command);
+        };
 
-        document.addEventListener('touchmove', (e) => {
-            // Prevent overscroll on mobile
-            const touchY = e.touches[0].clientY;
-            const touchDelta = touchY - touchStartY;
-            
-            if (window.scrollY === 0 && touchDelta > 0) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+        recognition.onerror = function (event) {
+            console.error('Speech Recognition Error:', event.error);
+        };
+    } else {
+        alert('Sorry, your browser does not support Speech Recognition.');
+    }
 
-        // Performance optimization: Reduce animations on low-end devices
-        function optimizeForDevice() {
-            const isLowEndDevice = navigator.hardwareConcurrency <= 2 || 
-                                   navigator.deviceMemory <= 2 ||
-                                   /Android.*Chrome\/[.0-9]*\s/.test(navigator.userAgent);
-            
-            if (isLowEndDevice) {
-                document.documentElement.style.setProperty('--animation-duration', '0.2s');
-                // Reduce particle count further
-                const particles = document.querySelectorAll('.particle');
-                particles.forEach((particle, index) => {
-                    if (index % 2 === 0) particle.remove();
-                });
-            }
+    function handleVoiceCommand(command) {
+        if (command.includes('home')) {
+            window.location.href = '#home';
+        } else if (command.includes('features')) {
+            window.location.href = '#features';
+        } else if (command.includes('about')) {
+            window.location.href = '#how-it-works';
+        } else if (command.includes('testimonials')) {
+            window.location.href = '#testimonials';
+        } else if (command.includes('faq')) {
+            window.location.href = '#faq';
+        } else if (command.includes("start chat") || command.includes("get started")) {
+            window.location.href = "chat.html";
+        } else {
+            alert('Command not recognized. Try saying "Home", "Features", "About", "Testimonials", or "FAQ".');
         }
+    }
 
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            handleScrollAnimations();
-            animateCounters();
-            initVoiceNavigation();
-            optimizeForDevice();
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    function handleScroll() {
+        const elements = document.querySelectorAll('.scroll-fade, .scroll-slide-up');
+        elements.forEach((element) => {
+            if (isInViewport(element)) {
+                element.classList.add('in-view');
+            }
         });
+    }
 
-        // Handle orientation change on mobile
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                // Recalculate viewport height for mobile browsers
-                document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-            }, 100);
-        });
+    window.addEventListener('scroll', handleScroll);
+    document.addEventListener('DOMContentLoaded', handleScroll);
+</script>
 
-        // Set initial viewport height
-        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-    </script>
+<footer>
+    <p>© 2024 Chat @AI. All rights reserved.</p>
+    <p>Contact us at <a href="mailto:achyuthinsrirama@gmail.com">achyuthinsrirama@gmail.com</a> | 
+    <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    <p>Follow us: <a href="#"><i class="fab fa-twitter"></i></a> <a href="#"><i class="fab fa-linkedin"></i></a></p>
+</footer>
+
 </body>
 </html>
