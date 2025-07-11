@@ -656,6 +656,37 @@
             margin-left: 0.25rem;
          }
 
+        /* TTS Button Styles */
+        .action-buttons .tts-button {
+            position: relative;
+        }
+        .action-buttons .tts-button.speaking {
+            background-color: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+        }
+        .action-buttons .tts-button.speaking::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid rgb(var(--bg-accent));
+            border-radius: 0.5rem;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 0;
+            }
+        }
+
         .sidebar-overlay {
             z-index: 40;
         }
@@ -1016,6 +1047,340 @@
             color: rgb(var(--text-success));
         }
 
+        /* NEW STYLES FOR ENHANCED FEATURES */
+        
+        /* Folder/Tag Styles */
+        .folder-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .folder-item:hover {
+            background-color: rgb(var(--bg-tertiary));
+        }
+        .folder-item.active {
+            background-color: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+        }
+        
+        .tag-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            background-color: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            gap: 0.25rem;
+        }
+        
+        .tag-input {
+            background: rgb(var(--bg-tertiary));
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            color: rgb(var(--text-primary));
+            font-size: 0.875rem;
+        }
+        
+        /* Prompt Library Styles */
+        .prompt-card {
+            background: rgb(var(--bg-secondary));
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .prompt-card:hover {
+            background: rgb(var(--bg-tertiary));
+            border-color: rgb(var(--border-secondary));
+            transform: translateY(-1px);
+        }
+        
+        .prompt-category {
+            background: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Collaboration Styles */
+        .user-presence {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgb(var(--bg-tertiary));
+            border-radius: 0.375rem;
+            border: 1px solid rgb(var(--border-primary));
+        }
+        
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: rgb(var(--bg-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: rgb(var(--text-inverse));
+        }
+        
+        .online-indicator {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: rgb(var(--bg-success));
+            border-radius: 50%;
+            border: 2px solid rgb(var(--bg-primary));
+        }
+        
+        /* Scheduler Styles */
+        .scheduled-task {
+            background: rgb(var(--bg-warning));
+            color: rgb(var(--text-inverse));
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .time-picker {
+            background: rgb(var(--bg-tertiary));
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            color: rgb(var(--text-primary));
+        }
+        
+        /* Profile Settings Styles */
+        .settings-section {
+            background: rgb(var(--bg-secondary));
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgb(var(--border-primary));
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 3rem;
+            height: 1.5rem;
+            background: rgb(var(--bg-quaternary));
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .toggle-switch.active {
+            background: rgb(var(--bg-accent));
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 1.25rem;
+            height: 1.25rem;
+            background: rgb(var(--bg-primary));
+            border-radius: 50%;
+            top: 0.125rem;
+            left: 0.125rem;
+            transition: transform 0.2s;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(1.5rem);
+        }
+        
+        .avatar-upload {
+            position: relative;
+            width: 5rem;
+            height: 5rem;
+            border-radius: 50%;
+            background: rgb(var(--bg-tertiary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px dashed rgb(var(--border-primary));
+            transition: all 0.2s;
+        }
+        
+        .avatar-upload:hover {
+            border-color: rgb(var(--border-accent));
+            background: rgb(var(--bg-quaternary));
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: rgb(var(--bg-primary));
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            max-width: 32rem;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border-primary));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgb(var(--border-primary));
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+        }
+        
+        .btn-primary:hover {
+            background: rgb(var(--bg-accent-hover));
+        }
+        
+        .btn-secondary {
+            background: rgb(var(--bg-tertiary));
+            color: rgb(var(--text-secondary));
+            border: 1px solid rgb(var(--border-primary));
+        }
+        
+        .btn-secondary:hover {
+            background: rgb(var(--bg-quaternary));
+            color: rgb(var(--text-primary));
+        }
+        
+        .btn-success {
+            background: rgb(var(--bg-success));
+            color: rgb(var(--text-inverse));
+        }
+        
+        .btn-error {
+            background: rgb(var(--bg-error));
+            color: rgb(var(--text-inverse));
+        }
+        
+        .btn-warning {
+            background: rgb(var(--bg-warning));
+            color: rgb(var(--text-inverse));
+        }
+        
+        /* Input Styles */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.375rem;
+            background: rgb(var(--bg-tertiary));
+            color: rgb(var(--text-primary));
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: rgb(var(--border-accent));
+            box-shadow: 0 0 0 2px rgba(var(--bg-accent), 0.1);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgb(var(--text-secondary));
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .inline-flex { display: inline-flex; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .items-center { align-items: center; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-4 { padding: 1rem; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .rounded { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow { box-shadow: var(--shadow); }
+        .shadow-lg { box-shadow: var(--shadow-lg); }
+        
         /* Mobile responsiveness for code visualizer */
         @media (max-width: 768px) {
             #code-visualizer-container {
@@ -1051,6 +1416,11 @@
             #editor-toolbar > div {
                 justify-content: center;
             }
+            
+            .modal-content {
+                max-width: 95vw;
+                margin: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -1081,7 +1451,7 @@
                     </div>
                 </div>
                 <h1 class="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 mb-2">Welcome to Chat@AI</h1>
-                <p class="text-theme-quaternary text-sm sm:text-base">Your intelligent AI-chat companion with medical assistance.</p>
+                <p class="text-theme-quaternary text-sm sm:text-base">Your intelligent AI-chat companion with advanced features.</p>
                 <div class="mt-4 text-xs text-theme-quaternary">
                     <p>✨ Advanced AI conversations • 🔒 Secure authentication • 💾 Chat history • 🏥 Medical AI assistant</p>
                 </div>
@@ -1170,6 +1540,43 @@
                 </svg>
                 <span>Chat@AI</span>
             </button>
+
+            <!-- NEW: Enhanced Features Buttons -->
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <button id="prompt-library-btn" class="flex items-center justify-center gap-1 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg px-3 py-2 transition duration-300 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                    </svg>
+                    <span>Prompts</span>
+                </button>
+                <button id="scheduler-btn" class="flex items-center justify-center gap-1 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg px-3 py-2 transition duration-300 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                        <line x1="16" x2="16" y1="2" y2="6"/>
+                        <line x1="8" x2="8" y1="2" y2="6"/>
+                        <line x1="3" x2="21" y1="10" y2="10"/>
+                    </svg>
+                    <span>Schedule</span>
+                </button>
+            </div>
+            
+            <!-- NEW: Folders and Tags Section -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-semibold text-theme-secondary">Folders</h3>
+                    <button id="add-folder-btn" class="p-1 text-theme-quaternary hover:text-theme-primary" title="Add folder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                </div>
+                <div id="folders-list" class="space-y-1">
+                    <div class="folder-item active" data-folder="all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-6l-2-2H5a2 2 0 0 0-2 2Z"/>
+                        </svg>
+                        <span class="text-sm">All Chats</span>
+                    </div>
+                </div>
+            </div>
             
             <div class="relative mb-4">
                 <input type="text" id="search-history-input" placeholder="Search history..." class="w-full bg-theme-tertiary/50 border border-theme-primary rounded-md pl-10 pr-4 py-2 text-sm text-theme-primary placeholder-theme-quaternary focus:outline-none focus:ring-2 focus:ring-theme-accent">
@@ -1180,9 +1587,19 @@
 
             <div class="flex items-center justify-between mb-2">
                 <h2 class="text-lg font-semibold text-theme-secondary">History</h2>
-                <button id="clear-all-btn" class="p-1 text-theme-quaternary hover:text-theme-error" title="Clear all chats">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button id="collaboration-btn" class="p-1 text-theme-quaternary hover:text-theme-primary" title="Collaboration">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </button>
+                    <button id="clear-all-btn" class="p-1 text-theme-quaternary hover:text-theme-error" title="Clear all chats">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
             </div>
             <div class="flex-1 overflow-y-auto pr-2">
                 <ul id="history-list" class="space-y-2">
@@ -1210,6 +1627,12 @@
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
                                 <path d="M12 5L8 21l4-7 4 7-4-16"/>
                             </svg>
+                        </div>
+                        
+                        <!-- NEW: Collaboration Status -->
+                        <div id="collaboration-status" class="hidden flex items-center gap-2">
+                            <div class="online-indicator"></div>
+                            <span class="text-sm text-theme-secondary">Live</span>
                         </div>
                      </div>
                      <div class="flex items-center gap-2 sm:gap-4">
@@ -1265,10 +1688,13 @@
                                     <p class="font-bold text-theme-primary truncate" id="profile-name"></p>
                                     <p class="text-sm text-theme-quaternary truncate" id="profile-email"></p>
                                 </div>
-                                <a href="index.html" class="dropdown-item w-full text-theme-secondary">
-                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                                    <span>Home</span>
-                                </a>
+                                <button id="profile-settings-btn" class="dropdown-item w-full text-theme-secondary">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                     </svg>
+                                    <span>Profile Settings</span>
+                                </button>
                                 <button id="logout-btn" class="dropdown-item w-full text-theme-error font-medium">
                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                                     <span>Logout</span>
@@ -1381,6 +1807,361 @@
         </div>
     </div>
 
+    <!-- NEW: Profile Settings Modal -->
+    <div id="profile-settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-theme-primary">Profile Settings</h2>
+                <button id="close-profile-settings-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Avatar Section -->
+                <div class="settings-section">
+                    <h3 class="text-lg font-semibold text-theme-primary mb-4">Avatar</h3>
+                    <div class="flex items-center gap-4">
+                        <div id="current-avatar" class="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center font-bold text-white text-2xl overflow-hidden">A</div>
+                        <div class="flex-1">
+                            <input type="file" id="avatar-upload" class="hidden" accept="image/*">
+                            <button id="upload-avatar-btn" class="btn btn-primary mb-2">Upload New Avatar</button>
+                            <p class="text-sm text-theme-quaternary">Upload a new profile picture (JPG, PNG, GIF)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="settings-section">
+                    <h3 class="text-lg font-semibold text-theme-primary mb-4">Account</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="profile-name-input" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">Email</label>
+                            <input type="email" id="profile-email-input" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">New Password</label>
+                            <input type="password" id="profile-password-input" class="form-input" placeholder="Leave blank to keep current password">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences -->
+                <div class="settings-section">
+                    <h3 class="text-lg font-semibold text-theme-primary mb-4">Preferences</h3>
+                    <div class="space-y-4">
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">Language</label>
+                                <p class="text-sm text-theme-quaternary">Choose your preferred language</p>
+                            </div>
+                            <select id="language-select" class="form-input w-32">
+                                <option value="en">English</option>
+                                <option value="es">Español</option>
+                                <option value="fr">Français</option>
+                                <option value="de">Deutsch</option>
+                                <option value="it">Italiano</option>
+                                <option value="pt">Português</option>
+                                <option value="ru">Русский</option>
+                                <option value="ja">日本語</option>
+                                <option value="ko">한국어</option>
+                                <option value="zh">中文</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">Font Size</label>
+                                <p class="text-sm text-theme-quaternary">Adjust text size for better readability</p>
+                            </div>
+                            <select id="font-size-select" class="form-input w-32">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                                <option value="extra-large">Extra Large</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">Auto-save Conversations</label>
+                                <p class="text-sm text-theme-quaternary">Automatically save chats to cloud</p>
+                            </div>
+                            <div class="toggle-switch active" id="auto-save-toggle"></div>
+                        </div>
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">Sound Effects</label>
+                                <p class="text-sm text-theme-quaternary">Play sounds for notifications</p>
+                            </div>
+                            <div class="toggle-switch" id="sound-effects-toggle"></div>
+                        </div>
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">TTS Auto-play</label>
+                                <p class="text-sm text-theme-quaternary">Automatically read AI responses</p>
+                            </div>
+                            <div class="toggle-switch" id="tts-autoplay-toggle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-profile-settings-btn" class="btn btn-secondary">Cancel</button>
+                <button id="save-profile-settings-btn" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Prompt Library Modal -->
+    <div id="prompt-library-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 48rem;">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-theme-primary">Prompt Library</h2>
+                <button id="close-prompt-library-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="search-prompts" placeholder="Search prompts..." class="form-input w-64">
+                        <select id="filter-category" class="form-input w-32">
+                            <option value="">All Categories</option>
+                            <option value="coding">Coding</option>
+                            <option value="writing">Writing</option>
+                            <option value="business">Business</option>
+                            <option value="creative">Creative</option>
+                            <option value="education">Education</option>
+                            <option value="medical">Medical</option>
+                        </select>
+                    </div>
+                    <button id="add-prompt-btn" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add Prompt
+                    </button>
+                </div>
+                <div id="prompts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+                    <!-- Prompt cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Add/Edit Prompt Modal -->
+    <div id="add-prompt-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="add-prompt-title" class="text-xl font-bold text-theme-primary">Add New Prompt</h2>
+                <button id="close-add-prompt-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="prompt-form" class="space-y-4">
+                    <div>
+                        <label class="form-label">Title</label>
+                        <input type="text" id="prompt-title" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Category</label>
+                        <select id="prompt-category" class="form-input" required>
+                            <option value="">Select Category</option>
+                            <option value="coding">Coding</option>
+                            <option value="writing">Writing</option>
+                            <option value="business">Business</option>
+                            <option value="creative">Creative</option>
+                            <option value="education">Education</option>
+                            <option value="medical">Medical</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Prompt Text</label>
+                        <textarea id="prompt-text" class="form-input h-32" required></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Description (Optional)</label>
+                        <textarea id="prompt-description" class="form-input h-20"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-add-prompt-btn" class="btn btn-secondary">Cancel</button>
+                <button id="save-prompt-btn" class="btn btn-primary">Save Prompt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Scheduler Modal -->
+    <div id="scheduler-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 48rem;">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-theme-primary">Schedule Prompts</h2>
+                <button id="close-scheduler-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-theme-primary">Scheduled Tasks</h3>
+                    <button id="add-schedule-btn" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Schedule New
+                    </button>
+                </div>
+                <div id="scheduled-tasks" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Scheduled tasks will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Add Schedule Modal -->
+    <div id="add-schedule-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-theme-primary">Schedule New Task</h2>
+                <button id="close-add-schedule-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="schedule-form" class="space-y-4">
+                    <div>
+                        <label class="form-label">Task Name</label>
+                        <input type="text" id="schedule-name" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Prompt</label>
+                        <textarea id="schedule-prompt" class="form-input h-32" required></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Date</label>
+                            <input type="date" id="schedule-date" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Time</label>
+                            <input type="time" id="schedule-time" class="form-input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Repeat</label>
+                        <select id="schedule-repeat" class="form-input">
+                            <option value="none">No Repeat</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-add-schedule-btn" class="btn btn-secondary">Cancel</button>
+                <button id="save-schedule-btn" class="btn btn-primary">Schedule Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Collaboration Modal -->
+    <div id="collaboration-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 40rem;">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-theme-primary">Collaboration</h2>
+                <button id="close-collaboration-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="space-y-6">
+                    <!-- Share Chat -->
+                    <div class="settings-section">
+                        <h3 class="text-lg font-semibold text-theme-primary mb-4">Share Current Chat</h3>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="share-link" class="form-input flex-1" readonly value="https://chat-ai.com/share/abc123">
+                            <button id="copy-share-link" class="btn btn-primary">Copy</button>
+                        </div>
+                        <p class="text-sm text-theme-quaternary mt-2">Share this link to let others view this conversation in read-only mode.</p>
+                    </div>
+
+                    <!-- Live Collaboration -->
+                    <div class="settings-section">
+                        <h3 class="text-lg font-semibold text-theme-primary mb-4">Live Collaboration</h3>
+                        <div class="flex items-center gap-2 mb-3">
+                            <input type="email" id="collaborator-email" class="form-input flex-1" placeholder="Enter email address">
+                            <button id="invite-collaborator" class="btn btn-primary">Invite</button>
+                        </div>
+                        <p class="text-sm text-theme-quaternary mb-4">Invite others to collaborate on this chat in real-time.</p>
+                        
+                        <div class="space-y-2">
+                            <h4 class="font-medium text-theme-primary">Active Collaborators</h4>
+                            <div id="collaborators-list" class="space-y-2">
+                                <!-- Collaborator items will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions -->
+                    <div class="settings-section">
+                        <h3 class="text-lg font-semibold text-theme-primary mb-4">Permissions</h3>
+                        <div class="space-y-3">
+                            <div class="settings-item">
+                                <div>
+                                    <label class="font-medium text-theme-primary">Allow editing</label>
+                                    <p class="text-sm text-theme-quaternary">Collaborators can edit messages</p>
+                                </div>
+                                <div class="toggle-switch" id="allow-editing-toggle"></div>
+                            </div>
+                            <div class="settings-item">
+                                <div>
+                                    <label class="font-medium text-theme-primary">Allow deleting</label>
+                                    <p class="text-sm text-theme-quaternary">Collaborators can delete messages</p>
+                                </div>
+                                <div class="toggle-switch" id="allow-deleting-toggle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Folder Modal -->
+    <div id="folder-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="folder-modal-title" class="text-xl font-bold text-theme-primary">Create New Folder</h2>
+                <button id="close-folder-btn" class="p-2 rounded-full hover:bg-theme-tertiary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="folder-form" class="space-y-4">
+                    <div>
+                        <label class="form-label">Folder Name</label>
+                        <input type="text" id="folder-name" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Color</label>
+                        <div class="flex gap-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-500 cursor-pointer folder-color" data-color="blue"></div>
+                            <div class="w-8 h-8 rounded-full bg-green-500 cursor-pointer folder-color" data-color="green"></div>
+                            <div class="w-8 h-8 rounded-full bg-purple-500 cursor-pointer folder-color" data-color="purple"></div>
+                            <div class="w-8 h-8 rounded-full bg-red-500 cursor-pointer folder-color" data-color="red"></div>
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 cursor-pointer folder-color" data-color="yellow"></div>
+                            <div class="w-8 h-8 rounded-full bg-pink-500 cursor-pointer folder-color" data-color="pink"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-folder-btn" class="btn btn-secondary">Cancel</button>
+                <button id="save-folder-btn" class="btn btn-primary">Create Folder</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import {
@@ -1390,6 +2171,8 @@
             signInWithEmailAndPassword,
             signOut,
             updateProfile,
+            updatePassword,
+            updateEmail,
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
             getFirestore,
@@ -1401,8 +2184,17 @@
             query,
             getDocs,
             deleteDoc,
-            updateDoc
+            updateDoc,
+            where,
+            orderBy,
+            serverTimestamp
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import {
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- DOM Element References ---
         const authPage = document.getElementById('auth-page');
@@ -1440,7 +2232,7 @@
         const menuBtn = document.getElementById('menu-btn');
         const newChatBtn = document.getElementById('new-chat-btn');
         const medicalAiBtn = document.getElementById('medical-ai-btn');
-        const chatAiBtn = document.getElementById('chat-ai-btn'); // New Chat@AI button
+        const chatAiBtn = document.getElementById('chat-ai-btn');
         const medicalModeIndicator = document.getElementById('medical-mode-indicator');
         const historyList = document.getElementById('history-list');
         const searchHistoryInput = document.getElementById('search-history-input');
@@ -1469,6 +2261,24 @@
         const themeBtn = document.getElementById('theme-btn');
         const themeDropdown = document.getElementById('theme-dropdown');
         const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
+
+        // NEW: Enhanced Feature Elements
+        const promptLibraryBtn = document.getElementById('prompt-library-btn');
+        const schedulerBtn = document.getElementById('scheduler-btn');
+        const collaborationBtn = document.getElementById('collaboration-btn');
+        const addFolderBtn = document.getElementById('add-folder-btn');
+        const foldersList = document.getElementById('folders-list');
+        const profileSettingsBtn = document.getElementById('profile-settings-btn');
+        const collaborationStatus = document.getElementById('collaboration-status');
+
+        // NEW: Modal Elements
+        const profileSettingsModal = document.getElementById('profile-settings-modal');
+        const promptLibraryModal = document.getElementById('prompt-library-modal');
+        const addPromptModal = document.getElementById('add-prompt-modal');
+        const schedulerModal = document.getElementById('scheduler-modal');
+        const addScheduleModal = document.getElementById('add-schedule-modal');
+        const collaborationModal = document.getElementById('collaboration-modal');
+        const folderModal = document.getElementById('folder-modal');
         
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
@@ -1489,6 +2299,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         // --- State Management ---
         let currentChatId = null;
@@ -1500,7 +2311,7 @@
         let isNotificationVisible = false;
         let attachedFile = null;
         let chartInstance = null;
-        let isMedicalMode = false; // New state for medical mode
+        let isMedicalMode = false;
         
         // Code visualizer state
         let visualizerSteps = [];
@@ -1521,10 +2332,32 @@
         let isUserScrolledUp = false;
         let isGenerating = false;
         let lastScrollPosition = 0;
-        let autoScrollThreshold = 100; // pixels from bottom to be considered "at bottom"
+        let autoScrollThreshold = 100;
 
         // Theme Management
         let currentTheme = 'light';
+
+        // TTS State Management
+        let currentTTSUtterance = null;
+        let isTTSActive = false;
+        let currentTTSButton = null;
+
+        // NEW: Enhanced Features State
+        let userFolders = { all: { name: 'All Chats', color: 'blue', active: true } };
+        let currentFolder = 'all';
+        let userPrompts = [];
+        let scheduledTasks = [];
+        let userSettings = {
+            language: 'en',
+            fontSize: 'medium',
+            autoSave: true,
+            soundEffects: false,
+            ttsAutoplay: false
+        };
+        let currentEditingPrompt = null;
+        let currentEditingSchedule = null;
+        let isCollaborationActive = false;
+        let collaborators = [];
 
         // --- Speech Recognition ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1536,24 +2369,208 @@
             recognition.interimResults = false;
         }
 
+        // --- TEXT-TO-SPEECH FUNCTIONS ---
+        
+        function initializeTTS() {
+            if (!window.speechSynthesis) {
+                console.warn('Speech synthesis not supported in this browser');
+                return false;
+            }
+            
+            window.speechSynthesis.onvoiceschanged = () => {
+                console.log('TTS voices loaded:', window.speechSynthesis.getVoices().length);
+            };
+            
+            return true;
+        }
+
+        function getPreferredVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return null;
+            
+            const englishVoices = voices.filter(voice => 
+                voice.lang.startsWith('en') && 
+                !voice.name.includes('Google')
+            );
+            
+            const femaleVoice = englishVoices.find(voice => 
+                voice.name.toLowerCase().includes('female') || 
+                voice.name.toLowerCase().includes('samantha') ||
+                voice.name.toLowerCase().includes('karen') ||
+                voice.name.toLowerCase().includes('victoria')
+            );
+            
+            if (femaleVoice) return femaleVoice;
+            return englishVoices[0] || voices[0];
+        }
+
+        function cleanTextForTTS(text) {
+            let cleanText = text
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/\*(.*?)\*/g, '$1')
+                .replace(/`(.*?)`/g, '$1')
+                .replace(/^\s*#{1,6}\s+/gm, '')
+                .replace(/^\s*[-*+]\s+/gm, '')
+                .replace(/^\s*\d+\.\s+/gm, '')
+                .replace(/!\[.*?\]\(.*?\)/g, '')
+                .replace(/\[.*?\]\(.*?\)/g, '$1')
+                .replace(/```[\s\S]*?```/g, '[Code block]')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
+            
+            if (cleanText.length > 2000) {
+                cleanText = cleanText.substring(0, 2000) + '... [Text truncated for speech]';
+            }
+            
+            return cleanText;
+        }
+
+        function speakText(text, button) {
+            if (!window.speechSynthesis) {
+                showNotification('Text-to-speech not supported in this browser', 'error');
+                return;
+            }
+            
+            if (isTTSActive) {
+                stopTTS();
+            }
+            
+            const cleanText = cleanTextForTTS(text);
+            if (!cleanText.trim()) {
+                showNotification('No text to speak', 'error');
+                return;
+            }
+            
+            currentTTSUtterance = new SpeechSynthesisUtterance(cleanText);
+            currentTTSButton = button;
+            
+            const preferredVoice = getPreferredVoice();
+            if (preferredVoice) {
+                currentTTSUtterance.voice = preferredVoice;
+            }
+            
+            currentTTSUtterance.rate = 0.9;
+            currentTTSUtterance.pitch = 1.0;
+            currentTTSUtterance.volume = 1.0;
+            
+            currentTTSUtterance.onstart = () => {
+                isTTSActive = true;
+                updateTTSButton(button, 'speaking');
+                showNotification('Started speaking', 'info');
+            };
+            
+            currentTTSUtterance.onend = () => {
+                isTTSActive = false;
+                updateTTSButton(button, 'idle');
+                currentTTSUtterance = null;
+                currentTTSButton = null;
+            };
+            
+            currentTTSUtterance.onerror = (event) => {
+                console.error('TTS error:', event.error);
+                isTTSActive = false;
+                updateTTSButton(button, 'idle');
+                currentTTSUtterance = null;
+                currentTTSButton = null;
+                showNotification('Speech synthesis error', 'error');
+            };
+            
+            currentTTSUtterance.onpause = () => {
+                updateTTSButton(button, 'paused');
+            };
+            
+            currentTTSUtterance.onresume = () => {
+                updateTTSButton(button, 'speaking');
+            };
+            
+            window.speechSynthesis.speak(currentTTSUtterance);
+        }
+
+        function stopTTS() {
+            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            
+            if (currentTTSButton) {
+                updateTTSButton(currentTTSButton, 'idle');
+            }
+            
+            isTTSActive = false;
+            currentTTSUtterance = null;
+            currentTTSButton = null;
+            showNotification('Speech stopped', 'info');
+        }
+
+        function pauseTTS() {
+            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                window.speechSynthesis.pause();
+            }
+        }
+
+        function resumeTTS() {
+            if (window.speechSynthesis && window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+            }
+        }
+
+        function updateTTSButton(button, state) {
+            if (!button) return;
+            
+            button.classList.remove('speaking', 'paused');
+            
+            switch (state) {
+                case 'speaking':
+                    button.classList.add('speaking');
+                    button.title = 'Stop speaking';
+                    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+                    break;
+                case 'paused':
+                    button.classList.add('paused');
+                    button.title = 'Resume speaking';
+                    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M23 9l-7 4 7 4V9z"></path></svg>`;
+                    break;
+                default:
+                    button.title = 'Listen to response';
+                    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+                    break;
+            }
+        }
+
+        function handleTTSButtonClick(button, text) {
+            if (isTTSActive && currentTTSButton === button) {
+                stopTTS();
+            } else {
+                speakText(text, button);
+            }
+        }
+
+        function addTTSButton(container, text) {
+            const ttsBtn = document.createElement('button');
+            ttsBtn.className = 'tts-button';
+            ttsBtn.title = 'Listen to response';
+            ttsBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+            
+            ttsBtn.onclick = () => handleTTSButtonClick(ttsBtn, text);
+            container.insertBefore(ttsBtn, container.firstChild);
+        }
+
         // --- MEDICAL MODE FUNCTIONS ---
         
         function toggleMedicalMode() {
             isMedicalMode = !isMedicalMode;
             medicalModeIndicator.classList.toggle('hidden', !isMedicalMode);
             
-            // Toggle button visibility
             if (isMedicalMode) {
                 medicalAiBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.add('bg-green-800', 'hover:bg-green-900');
-                chatAiBtn.classList.remove('hidden'); // Show Chat@AI button
+                chatAiBtn.classList.remove('hidden');
                 showMedicalWelcomeContent();
                 showNotification('Medical AI Mode activated', 'success');
                 updateInputPlaceholder('Ask about symptoms, medications, health advice...');
             } else {
                 medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
-                chatAiBtn.classList.add('hidden'); // Hide Chat@AI button
+                chatAiBtn.classList.add('hidden');
                 showWelcomeContent();
                 showNotification('Medical AI Mode deactivated', 'info');
                 updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
@@ -1565,7 +2582,7 @@
             medicalModeIndicator.classList.add('hidden');
             medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
             medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
-            chatAiBtn.classList.add('hidden'); // Hide Chat@AI button
+            chatAiBtn.classList.add('hidden');
             showWelcomeContent();
             showNotification('Switched to Chat@AI mode', 'success');
             updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
@@ -1700,7 +2717,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
         function initializeMonaco() {
             require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.44.0/min/vs' } });
             require(['vs/editor/editor.main'], function () {
-                // Monaco is now loaded
                 console.log('Monaco Editor loaded successfully');
             });
         }
@@ -1726,7 +2742,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         wordWrap: 'on'
                     });
                     
-                    // Update theme when app theme changes
                     const observer = new MutationObserver(() => {
                         editor.updateOptions({ theme: getMonacoTheme() });
                     });
@@ -1774,7 +2789,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 top: chatMainArea.scrollHeight,
                 behavior: 'smooth'
             });
-            // Update state after a short delay to allow scroll to complete
             setTimeout(() => {
                 isUserScrolledUp = false;
                 updateScrollButton();
@@ -1788,12 +2802,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
         }
 
         function initializeScrollHandling() {
-            // Handle scroll events
             chatMainArea.addEventListener('scroll', () => {
                 updateScrollState();
             });
-
-            // Handle scroll to bottom button click
             scrollToBottomBtn.addEventListener('click', scrollToBottomSmooth);
         }
 
@@ -1810,7 +2821,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             localStorage.setItem('theme', theme);
             updateThemeDropdown();
             
-            // Update Monaco editor theme if it exists
             if (monacoEditor) {
                 monacoEditor.updateOptions({ theme: getMonacoTheme() });
             }
@@ -1829,7 +2839,658 @@ Respond with helpful, accurate medical information while maintaining appropriate
             showNotification(`Theme changed to ${newTheme}`, 'success');
         }
 
-        // --- FUNCTION DEFINITIONS ---
+        // --- NEW: ENHANCED FEATURES FUNCTIONS ---
+
+        // === PROFILE SETTINGS ===
+        function showProfileSettings() {
+            // Load current user data
+            document.getElementById('profile-name-input').value = currentUser.displayName || '';
+            document.getElementById('profile-email-input').value = currentUser.email || '';
+            document.getElementById('profile-password-input').value = '';
+            
+            // Load current avatar
+            const currentAvatar = document.getElementById('current-avatar');
+            if (currentUser.photoURL) {
+                currentAvatar.innerHTML = `<img src="${currentUser.photoURL}" class="w-20 h-20 rounded-full">`;
+            } else {
+                const initial = (currentUser.displayName || 'A').charAt(0).toUpperCase();
+                currentAvatar.innerHTML = initial;
+            }
+            
+            // Load settings
+            document.getElementById('language-select').value = userSettings.language;
+            document.getElementById('font-size-select').value = userSettings.fontSize;
+            document.getElementById('auto-save-toggle').classList.toggle('active', userSettings.autoSave);
+            document.getElementById('sound-effects-toggle').classList.toggle('active', userSettings.soundEffects);
+            document.getElementById('tts-autoplay-toggle').classList.toggle('active', userSettings.ttsAutoplay);
+            
+            profileSettingsModal.classList.remove('hidden');
+        }
+
+        function hideProfileSettings() {
+            profileSettingsModal.classList.add('hidden');
+        }
+
+        async function saveProfileSettings() {
+            const newName = document.getElementById('profile-name-input').value.trim();
+            const newEmail = document.getElementById('profile-email-input').value.trim();
+            const newPassword = document.getElementById('profile-password-input').value;
+            
+            try {
+                // Update profile
+                if (newName !== currentUser.displayName) {
+                    await updateProfile(auth.currentUser, { displayName: newName });
+                }
+                
+                // Update email (requires re-authentication in production)
+                if (newEmail !== currentUser.email) {
+                    await updateEmail(auth.currentUser, newEmail);
+                }
+                
+                // Update password
+                if (newPassword) {
+                    await updatePassword(auth.currentUser, newPassword);
+                }
+                
+                // Update user settings
+                userSettings.language = document.getElementById('language-select').value;
+                userSettings.fontSize = document.getElementById('font-size-select').value;
+                userSettings.autoSave = document.getElementById('auto-save-toggle').classList.contains('active');
+                userSettings.soundEffects = document.getElementById('sound-effects-toggle').classList.contains('active');
+                userSettings.ttsAutoplay = document.getElementById('tts-autoplay-toggle').classList.contains('active');
+                
+                // Apply font size setting
+                applyFontSizeSetting(userSettings.fontSize);
+                
+                // Save to Firestore
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    ...currentUser,
+                    displayName: newName,
+                    email: newEmail,
+                    settings: userSettings
+                }, { merge: true });
+                
+                // Update current user
+                currentUser = { ...currentUser, displayName: newName, email: newEmail };
+                setupUserProfile(currentUser);
+                
+                hideProfileSettings();
+                showNotification('Profile updated successfully', 'success');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotification('Error updating profile: ' + error.message, 'error');
+            }
+        }
+
+        function applyFontSizeSetting(fontSize) {
+            const root = document.documentElement;
+            switch (fontSize) {
+                case 'small':
+                    root.style.fontSize = '14px';
+                    break;
+                case 'large':
+                    root.style.fontSize = '18px';
+                    break;
+                case 'extra-large':
+                    root.style.fontSize = '20px';
+                    break;
+                default:
+                    root.style.fontSize = '16px';
+            }
+        }
+
+        async function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                showNotification('Image must be smaller than 5MB', 'error');
+                return;
+            }
+            
+            try {
+                const storageRef = ref(storage, `avatars/${currentUser.uid}`);
+                const snapshot = await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                
+                await updateProfile(auth.currentUser, { photoURL: downloadURL });
+                
+                const currentAvatar = document.getElementById('current-avatar');
+                currentAvatar.innerHTML = `<img src="${downloadURL}" class="w-20 h-20 rounded-full">`;
+                
+                // Update profile avatar in header
+                profileAvatarContainer.innerHTML = `<img src="${downloadURL}" class="w-8 h-8 rounded-full">`;
+                
+                showNotification('Avatar updated successfully', 'success');
+            } catch (error) {
+                console.error('Error uploading avatar:', error);
+                showNotification('Error uploading avatar: ' + error.message, 'error');
+            }
+        }
+
+        // === PROMPT LIBRARY ===
+        function showPromptLibrary() {
+            promptLibraryModal.classList.remove('hidden');
+            renderPromptLibrary();
+        }
+
+        function hidePromptLibrary() {
+            promptLibraryModal.classList.add('hidden');
+        }
+
+        function renderPromptLibrary() {
+            const searchTerm = document.getElementById('search-prompts').value.toLowerCase();
+            const categoryFilter = document.getElementById('filter-category').value;
+            const grid = document.getElementById('prompts-grid');
+            
+            let filteredPrompts = userPrompts.filter(prompt => {
+                const matchesSearch = prompt.title.toLowerCase().includes(searchTerm) || 
+                                    prompt.text.toLowerCase().includes(searchTerm);
+                const matchesCategory = !categoryFilter || prompt.category === categoryFilter;
+                return matchesSearch && matchesCategory;
+            });
+            
+            if (filteredPrompts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-theme-quaternary">No prompts found. Create your first prompt!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = filteredPrompts.map(prompt => `
+                <div class="prompt-card" data-id="${prompt.id}">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-theme-primary">${prompt.title}</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="prompt-category">${prompt.category}</span>
+                            <div class="flex gap-1">
+                                <button class="text-theme-quaternary hover:text-theme-primary" onclick="editPrompt('${prompt.id}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </button>
+                                <button class="text-theme-quaternary hover:text-theme-error" onclick="deletePrompt('${prompt.id}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-theme-quaternary text-sm mb-3">${prompt.description || 'No description'}</p>
+                    <p class="text-theme-secondary text-sm mb-3 line-clamp-2">${prompt.text}</p>
+                    <button class="btn btn-primary w-full" onclick="usePrompt('${prompt.id}')">Use Prompt</button>
+                </div>
+            `).join('');
+        }
+
+        function showAddPrompt(editingId = null) {
+            currentEditingPrompt = editingId;
+            const title = document.getElementById('add-prompt-title');
+            const form = document.getElementById('prompt-form');
+            
+            if (editingId) {
+                title.textContent = 'Edit Prompt';
+                const prompt = userPrompts.find(p => p.id === editingId);
+                if (prompt) {
+                    document.getElementById('prompt-title').value = prompt.title;
+                    document.getElementById('prompt-category').value = prompt.category;
+                    document.getElementById('prompt-text').value = prompt.text;
+                    document.getElementById('prompt-description').value = prompt.description || '';
+                }
+            } else {
+                title.textContent = 'Add New Prompt';
+                form.reset();
+            }
+            
+            addPromptModal.classList.remove('hidden');
+        }
+
+        function hideAddPrompt() {
+            addPromptModal.classList.add('hidden');
+            currentEditingPrompt = null;
+        }
+
+        async function savePrompt() {
+            const title = document.getElementById('prompt-title').value.trim();
+            const category = document.getElementById('prompt-category').value;
+            const text = document.getElementById('prompt-text').value.trim();
+            const description = document.getElementById('prompt-description').value.trim();
+            
+            if (!title || !category || !text) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const prompt = {
+                id: currentEditingPrompt || Date.now().toString(),
+                title,
+                category,
+                text,
+                description,
+                createdAt: currentEditingPrompt ? userPrompts.find(p => p.id === currentEditingPrompt).createdAt : new Date(),
+                updatedAt: new Date()
+            };
+            
+            try {
+                if (currentEditingPrompt) {
+                    const index = userPrompts.findIndex(p => p.id === currentEditingPrompt);
+                    userPrompts[index] = prompt;
+                } else {
+                    userPrompts.push(prompt);
+                }
+                
+                // Save to Firestore
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    prompts: userPrompts
+                }, { merge: true });
+                
+                hideAddPrompt();
+                renderPromptLibrary();
+                showNotification(currentEditingPrompt ? 'Prompt updated' : 'Prompt saved', 'success');
+            } catch (error) {
+                console.error('Error saving prompt:', error);
+                showNotification('Error saving prompt', 'error');
+            }
+        }
+
+        async function deletePrompt(id) {
+            if (!confirm('Are you sure you want to delete this prompt?')) return;
+            
+            try {
+                userPrompts = userPrompts.filter(p => p.id !== id);
+                
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    prompts: userPrompts
+                }, { merge: true });
+                
+                renderPromptLibrary();
+                showNotification('Prompt deleted', 'success');
+            } catch (error) {
+                console.error('Error deleting prompt:', error);
+                showNotification('Error deleting prompt', 'error');
+            }
+        }
+
+        function usePrompt(id) {
+            const prompt = userPrompts.find(p => p.id === id);
+            if (prompt) {
+                chatInput.value = prompt.text;
+                autoResizeTextarea(chatInput);
+                updateSendButtonState();
+                hidePromptLibrary();
+                showNotification('Prompt loaded', 'success');
+                chatInput.focus();
+            }
+        }
+
+        // Make functions globally available
+        window.editPrompt = (id) => showAddPrompt(id);
+        window.deletePrompt = deletePrompt;
+        window.usePrompt = usePrompt;
+
+        // === SCHEDULER ===
+        function showScheduler() {
+            schedulerModal.classList.remove('hidden');
+            renderScheduledTasks();
+        }
+
+        function hideScheduler() {
+            schedulerModal.classList.add('hidden');
+        }
+
+        function renderScheduledTasks() {
+            const container = document.getElementById('scheduled-tasks');
+            
+            if (scheduledTasks.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-theme-quaternary">No scheduled tasks yet. Create your first scheduled task!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = scheduledTasks.map(task => `
+                <div class="scheduled-task">
+                    <div class="flex-1">
+                        <h4 class="font-semibold">${task.name}</h4>
+                        <p class="text-sm opacity-80">${task.prompt.substring(0, 50)}...</p>
+                        <p class="text-xs opacity-60">
+                            ${new Date(task.date).toLocaleDateString()} at ${task.time}
+                            ${task.repeat !== 'none' ? `• Repeats ${task.repeat}` : ''}
+                        </p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="text-theme-quaternary hover:text-theme-primary" onclick="editScheduledTask('${task.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="text-theme-quaternary hover:text-theme-error" onclick="deleteScheduledTask('${task.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddSchedule(editingId = null) {
+            currentEditingSchedule = editingId;
+            const form = document.getElementById('schedule-form');
+            
+            if (editingId) {
+                const task = scheduledTasks.find(t => t.id === editingId);
+                if (task) {
+                    document.getElementById('schedule-name').value = task.name;
+                    document.getElementById('schedule-prompt').value = task.prompt;
+                    document.getElementById('schedule-date').value = task.date;
+                    document.getElementById('schedule-time').value = task.time;
+                    document.getElementById('schedule-repeat').value = task.repeat;
+                }
+            } else {
+                form.reset();
+                // Set default date to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('schedule-date').value = today;
+            }
+            
+            addScheduleModal.classList.remove('hidden');
+        }
+
+        function hideAddSchedule() {
+            addScheduleModal.classList.add('hidden');
+            currentEditingSchedule = null;
+        }
+
+        async function saveScheduledTask() {
+            const name = document.getElementById('schedule-name').value.trim();
+            const prompt = document.getElementById('schedule-prompt').value.trim();
+            const date = document.getElementById('schedule-date').value;
+            const time = document.getElementById('schedule-time').value;
+            const repeat = document.getElementById('schedule-repeat').value;
+            
+            if (!name || !prompt || !date || !time) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const task = {
+                id: currentEditingSchedule || Date.now().toString(),
+                name,
+                prompt,
+                date,
+                time,
+                repeat,
+                createdAt: currentEditingSchedule ? scheduledTasks.find(t => t.id === currentEditingSchedule).createdAt : new Date(),
+                updatedAt: new Date()
+            };
+            
+            try {
+                if (currentEditingSchedule) {
+                    const index = scheduledTasks.findIndex(t => t.id === currentEditingSchedule);
+                    scheduledTasks[index] = task;
+                } else {
+                    scheduledTasks.push(task);
+                    scheduleTask(task);
+                }
+                
+                // Save to Firestore
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    scheduledTasks: scheduledTasks
+                }, { merge: true });
+                
+                hideAddSchedule();
+                renderScheduledTasks();
+                showNotification(currentEditingSchedule ? 'Task updated' : 'Task scheduled', 'success');
+            } catch (error) {
+                console.error('Error saving scheduled task:', error);
+                showNotification('Error saving scheduled task', 'error');
+            }
+        }
+
+        async function deleteScheduledTask(id) {
+            if (!confirm('Are you sure you want to delete this scheduled task?')) return;
+            
+            try {
+                scheduledTasks = scheduledTasks.filter(t => t.id !== id);
+                
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    scheduledTasks: scheduledTasks
+                }, { merge: true });
+                
+                renderScheduledTasks();
+                showNotification('Scheduled task deleted', 'success');
+            } catch (error) {
+                console.error('Error deleting scheduled task:', error);
+                showNotification('Error deleting scheduled task', 'error');
+            }
+        }
+
+        function scheduleTask(task) {
+            const executionTime = new Date(`${task.date}T${task.time}`);
+            const now = new Date();
+            const delay = executionTime.getTime() - now.getTime();
+            
+            if (delay > 0) {
+                setTimeout(() => {
+                    executeScheduledTask(task);
+                }, delay);
+            }
+        }
+
+        async function executeScheduledTask(task) {
+            try {
+                // Auto-execute the scheduled prompt
+                chatInput.value = task.prompt;
+                await handleSendMessage();
+                
+                showNotification(`Scheduled task "${task.name}" executed`, 'success');
+                
+                // Handle repeat
+                if (task.repeat !== 'none') {
+                    const nextDate = getNextRepeatDate(task.date, task.repeat);
+                    const updatedTask = { ...task, date: nextDate };
+                    
+                    const index = scheduledTasks.findIndex(t => t.id === task.id);
+                    scheduledTasks[index] = updatedTask;
+                    
+                    await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                        scheduledTasks: scheduledTasks
+                    }, { merge: true });
+                    
+                    scheduleTask(updatedTask);
+                }
+            } catch (error) {
+                console.error('Error executing scheduled task:', error);
+                showNotification('Error executing scheduled task', 'error');
+            }
+        }
+
+        function getNextRepeatDate(currentDate, repeatType) {
+            const date = new Date(currentDate);
+            switch (repeatType) {
+                case 'daily':
+                    date.setDate(date.getDate() + 1);
+                    break;
+                case 'weekly':
+                    date.setDate(date.getDate() + 7);
+                    break;
+                case 'monthly':
+                    date.setMonth(date.getMonth() + 1);
+                    break;
+            }
+            return date.toISOString().split('T')[0];
+        }
+
+        // Make functions globally available
+        window.editScheduledTask = (id) => showAddSchedule(id);
+        window.deleteScheduledTask = deleteScheduledTask;
+
+        // === COLLABORATION ===
+        function showCollaboration() {
+            collaborationModal.classList.remove('hidden');
+            renderCollaborators();
+        }
+
+        function hideCollaboration() {
+            collaborationModal.classList.add('hidden');
+        }
+
+        function renderCollaborators() {
+            const container = document.getElementById('collaborators-list');
+            
+            if (collaborators.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-theme-quaternary text-sm">No active collaborators</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = collaborators.map(collaborator => `
+                <div class="user-presence">
+                    <div class="user-avatar">${collaborator.name.charAt(0).toUpperCase()}</div>
+                    <div class="flex-1">
+                        <p class="font-medium text-theme-primary">${collaborator.name}</p>
+                        <p class="text-sm text-theme-quaternary">${collaborator.email}</p>
+                    </div>
+                    <div class="online-indicator"></div>
+                </div>
+            `).join('');
+        }
+
+        async function inviteCollaborator() {
+            const email = document.getElementById('collaborator-email').value.trim();
+            if (!email) {
+                showNotification('Please enter an email address', 'error');
+                return;
+            }
+            
+            // In a real implementation, this would send an invitation
+            const newCollaborator = {
+                id: Date.now().toString(),
+                name: email.split('@')[0],
+                email: email,
+                joinedAt: new Date()
+            };
+            
+            collaborators.push(newCollaborator);
+            document.getElementById('collaborator-email').value = '';
+            
+            renderCollaborators();
+            showNotification('Collaboration invitation sent', 'success');
+        }
+
+        function copyShareLink() {
+            const shareLink = document.getElementById('share-link');
+            shareLink.select();
+            document.execCommand('copy');
+            showNotification('Share link copied to clipboard', 'success');
+        }
+
+        // === FOLDERS ===
+        function showFolderModal(editingId = null) {
+            const title = document.getElementById('folder-modal-title');
+            const form = document.getElementById('folder-form');
+            
+            if (editingId) {
+                title.textContent = 'Edit Folder';
+                const folder = userFolders[editingId];
+                if (folder) {
+                    document.getElementById('folder-name').value = folder.name;
+                    // Set selected color
+                    document.querySelectorAll('.folder-color').forEach(el => {
+                        el.classList.toggle('ring-2', el.dataset.color === folder.color);
+                    });
+                }
+            } else {
+                title.textContent = 'Create New Folder';
+                form.reset();
+                document.querySelectorAll('.folder-color').forEach(el => {
+                    el.classList.remove('ring-2');
+                });
+            }
+            
+            folderModal.classList.remove('hidden');
+        }
+
+        function hideFolderModal() {
+            folderModal.classList.add('hidden');
+        }
+
+        async function saveFolder() {
+            const name = document.getElementById('folder-name').value.trim();
+            const selectedColor = document.querySelector('.folder-color.ring-2')?.dataset.color || 'blue';
+            
+            if (!name) {
+                showNotification('Please enter a folder name', 'error');
+                return;
+            }
+            
+            const folderId = name.toLowerCase().replace(/\s+/g, '-');
+            
+            if (userFolders[folderId] && userFolders[folderId].name !== name) {
+                showNotification('Folder name already exists', 'error');
+                return;
+            }
+            
+            try {
+                userFolders[folderId] = { name, color: selectedColor };
+                
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    folders: userFolders
+                }, { merge: true });
+                
+                hideFolderModal();
+                renderFolders();
+                showNotification('Folder saved', 'success');
+            } catch (error) {
+                console.error('Error saving folder:', error);
+                showNotification('Error saving folder', 'error');
+            }
+        }
+
+        function renderFolders() {
+            const container = foldersList;
+            
+            container.innerHTML = Object.entries(userFolders).map(([id, folder]) => `
+                <div class="folder-item ${folder.active ? 'active' : ''}" data-folder="${id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-${folder.color}-500">
+                        <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-6l-2-2H5a2 2 0 0 0-2 2Z"/>
+                    </svg>
+                    <span class="text-sm flex-1">${folder.name}</span>
+                    ${id !== 'all' ? `<button class="text-theme-quaternary hover:text-theme-error" onclick="deleteFolder('${id}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        async function deleteFolder(folderId) {
+            if (!confirm('Are you sure you want to delete this folder?')) return;
+            
+            try {
+                delete userFolders[folderId];
+                
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    folders: userFolders
+                }, { merge: true });
+                
+                renderFolders();
+                showNotification('Folder deleted', 'success');
+            } catch (error) {
+                console.error('Error deleting folder:', error);
+                showNotification('Error deleting folder', 'error');
+            }
+        }
+
+        // Make functions globally available
+        window.deleteFolder = deleteFolder;
+
+        // --- CORE FUNCTIONS ---
         
         function checkAPIStatus() {
             if (!API_KEY || API_KEY.includes('YOUR_API_KEY')) {
@@ -1880,6 +3541,24 @@ Respond with helpful, accurate medical information while maintaining appropriate
                              ...userData,
                              displayName: user.displayName || userData.displayName || 'Anonymous User'
                          };
+                         
+                         // Load user settings and data
+                         userSettings = userData.settings || userSettings;
+                         userFolders = userData.folders || userFolders;
+                         userPrompts = userData.prompts || [];
+                         scheduledTasks = userData.scheduledTasks || [];
+                         
+                         // Apply font size setting
+                         applyFontSizeSetting(userSettings.fontSize);
+                         
+                         // Schedule existing tasks
+                         scheduledTasks.forEach(task => {
+                             const taskDate = new Date(`${task.date}T${task.time}`);
+                             if (taskDate > new Date()) {
+                                 scheduleTask(task);
+                             }
+                         });
+                         
                     } else {
                          const displayName = user.displayName || signupNameInput.value || "Anonymous";
                          const photoURL = user.photoURL || null;
@@ -1887,12 +3566,17 @@ Respond with helpful, accurate medical information while maintaining appropriate
                             displayName: displayName,
                             email: user.email,
                             photoURL: photoURL,
-                            createdAt: new Date()
+                            createdAt: new Date(),
+                            settings: userSettings,
+                            folders: userFolders,
+                            prompts: [],
+                            scheduledTasks: []
                         });
                         currentUser = { ...user, displayName, photoURL };
                     }
                     showChatApp();
                     setupUserProfile(currentUser);
+                    renderFolders();
                     await loadChatsFromFirestore();
                     showNotification(`Welcome back, ${currentUser.displayName || 'User'}!`, 'success');
                 } else {
@@ -1936,7 +3620,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                        <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-20 h-20 rounded-full shadow-lg" />
                     </div>
                     <h2 class="text-3xl font-bold text-theme-primary mb-4">Welcome to Chat@AI</h2>
-                    <p class="text-theme-secondary text-lg mb-6">Your intelligent AI assistant with enhanced response formatting. Ask me anything, upload a file, or paste code to visualize!</p>
+                    <p class="text-theme-secondary text-lg mb-6">Your intelligent AI assistant with enhanced features. Organize chats, save prompts, schedule tasks, and collaborate with others!</p>
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-theme-primary mb-4">Try these examples:</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
@@ -1948,20 +3632,20 @@ Respond with helpful, accurate medical information while maintaining appropriate
                                 <span class="text-theme-secondary">Visualize Python code</span>
                              </div>
                            </button>
-                           <button class="suggestion-card" data-suggestion="Visualize this javascript code:\n\nlet message = 'Hello';\nfor (let i = 0; i < 3; i++) {\n  console.log(message[i]);\n}">
+                           <button class="suggestion-card" data-suggestion="Create a study schedule for learning JavaScript in 30 days">
                              <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 flex-shrink-0 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></svg>
+                                <div class="w-8 h-8 flex-shrink-0 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                                 </div>
-                                <span class="text-theme-secondary">Visualize JS code</span>
+                                <span class="text-theme-secondary">Create study schedule</span>
                              </div>
                            </button>
-                           <button class="suggestion-card" data-suggestion="Plan a 7-day trip to Japan, focusing on cultural experiences in Kyoto and Tokyo.">
+                           <button class="suggestion-card" data-suggestion="Help me organize my project tasks and create a productivity system">
                              <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 flex-shrink-0 bg-amber-500/20 rounded-lg flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                                <div class="w-8 h-8 flex-shrink-0 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-6l-2-2H5a2 2 0 0 0-2 2Z"/></svg>
                                 </div>
-                                <span class="text-theme-secondary">Plan a trip to Japan</span>
+                                <span class="text-theme-secondary">Organize projects</span>
                              </div>
                            </button>
                            <button class="suggestion-card" data-suggestion="Generate a JavaScript bar chart showing the population of the 5 largest cities in India.">
@@ -1969,7 +3653,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                                 <div class="w-8 h-8 flex-shrink-0 bg-rose-500/20 rounded-lg flex items-center justify-center">
                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                                 </div>
-                                <span class="text-theme-secondary">Visualize population data</span>
+                                <span class="text-theme-secondary">Visualize data</span>
                              </div>
                            </button>
                         </div>
@@ -2040,6 +3724,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
                 chatAiBtn.classList.add('hidden');
+                if (isTTSActive) {
+                    stopTTS();
+                }
                 showNotification('Logged out successfully', 'success');
             } catch (error) {
                 console.error("Logout error", error);
@@ -2138,7 +3825,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const file = e.target.files[0];
             if (!file) return;
             
-            // Check if it's a code file for visualization
             const extension = '.' + file.name.split('.').pop();
             const language = fileExtensionMap[extension];
             
@@ -2149,18 +3835,17 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     showCodeVisualizationModal(codeContent, language);
                 };
                 reader.readAsText(file);
-                fileInput.value = ''; // Reset file input
+                fileInput.value = '';
                 return;
             }
 
-            // Handle other file types
             if (file.type === "text/plain" || file.type === "text/csv") {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const textContent = event.target.result;
                     attachedFile = {
-                        base64: btoa(textContent), // Base64 encode the text content
-                        mimeType: "text/plain", // Treat as plain text
+                        base64: btoa(textContent),
+                        mimeType: "text/plain",
                         name: file.name
                     };
                     displayFilePreview();
@@ -2213,7 +3898,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             if(e) e.preventDefault();
             const userInput = chatInput.value.trim();
             
-            // Check for Python visualization command
             const vizRegex = /^visualize this (\w+\+*\w*) code:/i;
             const match = userInput.match(vizRegex);
             if (match) {
@@ -2251,7 +3935,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
                      const newChatRef = await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats"), {
                         title: title || 'Multimedia Chat',
                         createdAt: new Date(),
-                        isMedical: isMedicalMode // Store medical mode state
+                        isMedical: isMedicalMode,
+                        folder: currentFolder
                     });
                     currentChatId = newChatRef.id;
                     allChats[currentChatId] = { 
@@ -2259,7 +3944,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         createdAt: new Date(), 
                         title: title || 'Multimedia Chat', 
                         messages: [],
-                        isMedical: isMedicalMode
+                        isMedical: isMedicalMode,
+                        folder: currentFolder
                     };
                     renderHistorySidebar();
                 } catch (error) {
@@ -2283,7 +3969,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 });
             }
             
-            // Create the appropriate prompt based on mode
             let finalUserInput = userInput;
             if (isMedicalMode && userInput) {
                 finalUserInput = createMedicalPrompt(userInput);
@@ -2313,7 +3998,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             updateSendButtonState();
             appendLoadingIndicator();
             
-            // Smart scroll to bottom only if user was already at bottom
             if (!isUserScrolledUp) {
                 scrollToBottomInstant();
             }
@@ -2347,6 +4031,16 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
                     await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
+
+                    // Auto-play TTS if enabled
+                    if (userSettings.ttsAutoplay && window.speechSynthesis) {
+                        const ttsButton = messageElement.querySelector('.tts-button');
+                        if (ttsButton) {
+                            setTimeout(() => {
+                                handleTTSButtonClick(ttsButton, finalText);
+                            }, 500);
+                        }
+                    }
 
                 } else {
                     appendMessage({text: "I couldn't generate a response. The response was empty."}, 'model-error');
@@ -2395,7 +4089,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const isError = sender === 'model-error';
             let modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full ${isError ? 'bg-theme-error' : 'bg-theme-accent'} flex items-center justify-center shadow-md"><img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md" /></div>`;
             
-            // Use medical icon if in medical mode
             if (isMedicalMode && !isError) {
                 modelIconHtml = `<div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 flex items-center justify-center shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2428,12 +4121,10 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 enhanceCodeBlocks(messageId);
             }
 
-            // Add action buttons for both user and model messages
             if (isUser) {
                 addUserActionButtons(messageElement, text);
             }
 
-            // Smart scroll to bottom only if user was already at bottom
             if (!isUserScrolledUp) {
                 scrollToBottomInstant();
             }
@@ -2441,19 +4132,16 @@ Respond with helpful, accurate medical information while maintaining appropriate
             return messageId;
         }
 
-        // New function to add edit button for user messages
         function addUserActionButtons(messageElement, text) {
             const actionContainer = messageElement.querySelector('.action-buttons');
             if (!actionContainer) return;
 
-            // Edit button
-            const editBtn =   document.createElement('button');
+            const editBtn = document.createElement('button');
             editBtn.title = "Edit message";
             editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
             editBtn.onclick = () => handleEditMessage(messageElement, text);
             actionContainer.appendChild(editBtn);
 
-            // Copy button
             const copyBtn = document.createElement('button');
             copyBtn.title = "Copy";
             copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
@@ -2464,16 +4152,13 @@ Respond with helpful, accurate medical information while maintaining appropriate
             actionContainer.appendChild(copyBtn);
         }
 
-        // New function to handle message editing
         async function handleEditMessage(messageElement, originalText) {
             const messageId = messageElement.id;
             const contentContainer = messageElement.querySelector('.prose');
             const actionContainer = messageElement.querySelector('.action-buttons');
             
-            // Hide action buttons during edit
             actionContainer.style.display = 'none';
             
-            // Replace message content with textarea
             const editContainer = document.createElement('div');
             editContainer.innerHTML = `
                 <textarea class="edit-textarea">${originalText}</textarea>
@@ -2488,11 +4173,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const cancelBtn = editContainer.querySelector('.edit-cancel-btn');
             const saveBtn = editContainer.querySelector('.edit-save-btn');
             
-            // Focus and select text
             textarea.focus();
             textarea.select();
             
-            // Auto-resize textarea
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
             textarea.addEventListener('input', () => {
@@ -2500,7 +4183,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 textarea.style.height = textarea.scrollHeight + 'px';
             });
             
-            // Cancel edit
             cancelBtn.onclick = () => {
                 const newContentContainer = document.createElement('div');
                 newContentContainer.className = 'prose max-w-none text-theme-inverse';
@@ -2509,7 +4191,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 actionContainer.style.display = 'flex';
             };
             
-            // Save and regenerate
             saveBtn.onclick = async () => {
                 const newText = textarea.value.trim();
                 if (!newText) {
@@ -2518,7 +4199,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 }
                 
                 if (newText === originalText) {
-                    // No changes, just restore
                     cancelBtn.click();
                     return;
                 }
@@ -2537,15 +4217,12 @@ Respond with helpful, accurate medical information while maintaining appropriate
             };
         }
 
-        // New function to regenerate conversation from a specific message
         async function regenerateFromMessage(messageId, newText) {
             if (!currentChatId || !currentUser) return;
             
-            // Find the message index in the current chat
             const currentMessages = allChats[currentChatId].messages || [];
             let messageIndex = -1;
             
-            // Find message by comparing text content (since we don't store message IDs in Firestore)
             for (let i = 0; i < currentMessages.length; i++) {
                 const message = currentMessages[i];
                 if (message.role === 'user') {
@@ -2559,10 +4236,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
             
             if (messageIndex === -1) return;
             
-            // Remove messages from this point forward (both from memory and UI)
             const messagesToRemove = currentMessages.splice(messageIndex);
             
-            // Remove corresponding messages from UI
             const allMessageElements = chatContainer.querySelectorAll('.chat-message');
             let userMessageCount = 0;
             for (let i = 0; i < allMessageElements.length; i++) {
@@ -2570,7 +4245,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 if (element.classList.contains('user')) {
                     userMessageCount++;
                     if (userMessageCount > messageIndex) {
-                        // Remove this message and all subsequent messages
                         for (let j = i; j < allMessageElements.length; j++) {
                             allMessageElements[j].remove();
                         }
@@ -2579,7 +4253,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 }
             }
             
-            // Create new user message with updated text
             let finalUserInput = newText;
             if (isMedicalMode) {
                 finalUserInput = createMedicalPrompt(newText);
@@ -2589,10 +4262,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const userMessage = { role: 'user', parts: messageParts, timestamp: new Date() };
             allChats[currentChatId].messages.push(userMessage);
             
-            // Add updated message to UI
             const messageId_new = appendMessage({ text: newText }, 'user');
             
-            // Generate new AI response
             toggleForm(false);
             generationControls.classList.remove('hidden');
             stopGenerationFlag = false;
@@ -2601,7 +4272,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             
             appendLoadingIndicator();
             
-            // Smart scroll to bottom only if user was already at bottom
             if (!isUserScrolledUp) {
                 scrollToBottomInstant();
             }
@@ -2637,8 +4307,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
                     
-                    // Update Firestore - remove old messages and add new ones
-                    // For simplicity, we'll just add the new messages (Firestore cleanup can be done separately)
                     await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), userMessage);
                     await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
                 } else {
@@ -2678,7 +4346,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const tempHtml = marked.parse(currentText + '▋');
                     contentContainer.innerHTML = tempHtml;
                     
-                    // Smart scroll to bottom only if user was already at bottom
                     if (!isUserScrolledUp) {
                         scrollToBottomInstant();
                     }
@@ -2693,6 +4360,10 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const actionContainer = messageElement.querySelector('.action-buttons');
             if (!actionContainer) return;
 
+            if (window.speechSynthesis) {
+                addTTSButton(actionContainer, textContent);
+            }
+
             addStandardActionButtons(actionContainer, textContent);
 
             const table = messageElement.querySelector('table');
@@ -2705,7 +4376,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 addJsonExplorerButton(actionContainer, jsonCodeBlock.innerText);
             }
 
-            // Only show map button for geography/location-related content
             const locationKeywords = ['city', 'country', 'location', 'place', 'travel', 'visit', 'destination', 'geography', 'map', 'directions', 'address'];
             const hasLocationContext = locationKeywords.some(keyword => 
                 textContent.toLowerCase().includes(keyword)
@@ -2724,7 +4394,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 addCalendarButton(actionContainer, dateMatch[0], textContent);
             }
 
-            // Add regenerate button for all AI responses
             addRegenerateButton(actionContainer, messageElement);
         }
         
@@ -2750,11 +4419,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
         async function handleRegenerateResponse(messageElement) {
             if (!currentChatId || !currentUser) return;
             
-            // Find the last user message before this AI response
             const currentMessages = allChats[currentChatId].messages || [];
             let lastUserMessageIndex = -1;
             
-            // Find the last user message
             for (let i = currentMessages.length - 1; i >= 0; i--) {
                 if (currentMessages[i].role === 'user') {
                     lastUserMessageIndex = i;
@@ -2764,16 +4431,13 @@ Respond with helpful, accurate medical information while maintaining appropriate
             
             if (lastUserMessageIndex === -1) return;
             
-            // Remove the AI response from memory
             const aiMessageIndex = lastUserMessageIndex + 1;
             if (aiMessageIndex < currentMessages.length) {
                 currentMessages.splice(aiMessageIndex, 1);
             }
             
-            // Remove the AI message from UI
             messageElement.remove();
             
-            // Generate new AI response
             toggleForm(false);
             generationControls.classList.remove('hidden');
             stopGenerationFlag = false;
@@ -2782,7 +4446,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             
             appendLoadingIndicator();
             
-            // Smart scroll to bottom only if user was already at bottom
             if (!isUserScrolledUp) {
                 scrollToBottomInstant();
             }
@@ -2818,7 +4481,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
                     
-                    // Add to Firestore
                     await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
                     
                     showNotification('Response regenerated', 'success');
@@ -2896,10 +4558,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 chartInstance.destroy();
                 chartInstance = null;
             }
-            // Reset visualizer state
             visualizerSteps = [];
             currentVisStep = 0;
-            // Dispose Monaco editor
             if (monacoEditor) {
                 monacoEditor.dispose();
                 monacoEditor = null;
@@ -2979,21 +4639,15 @@ Respond with helpful, accurate medical information while maintaining appropriate
             interactiveModalBody.innerHTML = `<iframe srcdoc='${fullHtml.replace(/'/g, "&apos;")}' class="w-full h-full border-0" ></iframe>`;
         }
         
-        // --- START: Enhanced Code Visualizer Functions with Monaco Editor ---
-        
         async function showCodeVisualizationModal(code, language) {
             showInteractiveModal(`${language.charAt(0).toUpperCase() + language.slice(1)} Code Editor & Visualizer`);
             currentLanguage = language;
             
-            // Show loading initially
             interactiveModalBody.innerHTML = `<div class="flex items-center justify-center h-full">
                 <dotlottie-player src="https://lottie.host/42a90344-ccc5-4d2a-92e2-1a62cef7473c/MqjsTEGKMS.lottie" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></dotlottie-player>
             </div>`;
 
-            // Initialize the Monaco editor interface
             await renderMonacoVisualizerUI(code, language);
-            
-            // Generate initial visualization
             await generateVisualization(code, language);
         }
 
@@ -3041,11 +4695,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 </div>
             `;
             
-            // Create Monaco editor
             const editorContainer = document.getElementById('monaco-editor');
             monacoEditor = await createMonacoEditor(editorContainer, code, language);
             
-            // Setup footer controls
             interactiveModalFooter.innerHTML = `
                 <button id="vis-prev-btn" class="px-4 py-2 rounded-md bg-theme-quaternary hover:bg-theme-tertiary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                 <span id="vis-step-counter" class="text-sm text-theme-quaternary">Step 0/0</span>
@@ -3054,12 +4706,10 @@ Respond with helpful, accurate medical information while maintaining appropriate
             `;
             interactiveModalFooter.classList.remove('hidden');
 
-            // Setup event listeners
             setupMonacoEventListeners();
         }
 
         function setupMonacoEventListeners() {
-            // Language selector
             document.getElementById('language-selector').addEventListener('change', async (e) => {
                 const newLanguage = e.target.value;
                 currentLanguage = newLanguage;
@@ -3070,29 +4720,25 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 }
             });
 
-            // Run button
             document.getElementById('run-code-btn').addEventListener('click', async () => {
                 const code = monacoEditor.getValue();
                 await generateVisualization(code, currentLanguage);
             });
 
-            // Auto-run checkbox
             document.getElementById('auto-run-checkbox').addEventListener('change', (e) => {
                 isAutoRunEnabled = e.target.checked;
                 if (isAutoRunEnabled) {
-                    // Setup auto-run on content change
                     let timeout;
                     monacoEditor.onDidChangeModelContent(() => {
                         clearTimeout(timeout);
                         timeout = setTimeout(async () => {
                             const code = monacoEditor.getValue();
                             await generateVisualization(code, currentLanguage);
-                        }, 1000); // Debounce for 1 second
+                        }, 1000);
                     });
                 }
             });
 
-            // Navigation buttons
             document.getElementById('vis-prev-btn').addEventListener('click', () => {
                 if (currentVisStep > 0) {
                     currentVisStep--;
@@ -3121,7 +4767,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 return;
             }
 
-            // Show loading in explanation pane
             document.getElementById('step-explanation').innerHTML = `
                 <div class="flex items-center gap-2">
                     <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-theme-accent"></div>
@@ -3207,7 +4852,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
         }
 
         function highlightCodeLines() {
-            // Clear existing decorations
             if (monacoEditor) {
                 monacoEditor.deltaDecorations(monacoEditor.getModel().getAllDecorations().map(d => d.id), []);
             }
@@ -3217,10 +4861,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const step = visualizerSteps[currentVisStep];
             if (!step) return;
 
-            // Update explanation
             document.getElementById('step-explanation').textContent = step.explanation;
 
-            // Update variables display
             const variablesDisplay = document.getElementById('variables-display');
             const globalsArray = step.globals || [];
             if (globalsArray.length > 0) {
@@ -3233,7 +4875,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 variablesDisplay.innerHTML = '<p class="text-theme-quaternary text-sm">No variables initialized yet</p>';
             }
 
-            // Update output
             const outputContent = document.getElementById('output-content');
             if (step.output) {
                 outputContent.innerHTML = `<div class="output-line success">${step.output}</div>`;
@@ -3241,7 +4882,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 outputContent.innerHTML = '<span class="text-theme-quaternary text-sm">No output yet</span>';
             }
 
-            // Highlight current line in Monaco editor
             if (monacoEditor && step.line > 0 && step.explanation !== "Final State") {
                 const decorations = [{
                     range: new monaco.Range(step.line, 1, step.line, 1),
@@ -3252,18 +4892,13 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     }
                 }];
                 monacoEditor.deltaDecorations([], decorations);
-                
-                // Scroll to the highlighted line
                 monacoEditor.revealLineInCenter(step.line);
             }
 
-            // Update controls
             document.getElementById('vis-step-counter').textContent = `Step ${currentVisStep + 1} of ${visualizerSteps.length}`;
             document.getElementById('vis-prev-btn').disabled = currentVisStep === 0;
             document.getElementById('vis-next-btn').disabled = currentVisStep === visualizerSteps.length - 1;
         }
-
-        // --- END: Enhanced Code Visualizer Functions ---
 
         function parseTableForChart(table) {
             const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
@@ -3400,7 +5035,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 const codeText = code.innerText;
                 const language = Array.from(code.classList).find(c => c.startsWith('language-'))?.replace('language-', '');
 
-                // Preview for HTML
                 if (['html', 'markup', 'xml'].includes(language)) {
                     const previewBtn = document.createElement('button');
                     previewBtn.className = 'code-action-btn';
@@ -3409,7 +5043,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     btnWrapper.appendChild(previewBtn);
                 }
                 
-                // Visualize for JS/HTML containing charting libraries
                 if (['javascript', 'html'].includes(language) && /(new Chart|d3\.select)/.test(codeText)) {
                      const vizBtn = document.createElement('button');
                     vizBtn.className = 'code-action-btn';
@@ -3418,7 +5051,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     btnWrapper.appendChild(vizBtn);
                 }
                 
-                // Enhanced Visualize for supported languages (now opens Monaco editor)
                 if (vizLanguages.includes(language)) {
                      const vizBtn = document.createElement('button');
                     vizBtn.className = 'code-action-btn';
@@ -3427,7 +5059,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     btnWrapper.appendChild(vizBtn);
                 }
 
-                // Copy button for all code blocks
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'code-action-btn';
                 copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg> <span>Copy</span>`;
@@ -3447,7 +5078,14 @@ Respond with helpful, accurate medical information while maintaining appropriate
         function renderHistorySidebar() {
             const searchTerm = searchHistoryInput.value.toLowerCase();
             historyList.innerHTML = '';
-            const sortedChats = Object.values(allChats).sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+            
+            // Filter chats by current folder
+            let filteredChats = Object.values(allChats);
+            if (currentFolder !== 'all') {
+                filteredChats = filteredChats.filter(chat => chat.folder === currentFolder);
+            }
+            
+            const sortedChats = filteredChats.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
 
             clearAllBtn.style.display = sortedChats.length > 0 ? 'block' : 'none';
 
@@ -3467,7 +5105,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 const titleContainer = document.createElement('div');
                 titleContainer.className = 'flex-1 text-left px-3 py-2 truncate flex items-center gap-2';
                 
-                // Add medical indicator if it's a medical chat
                 let medicalIndicator = '';
                 if (chat.isMedical) {
                     medicalIndicator = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 flex-shrink-0">
@@ -3524,7 +5161,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     allChats[chatId].title = newTitle;
                     showNotification('Chat renamed!', 'success');
                 }
-                // Always re-render to restore original state
                 renderHistorySidebar();
             };
             
@@ -3565,6 +5201,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
             renderHistorySidebar();
             removeAttachedFile();
+            if (isTTSActive) {
+                stopTTS();
+            }
             showNotification('Started new chat', 'success');
             exportBtn.disabled = true;
 
@@ -3580,7 +5219,10 @@ Respond with helpful, accurate medical information while maintaining appropriate
             chatContainer.innerHTML = '';
             exportBtn.disabled = false;
 
-            // Set medical mode based on chat
+            if (isTTSActive) {
+                stopTTS();
+            }
+
             const chatIsMedical = allChats[chatId].isMedical || false;
             if (chatIsMedical !== isMedicalMode) {
                 isMedicalMode = chatIsMedical;
@@ -3589,12 +5231,12 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 if (isMedicalMode) {
                     medicalAiBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
                     medicalAiBtn.classList.add('bg-green-800', 'hover:bg-green-900');
-                    chatAiBtn.classList.remove('hidden'); // Show Chat@AI button
+                    chatAiBtn.classList.remove('hidden');
                     updateInputPlaceholder('Ask about symptoms, medications, health advice...');
                 } else {
                     medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                     medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
-                    chatAiBtn.classList.add('hidden'); // Hide Chat@AI button
+                    chatAiBtn.classList.add('hidden');
                     updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
                 }
             }
@@ -3879,6 +5521,13 @@ Respond with helpful, accurate medical information while maintaining appropriate
             });
             logoutBtn.addEventListener('click', handleLogout);
             
+            // NEW: Profile Settings
+            profileSettingsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                profileDropdown.classList.remove('show');
+                showProfileSettings();
+            });
+            
             // Theme Selector
             themeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -3922,8 +5571,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
             // Chat app event listeners
             chatForm.addEventListener('submit', handleSendMessage);
             newChatBtn.addEventListener('click', startNewChat);
-            medicalAiBtn.addEventListener('click', toggleMedicalMode); // Medical mode toggle
-            chatAiBtn.addEventListener('click', switchToChatAI); // New Chat@AI button
+            medicalAiBtn.addEventListener('click', toggleMedicalMode);
+            chatAiBtn.addEventListener('click', switchToChatAI);
             menuBtn.addEventListener('click', toggleSidebar);
             sidebarOverlay.addEventListener('click', toggleSidebar);
             searchHistoryInput.addEventListener('input', () => renderHistorySidebar());
@@ -3933,6 +5582,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
             closePreviewBtn.addEventListener('click', hidePreviewModal);
             stopGeneratingBtn.addEventListener('click', () => {
                 stopGenerationFlag = true;
+                if (isTTSActive) {
+                    stopTTS();
+                }
                 showNotification('Generation stopped', 'info');
             });
 
@@ -3973,6 +5625,81 @@ Respond with helpful, accurate medical information while maintaining appropriate
             });
             
             closeInteractiveModalBtn.addEventListener('click', hideInteractiveModal);
+
+            // NEW: Enhanced Features Event Listeners
+            promptLibraryBtn.addEventListener('click', showPromptLibrary);
+            schedulerBtn.addEventListener('click', showScheduler);
+            collaborationBtn.addEventListener('click', showCollaboration);
+            addFolderBtn.addEventListener('click', () => showFolderModal());
+
+            // Profile Settings Modal
+            document.getElementById('close-profile-settings-btn').addEventListener('click', hideProfileSettings);
+            document.getElementById('cancel-profile-settings-btn').addEventListener('click', hideProfileSettings);
+            document.getElementById('save-profile-settings-btn').addEventListener('click', saveProfileSettings);
+            document.getElementById('upload-avatar-btn').addEventListener('click', () => document.getElementById('avatar-upload').click());
+            document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
+
+            // Toggle switches
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    toggle.classList.toggle('active');
+                });
+            });
+
+            // Prompt Library Modal
+            document.getElementById('close-prompt-library-btn').addEventListener('click', hidePromptLibrary);
+            document.getElementById('add-prompt-btn').addEventListener('click', () => showAddPrompt());
+            document.getElementById('search-prompts').addEventListener('input', renderPromptLibrary);
+            document.getElementById('filter-category').addEventListener('change', renderPromptLibrary);
+
+            // Add Prompt Modal
+            document.getElementById('close-add-prompt-btn').addEventListener('click', hideAddPrompt);
+            document.getElementById('cancel-add-prompt-btn').addEventListener('click', hideAddPrompt);
+            document.getElementById('save-prompt-btn').addEventListener('click', savePrompt);
+
+            // Scheduler Modal
+            document.getElementById('close-scheduler-btn').addEventListener('click', hideScheduler);
+            document.getElementById('add-schedule-btn').addEventListener('click', () => showAddSchedule());
+
+            // Add Schedule Modal
+            document.getElementById('close-add-schedule-btn').addEventListener('click', hideAddSchedule);
+            document.getElementById('cancel-add-schedule-btn').addEventListener('click', hideAddSchedule);
+            document.getElementById('save-schedule-btn').addEventListener('click', saveScheduledTask);
+
+            // Collaboration Modal
+            document.getElementById('close-collaboration-btn').addEventListener('click', hideCollaboration);
+            document.getElementById('invite-collaborator').addEventListener('click', inviteCollaborator);
+            document.getElementById('copy-share-link').addEventListener('click', copyShareLink);
+
+            // Folder Modal
+            document.getElementById('close-folder-btn').addEventListener('click', hideFolderModal);
+            document.getElementById('cancel-folder-btn').addEventListener('click', hideFolderModal);
+            document.getElementById('save-folder-btn').addEventListener('click', saveFolder);
+
+            // Folder color selection
+            document.querySelectorAll('.folder-color').forEach(colorEl => {
+                colorEl.addEventListener('click', () => {
+                    document.querySelectorAll('.folder-color').forEach(el => el.classList.remove('ring-2'));
+                    colorEl.classList.add('ring-2');
+                });
+            });
+
+            // Folder selection
+            foldersList.addEventListener('click', (e) => {
+                const folderItem = e.target.closest('.folder-item');
+                if (folderItem) {
+                    const folderId = folderItem.dataset.folder;
+                    
+                    // Update active folder
+                    Object.keys(userFolders).forEach(id => {
+                        userFolders[id].active = id === folderId;
+                    });
+                    currentFolder = folderId;
+                    
+                    renderFolders();
+                    renderHistorySidebar();
+                }
+            });
         }
 
         // --- INITIALIZATION ---
@@ -3988,6 +5715,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             });
             initializeTheme();
             initializeMonaco();
+            initializeTTS();
             initializeScrollHandling();
             addEventListeners();
             checkAPIStatus();
