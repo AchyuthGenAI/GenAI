@@ -1141,6 +1141,12 @@
             background: rgb(var(--bg-success));
             border-radius: 50%;
             border: 2px solid rgb(var(--bg-primary));
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         /* Scheduler Styles */
@@ -1422,6 +1428,83 @@
                 margin: 0.5rem;
             }
         }
+
+        /* Photo upload progress styles */
+        .upload-progress {
+            position: relative;
+            background: rgb(var(--bg-tertiary));
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .upload-progress-bar {
+            height: 4px;
+            background: rgb(var(--bg-quaternary));
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .upload-progress-fill {
+            height: 100%;
+            background: rgb(var(--bg-accent));
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* Collaboration indicator styles */
+        .collaboration-indicator {
+            position: fixed;
+            top: 70px;
+            right: 1rem;
+            background: rgb(var(--bg-success));
+            color: rgb(var(--text-inverse));
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .collaboration-indicator.active {
+            display: flex;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: currentColor;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body class="bg-theme-primary text-theme-primary h-full overflow-hidden">
@@ -1430,6 +1513,17 @@
         <div class="flex items-center gap-2">
             <div id="notification-icon"></div>
             <span id="notification-text"></span>
+        </div>
+    </div>
+
+    <!-- Collaboration Indicator -->
+    <div id="collaboration-indicator" class="collaboration-indicator">
+        <div class="online-indicator"></div>
+        <span id="collaboration-status-text">Live collaboration active</span>
+        <div class="typing-indicator hidden" id="typing-indicator">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
         </div>
     </div>
 
@@ -1541,7 +1635,7 @@
                 <span>Chat@AI</span>
             </button>
 
-            <!-- NEW: Enhanced Features Buttons -->
+            <!-- Enhanced Features Buttons -->
             <div class="grid grid-cols-2 gap-2 mb-4">
                 <button id="prompt-library-btn" class="flex items-center justify-center gap-1 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg px-3 py-2 transition duration-300 text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1560,7 +1654,7 @@
                 </button>
             </div>
             
-            <!-- NEW: Folders and Tags Section -->
+            <!-- Folders and Tags Section -->
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-2">
                     <h3 class="text-sm font-semibold text-theme-secondary">Folders</h3>
@@ -1621,7 +1715,7 @@
                            <img src="https://i.ibb.co/JWjgFGH4/chat-AI.jpg" alt="Chat AI Icon" class="w-8 h-8 rounded-full shadow" />
                         </div>
                         <h1 class="text-xl sm:text-2xl font-bold text-theme-primary">Chat@AI</h1>
-                        <!-- Medical Mode Indicator (just icon, no text) -->
+                        <!-- Medical Mode Indicator -->
                         <div id="medical-mode-indicator" class="medical-mode-indicator hidden" title="Medical AI Mode Active">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
@@ -1629,7 +1723,7 @@
                             </svg>
                         </div>
                         
-                        <!-- NEW: Collaboration Status -->
+                        <!-- Collaboration Status -->
                         <div id="collaboration-status" class="hidden flex items-center gap-2">
                             <div class="online-indicator"></div>
                             <span class="text-sm text-theme-secondary">Live</span>
@@ -1688,6 +1782,13 @@
                                     <p class="font-bold text-theme-primary truncate" id="profile-name"></p>
                                     <p class="text-sm text-theme-quaternary truncate" id="profile-email"></p>
                                 </div>
+                                <button id="home-btn" class="dropdown-item w-full text-theme-secondary">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                        <polyline points="9 22 9 12 15 12 15 22"/>
+                                     </svg>
+                                    <span>Home</span>
+                                </button>
                                 <button id="profile-settings-btn" class="dropdown-item w-full text-theme-secondary">
                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
@@ -1807,7 +1908,7 @@
         </div>
     </div>
 
-    <!-- NEW: Profile Settings Modal -->
+    <!-- Profile Settings Modal -->
     <div id="profile-settings-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -1825,7 +1926,16 @@
                         <div class="flex-1">
                             <input type="file" id="avatar-upload" class="hidden" accept="image/*">
                             <button id="upload-avatar-btn" class="btn btn-primary mb-2">Upload New Avatar</button>
-                            <p class="text-sm text-theme-quaternary">Upload a new profile picture (JPG, PNG, GIF)</p>
+                            <p class="text-sm text-theme-quaternary">Upload a new profile picture (JPG, PNG, GIF - Max 5MB)</p>
+                            <div id="upload-progress-container" class="hidden upload-progress">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm text-theme-secondary">Uploading...</span>
+                                    <span id="upload-progress-percent" class="text-sm text-theme-secondary">0%</span>
+                                </div>
+                                <div class="upload-progress-bar">
+                                    <div id="upload-progress-fill" class="upload-progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1914,7 +2024,7 @@
         </div>
     </div>
 
-    <!-- NEW: Prompt Library Modal -->
+    <!-- Prompt Library Modal -->
     <div id="prompt-library-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 48rem;">
             <div class="modal-header">
@@ -1949,7 +2059,7 @@
         </div>
     </div>
 
-    <!-- NEW: Add/Edit Prompt Modal -->
+    <!-- Add/Edit Prompt Modal -->
     <div id="add-prompt-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -1993,7 +2103,7 @@
         </div>
     </div>
 
-    <!-- NEW: Scheduler Modal -->
+    <!-- Scheduler Modal -->
     <div id="scheduler-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 48rem;">
             <div class="modal-header">
@@ -2017,7 +2127,7 @@
         </div>
     </div>
 
-    <!-- NEW: Add Schedule Modal -->
+    <!-- Add Schedule Modal -->
     <div id="add-schedule-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -2064,7 +2174,7 @@
         </div>
     </div>
 
-    <!-- NEW: Collaboration Modal -->
+    <!-- Collaboration Modal -->
     <div id="collaboration-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 40rem;">
             <div class="modal-header">
@@ -2079,8 +2189,9 @@
                     <div class="settings-section">
                         <h3 class="text-lg font-semibold text-theme-primary mb-4">Share Current Chat</h3>
                         <div class="flex items-center gap-2">
-                            <input type="text" id="share-link" class="form-input flex-1" readonly value="https://chat-ai.com/share/abc123">
+                            <input type="text" id="share-link" class="form-input flex-1" readonly value="">
                             <button id="copy-share-link" class="btn btn-primary">Copy</button>
+                            <button id="generate-share-link" class="btn btn-secondary">Generate</button>
                         </div>
                         <p class="text-sm text-theme-quaternary mt-2">Share this link to let others view this conversation in read-only mode.</p>
                     </div>
@@ -2097,7 +2208,9 @@
                         <div class="space-y-2">
                             <h4 class="font-medium text-theme-primary">Active Collaborators</h4>
                             <div id="collaborators-list" class="space-y-2">
-                                <!-- Collaborator items will be inserted here -->
+                                <div class="text-center py-4">
+                                    <p class="text-theme-quaternary text-sm">No active collaborators</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2127,7 +2240,7 @@
         </div>
     </div>
 
-    <!-- NEW: Folder Modal -->
+    <!-- Folder Modal -->
     <div id="folder-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -2193,7 +2306,8 @@
             getStorage,
             ref,
             uploadBytes,
-            getDownloadURL
+            getDownloadURL,
+            uploadBytesResumable
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- DOM Element References ---
@@ -2216,6 +2330,7 @@
         const profileName = document.getElementById('profile-name');
         const profileEmail = document.getElementById('profile-email');
         const logoutBtn = document.getElementById('logout-btn');
+        const homeBtn = document.getElementById('home-btn');
         const exportBtn = document.getElementById('export-btn');
         const exportDropdown = document.getElementById('export-dropdown');
         const notification = document.getElementById('notification');
@@ -2262,7 +2377,7 @@
         const themeDropdown = document.getElementById('theme-dropdown');
         const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
 
-        // NEW: Enhanced Feature Elements
+        // Enhanced Feature Elements
         const promptLibraryBtn = document.getElementById('prompt-library-btn');
         const schedulerBtn = document.getElementById('scheduler-btn');
         const collaborationBtn = document.getElementById('collaboration-btn');
@@ -2270,8 +2385,9 @@
         const foldersList = document.getElementById('folders-list');
         const profileSettingsBtn = document.getElementById('profile-settings-btn');
         const collaborationStatus = document.getElementById('collaboration-status');
+        const collaborationIndicator = document.getElementById('collaboration-indicator');
 
-        // NEW: Modal Elements
+        // Modal Elements
         const profileSettingsModal = document.getElementById('profile-settings-modal');
         const promptLibraryModal = document.getElementById('prompt-library-modal');
         const addPromptModal = document.getElementById('add-prompt-modal');
@@ -2342,7 +2458,7 @@
         let isTTSActive = false;
         let currentTTSButton = null;
 
-        // NEW: Enhanced Features State
+        // Enhanced Features State
         let userFolders = { all: { name: 'All Chats', color: 'blue', active: true } };
         let currentFolder = 'all';
         let userPrompts = [];
@@ -2839,7 +2955,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             showNotification(`Theme changed to ${newTheme}`, 'success');
         }
 
-        // --- NEW: ENHANCED FEATURES FUNCTIONS ---
+        // --- ENHANCED FEATURES FUNCTIONS ---
 
         // === PROFILE SETTINGS ===
         function showProfileSettings() {
@@ -2954,21 +3070,58 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
             
             try {
-                const storageRef = ref(storage, `avatars/${currentUser.uid}`);
-                const snapshot = await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(snapshot.ref);
+                // Show progress
+                const progressContainer = document.getElementById('upload-progress-container');
+                const progressFill = document.getElementById('upload-progress-fill');
+                const progressPercent = document.getElementById('upload-progress-percent');
+                progressContainer.classList.remove('hidden');
                 
-                await updateProfile(auth.currentUser, { photoURL: downloadURL });
+                const storageRef = ref(storage, `avatars/${currentUser.uid}_${Date.now()}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
                 
-                const currentAvatar = document.getElementById('current-avatar');
-                currentAvatar.innerHTML = `<img src="${downloadURL}" class="w-20 h-20 rounded-full">`;
-                
-                // Update profile avatar in header
-                profileAvatarContainer.innerHTML = `<img src="${downloadURL}" class="w-8 h-8 rounded-full">`;
-                
-                showNotification('Avatar updated successfully', 'success');
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        // Progress function
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        progressFill.style.width = progress + '%';
+                        progressPercent.textContent = Math.round(progress) + '%';
+                    }, 
+                    (error) => {
+                        // Error function
+                        console.error('Upload error:', error);
+                        showNotification('Error uploading avatar: ' + error.message, 'error');
+                        progressContainer.classList.add('hidden');
+                    }, 
+                    async () => {
+                        // Complete function
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            
+                            await updateProfile(auth.currentUser, { photoURL: downloadURL });
+                            
+                            const currentAvatar = document.getElementById('current-avatar');
+                            currentAvatar.innerHTML = `<img src="${downloadURL}" class="w-20 h-20 rounded-full">`;
+                            
+                            // Update profile avatar in header
+                            profileAvatarContainer.innerHTML = `<img src="${downloadURL}" class="w-8 h-8 rounded-full">`;
+                            
+                            // Save to user data
+                            currentUser.photoURL = downloadURL;
+                            await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                                photoURL: downloadURL
+                            }, { merge: true });
+                            
+                            progressContainer.classList.add('hidden');
+                            showNotification('Avatar updated successfully', 'success');
+                        } catch (error) {
+                            console.error('Error updating profile with new photo:', error);
+                            showNotification('Error updating avatar: ' + error.message, 'error');
+                            progressContainer.classList.add('hidden');
+                        }
+                    }
+                );
             } catch (error) {
-                console.error('Error uploading avatar:', error);
+                console.error('Error starting upload:', error);
                 showNotification('Error uploading avatar: ' + error.message, 'error');
             }
         }
@@ -3331,11 +3484,21 @@ Respond with helpful, accurate medical information while maintaining appropriate
         // === COLLABORATION ===
         function showCollaboration() {
             collaborationModal.classList.remove('hidden');
+            generateShareLink();
             renderCollaborators();
         }
 
         function hideCollaboration() {
             collaborationModal.classList.add('hidden');
+        }
+
+        function generateShareLink() {
+            if (currentChatId) {
+                const shareLink = `${window.location.origin}${window.location.pathname}?chat=${currentChatId}&user=${currentUser.uid}`;
+                document.getElementById('share-link').value = shareLink;
+            } else {
+                document.getElementById('share-link').value = 'No active chat to share';
+            }
         }
 
         function renderCollaborators() {
@@ -3358,6 +3521,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         <p class="text-sm text-theme-quaternary">${collaborator.email}</p>
                     </div>
                     <div class="online-indicator"></div>
+                    <button class="text-theme-quaternary hover:text-theme-error ml-2" onclick="removeCollaborator('${collaborator.id}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
                 </div>
             `).join('');
         }
@@ -3369,27 +3535,111 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 return;
             }
             
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Check if already invited
+            if (collaborators.some(c => c.email === email)) {
+                showNotification('User already invited', 'error');
+                return;
+            }
+            
             // In a real implementation, this would send an invitation
             const newCollaborator = {
                 id: Date.now().toString(),
                 name: email.split('@')[0],
                 email: email,
-                joinedAt: new Date()
+                joinedAt: new Date(),
+                status: 'invited'
             };
             
             collaborators.push(newCollaborator);
             document.getElementById('collaborator-email').value = '';
             
+            // Save to Firestore
+            try {
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    collaborators: collaborators
+                }, { merge: true });
+                
+                renderCollaborators();
+                showNotification('Collaboration invitation sent', 'success');
+                
+                // Simulate collaboration activation
+                if (!isCollaborationActive) {
+                    activateCollaboration();
+                }
+            } catch (error) {
+                console.error('Error saving collaborators:', error);
+                showNotification('Error sending invitation', 'error');
+            }
+        }
+
+        function activateCollaboration() {
+            isCollaborationActive = true;
+            collaborationIndicator.classList.add('active');
+            collaborationStatus.classList.remove('hidden');
+            
+            // Simulate typing indicator periodically
+            setInterval(() => {
+                if (isCollaborationActive && Math.random() > 0.7) {
+                    showTypingIndicator();
+                }
+            }, 10000);
+        }
+
+        function showTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            const statusText = document.getElementById('collaboration-status-text');
+            
+            statusText.textContent = 'Someone is typing...';
+            typingIndicator.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusText.textContent = 'Live collaboration active';
+                typingIndicator.classList.add('hidden');
+            }, 3000);
+        }
+
+        function removeCollaborator(id) {
+            if (!confirm('Remove this collaborator?')) return;
+            
+            collaborators = collaborators.filter(c => c.id !== id);
             renderCollaborators();
-            showNotification('Collaboration invitation sent', 'success');
+            
+            if (collaborators.length === 0) {
+                isCollaborationActive = false;
+                collaborationIndicator.classList.remove('active');
+                collaborationStatus.classList.add('hidden');
+            }
+            
+            showNotification('Collaborator removed', 'success');
         }
 
         function copyShareLink() {
             const shareLink = document.getElementById('share-link');
             shareLink.select();
-            document.execCommand('copy');
-            showNotification('Share link copied to clipboard', 'success');
+            shareLink.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                showNotification('Share link copied to clipboard', 'success');
+            } catch (err) {
+                // Fallback for modern browsers
+                navigator.clipboard.writeText(shareLink.value).then(() => {
+                    showNotification('Share link copied to clipboard', 'success');
+                }).catch(() => {
+                    showNotification('Failed to copy share link', 'error');
+                });
+            }
         }
+
+        // Make functions globally available
+        window.removeCollaborator = removeCollaborator;
 
         // === FOLDERS ===
         function showFolderModal(editingId = null) {
@@ -3547,6 +3797,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                          userFolders = userData.folders || userFolders;
                          userPrompts = userData.prompts || [];
                          scheduledTasks = userData.scheduledTasks || [];
+                         collaborators = userData.collaborators || [];
                          
                          // Apply font size setting
                          applyFontSizeSetting(userSettings.fontSize);
@@ -3559,6 +3810,11 @@ Respond with helpful, accurate medical information while maintaining appropriate
                              }
                          });
                          
+                         // Check for active collaboration
+                         if (collaborators.length > 0) {
+                             activateCollaboration();
+                         }
+                         
                     } else {
                          const displayName = user.displayName || signupNameInput.value || "Anonymous";
                          const photoURL = user.photoURL || null;
@@ -3570,7 +3826,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
                             settings: userSettings,
                             folders: userFolders,
                             prompts: [],
-                            scheduledTasks: []
+                            scheduledTasks: [],
+                            collaborators: []
                         });
                         currentUser = { ...user, displayName, photoURL };
                     }
@@ -3724,6 +3981,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                 medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
                 chatAiBtn.classList.add('hidden');
+                isCollaborationActive = false;
+                collaborationIndicator.classList.remove('active');
+                collaborationStatus.classList.add('hidden');
                 if (isTTSActive) {
                     stopTTS();
                 }
@@ -3732,6 +3992,11 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 console.error("Logout error", error);
                 showNotification('Error logging out', 'error');
             }
+        }
+
+        function handleHome() {
+            // Navigate to index.html or reload the current page
+            window.location.href = 'index.html';
         }
 
         function getFriendlyAuthError(error) {
@@ -3821,6 +4086,24 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
         }
 
+        function displayFilePreview() {
+            if (!attachedFile) return;
+
+            let previewHtml = '';
+            if (attachedFile.mimeType.startsWith('image/')) {
+                previewHtml = `<img src="data:${attachedFile.mimeType};base64,${attachedFile.base64}" alt="File preview">`;
+            } else if (attachedFile.mimeType.startsWith('audio/')) {
+                previewHtml = `<audio controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></audio>`;
+            } else if (attachedFile.mimeType.startsWith('video/')) {
+                previewHtml = `<video controls class="max-w-xs rounded-lg mb-2" src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
+            } else {
+                previewHtml = `<div class="text-sm text-theme-secondary p-2 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${attachedFile.name}</span></div>`;
+            }
+
+            filePreview.innerHTML = previewHtml;
+            filePreviewContainer.style.display = 'block';
+        }
+
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -3866,24 +4149,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 };
                 reader.readAsDataURL(file);
             }
-        }
-
-        function displayFilePreview() {
-            if (!attachedFile) return;
-
-            let previewHtml = '';
-            if (attachedFile.mimeType.startsWith('image/')) {
-                previewHtml = `<img src="data:${attachedFile.mimeType};base64,${attachedFile.base64}" alt="File preview">`;
-            } else if (attachedFile.mimeType.startsWith('audio/')) {
-                previewHtml = `<audio controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></audio>`;
-            } else if (attachedFile.mimeType.startsWith('video/')) {
-                previewHtml = `<video controls class="max-w-xs rounded-lg mb-2" src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
-            } else {
-                previewHtml = `<div class="text-sm text-theme-secondary p-2 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${attachedFile.name}</span></div>`;
-            }
-
-            filePreview.innerHTML = previewHtml;
-            filePreviewContainer.style.display = 'block';
         }
 
         function removeAttachedFile() {
@@ -4368,6 +4633,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
 
             const table = messageElement.querySelector('table');
             if (table) {
+                
                 addChartButton(actionContainer, table);
             }
 
@@ -4523,7 +4789,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const mapBtn = document.createElement('button');
             mapBtn.title = `Show ${location} on Map`;
             mapBtn.className = "interactive-btn";
-            mapBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Show Map</span>`;
+            mapBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
             mapBtn.onclick = () => showMapModal(location);
             container.appendChild(mapBtn);
         }
@@ -4538,7 +4804,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             calendarBtn.rel = "noopener noreferrer";
             calendarBtn.title = "Add to Calendar";
             calendarBtn.className = "interactive-btn";
-            calendarBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8"  x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg><span>Add to Calendar</span>`;
+            calendarBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8"  x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>`;
             container.appendChild(calendarBtn);
         }
 
@@ -5520,8 +5786,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 themeDropdown.classList.remove('show');
             });
             logoutBtn.addEventListener('click', handleLogout);
+            homeBtn.addEventListener('click', handleHome);
             
-            // NEW: Profile Settings
+            // Profile Settings
             profileSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 profileDropdown.classList.remove('show');
@@ -5594,7 +5861,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             });
             chatInput.addEventListener('keydown', handleTextareaKeydown);
 
-            // Multimedia listeners
+            // Fixed Image Upload Event Listeners
             attachFileBtn.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', handleFileSelect);
             removeFileBtn.addEventListener('click', removeAttachedFile);
@@ -5626,7 +5893,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             
             closeInteractiveModalBtn.addEventListener('click', hideInteractiveModal);
 
-            // NEW: Enhanced Features Event Listeners
+            // Enhanced Features Event Listeners
             promptLibraryBtn.addEventListener('click', showPromptLibrary);
             schedulerBtn.addEventListener('click', showScheduler);
             collaborationBtn.addEventListener('click', showCollaboration);
@@ -5670,6 +5937,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             document.getElementById('close-collaboration-btn').addEventListener('click', hideCollaboration);
             document.getElementById('invite-collaborator').addEventListener('click', inviteCollaborator);
             document.getElementById('copy-share-link').addEventListener('click', copyShareLink);
+            document.getElementById('generate-share-link').addEventListener('click', generateShareLink);
 
             // Folder Modal
             document.getElementById('close-folder-btn').addEventListener('click', hideFolderModal);
