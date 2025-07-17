@@ -21,6 +21,8 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- Lottie Player Script -->
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <!-- Lottie Web Components for Signup Animation -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
     <!-- jsPDF for PDF Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Monaco Editor -->
@@ -145,6 +147,125 @@
         .hover\:bg-theme-accent:hover { background-color: rgb(var(--bg-accent-hover)); }
         .hover\:bg-theme-tertiary:hover { background-color: rgb(var(--bg-tertiary)); }
         .hover\:bg-theme-quaternary:hover { background-color: rgb(var(--bg-quaternary)); }
+
+        /* Signup Success Animation Styles */
+        .signup-success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(59, 130, 246, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .signup-success-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .signup-success-content {
+            text-align: center;
+            color: white;
+            max-width: 500px;
+            padding: 2rem;
+            transform: translateY(20px);
+            transition: transform 0.6s ease;
+        }
+
+        .signup-success-overlay.show .signup-success-content {
+            transform: translateY(0);
+        }
+
+        .signup-success-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .signup-success-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: slideInUp 0.8s ease-out 0.3s both;
+        }
+
+        .signup-success-animation {
+            margin: 2rem 0;
+            animation: scaleIn 0.8s ease-out 0.6s both;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .loading-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.8);
+            animation: loadingDot 1.5s infinite ease-in-out;
+        }
+
+        .loading-dot:nth-child(1) { animation-delay: 0s; }
+        .loading-dot:nth-child(2) { animation-delay: 0.3s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes loadingDot {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
 
         /* Medical mode specific styles */
         .medical-mode-indicator {
@@ -1377,6 +1498,28 @@
     </style>
 </head>
 <body class="bg-theme-primary text-theme-primary h-full overflow-hidden">
+    <!-- Signup Success Animation Overlay -->
+    <div id="signup-success-overlay" class="signup-success-overlay">
+        <div class="signup-success-content">
+            <h1 class="signup-success-title">Welcome to Chat@AI! 🎉</h1>
+            <p class="signup-success-subtitle">Your account has been created successfully</p>
+            <div class="signup-success-animation">
+                <dotlottie-wc 
+                    src="https://lottie.host/e33c9b60-a8b0-4d61-9e90-6da8fdfde230/6JacbVbFJz.lottie" 
+                    style="width: 300px; height: 300px;" 
+                    speed="1" 
+                    autoplay 
+                    loop>
+                </dotlottie-wc>
+            </div>
+            <div class="loading-dots">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Container -->
     <div id="notification" class="notification hidden">
         <div class="flex items-center gap-2">
@@ -2102,6 +2245,9 @@
         const themeDropdown = document.getElementById('theme-dropdown');
         const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
 
+        // Signup Success Animation Elements
+        const signupSuccessOverlay = document.getElementById('signup-success-overlay');
+
         // Enhanced Feature Elements
         const promptLibraryBtn = document.getElementById('prompt-library-btn');
         const schedulerBtn = document.getElementById('scheduler-btn');
@@ -2197,6 +2343,21 @@
             recognition.continuous = false;
             recognition.lang = 'en-US';
             recognition.interimResults = false;
+        }
+
+        // --- SIGNUP SUCCESS ANIMATION FUNCTIONS ---
+        
+        function showSignupSuccessAnimation() {
+            signupSuccessOverlay.classList.add('show');
+            
+            // Hide the animation after 3 seconds
+            setTimeout(() => {
+                hideSignupSuccessAnimation();
+            }, 3000);
+        }
+
+        function hideSignupSuccessAnimation() {
+            signupSuccessOverlay.classList.remove('show');
         }
 
         // --- TEXT-TO-SPEECH FUNCTIONS ---
@@ -3405,6 +3566,10 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 await updateProfile(userCredential.user, { displayName: fullName });
                 authError.classList.add('hidden');
+                
+                // Show signup success animation
+                showSignupSuccessAnimation();
+                
             } catch (error) {
                 console.error("Signup error", error);
                 authError.textContent = getFriendlyAuthError(error);
