@@ -148,6 +148,92 @@
         .hover\:bg-theme-tertiary:hover { background-color: rgb(var(--bg-tertiary)); }
         .hover\:bg-theme-quaternary:hover { background-color: rgb(var(--bg-quaternary)); }
 
+        /* Photo Upload Style Search Bar */
+        .photo-search-container {
+            position: relative;
+            background: linear-gradient(135deg, rgba(var(--bg-tertiary), 0.8) 0%, rgba(var(--bg-secondary), 0.6) 100%);
+            border: 2px dashed rgb(var(--border-accent));
+            border-radius: 12px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .photo-search-container:hover {
+            border-color: rgb(var(--bg-accent));
+            background: linear-gradient(135deg, rgba(var(--bg-accent), 0.1) 0%, rgba(var(--bg-tertiary), 0.8) 100%);
+            box-shadow: 0 4px 12px rgba(var(--bg-accent), 0.15);
+            transform: translateY(-1px);
+        }
+
+        .photo-search-container.focused {
+            border-color: rgb(var(--bg-accent));
+            border-style: solid;
+            background: linear-gradient(135deg, rgba(var(--bg-accent), 0.05) 0%, rgba(var(--bg-secondary), 0.9) 100%);
+            box-shadow: 0 0 0 3px rgba(var(--bg-accent), 0.1);
+        }
+
+        .photo-search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgb(var(--text-primary));
+            font-size: 0.875rem;
+            padding-right: 32px;
+            margin-left: 8px;
+        }
+
+        .photo-search-input::placeholder {
+            color: rgb(var(--text-quaternary));
+            font-style: italic;
+        }
+
+        .photo-search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, rgb(var(--bg-accent)) 0%, rgba(var(--bg-accent), 0.8) 100%);
+            border-radius: 50%;
+            padding: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .photo-search-container:hover .photo-search-icon {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 2px 8px rgba(var(--bg-accent), 0.3);
+        }
+
+        .photo-search-icon svg {
+            width: 12px;
+            height: 12px;
+            stroke: white;
+            stroke-width: 2.5;
+        }
+
+        .photo-search-overlay {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, transparent, rgba(var(--bg-accent), 0.1), transparent);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-search-container:hover .photo-search-overlay {
+            opacity: 1;
+        }
+
         /* Signup Success Animation Styles */
         .signup-success-overlay {
             position: fixed;
@@ -1614,52 +1700,157 @@
     <div id="chat-app" class="hidden w-full h-full flex relative">
         <!-- Sidebar for Chat History -->
         <aside id="sidebar" class="sidebar bg-theme-secondary w-72 flex-shrink-0 flex flex-col p-4 lg:relative lg:translate-x-0">
-            <button id="new-chat-btn" class="flex items-center justify-center gap-2 w-full bg-theme-accent hover:bg-theme-accent text-theme-inverse font-semibold rounded-lg px-4 py-3 transition duration-300 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>New Chat</span>
-            </button>
-            
-            <!-- Medical AI Mode Button -->
-            <button id="medical-ai-btn" class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
-                    <path d="M12 5L8 21l4-7 4 7-4-16"/>
-                </svg>
-                <span>AI Medical</span>
-            </button>
+            <!-- Sidebar Buttons -->
+<div class="flex flex-col space-y-3 mb-4">
+  
+  <!-- New Chat -->
+  <button id="new-chat-btn"
+    class="relative flex items-center justify-center gap-3 w-full
+           bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600
+           text-white font-semibold rounded-xl px-5 py-3 text-sm
+           shadow-lg transition-all duration-500 transform
+           hover:scale-110 hover:shadow-2xl overflow-hidden">
+    <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500
+                 opacity-70 blur-lg animate-pulse"></span>
+    <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100
+                 transition-opacity duration-700 rounded-xl"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+         width="18" height="18" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         class="relative z-10 shrink-0">
+      <path d="M12 20h9"/>
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+    <span class="relative z-10">New Chat</span>
+  </button>
 
-            <!-- Chat@AI Mode Button (shown when in medical mode) -->
-            <button id="chat-ai-btn" class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 mb-4 hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-                <span>Chat@AI</span>
-            </button>
+  <!-- AI Medical -->
+  <button id="medical-ai-btn"
+    class="relative flex items-center justify-center gap-3 w-full
+           bg-gradient-to-r from-emerald-500 via-green-600 to-teal-600
+           text-white font-semibold rounded-xl px-5 py-3 text-sm
+           shadow-lg transition-all duration-500 transform
+           hover:scale-110 hover:shadow-2xl overflow-hidden">
+    <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500
+                 opacity-70 blur-lg animate-pulse"></span>
+    <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100
+                 transition-opacity duration-700 rounded-xl"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+         width="18" height="18" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         class="relative z-10 shrink-0">
+      <rect x="3" y="3" width="18" height="18" rx="5" ry="5"/>
+      <path d="M12 8v8M8 12h8"/>
+      <path d="M5 15c2.5-1.2 3.5-1.2 5.5 0l1-2 1 2c2-1.2 3-1.2 5.5 0"/>
+    </svg>
+    <span class="relative z-10">AI Medical</span>
+  </button>
+
+  <!-- Chat@AI -->
+  <button id="chat-ai-btn"
+    class="relative flex items-center justify-center gap-3 w-full
+           bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600
+           text-white font-semibold rounded-xl px-5 py-3 text-sm
+           shadow-lg transition-all duration-500 transform
+           hover:scale-110 hover:shadow-2xl overflow-hidden">
+    <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500
+                 opacity-70 blur-lg animate-pulse"></span>
+    <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100
+                 transition-opacity duration-700 rounded-xl"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+         width="18" height="18" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         class="relative z-10 shrink-0">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="relative z-10">Chat@AI</span>
+  </button>
+
+</div>
+
 
             <!-- Enhanced Features Buttons -->
             <div class="grid grid-cols-2 gap-2 mb-4">
-                <button id="prompt-library-btn" class="flex items-center justify-center gap-1 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg px-3 py-2 transition duration-300 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-                    </svg>
-                    <span>Prompts</span>
+                <!-- Fixed Prompt Button -->
+                <button id="prompt-library-btn" 
+                    class="relative flex items-center justify-center gap-2 w-full 
+                        bg-gradient-to-r from-fuchsia-500 via-purple-600 to-indigo-600 
+                        text-white font-semibold rounded-xl px-5 py-3 text-sm
+                        shadow-lg transition-all duration-500 transform hover:scale-110 hover:shadow-2xl overflow-hidden">
+
+                    <!-- Glow border animation -->
+                    <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 
+                                opacity-70 blur-lg animate-pulse"></span>
+
+                    <!-- Shine effect -->
+                    <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100 
+                                transition-opacity duration-700 rounded-xl"></span>
+
+                    <!-- Icon (slightly bigger & properly aligned) -->
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24" width="18" height="18"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="relative z-10 shrink-0">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                </svg>
+
+                    <!-- Text -->
+                    <span class="relative z-10">Prompts</span>
                 </button>
-                <button id="scheduler-btn" class="flex items-center justify-center gap-1 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg px-3 py-2 transition duration-300 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                        <line x1="16" x2="16" y1="2" y2="6"/>
-                        <line x1="8" x2="8" y1="2" y2="6"/>
-                        <line x1="3" x2="21" y1="10" y2="10"/>
-                    </svg>
-                    <span>Schedule</span>
-                </button>
+
+
+                <button id="scheduler-btn"
+            class="relative flex items-center justify-center gap-3 w-full
+                    bg-gradient-to-r from-cyan-500 via-sky-600 to-blue-600
+                    text-white font-semibold rounded-xl px-5 py-3 text-sm
+                    shadow-lg transition-all duration-500 transform
+                    hover:scale-110 hover:shadow-2xl overflow-hidden
+                    focus:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
+            aria-label="Open Scheduler">
+
+            <!-- Glow aura -->
+            <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-500
+                        opacity-70 blur-lg animate-pulse"></span>
+
+            <!-- Shine sweep -->
+            <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100
+                        transition-opacity duration-700 rounded-xl"></span>
+
+            <!-- Icon (calendar + clock) -->
+            <svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" width="18" height="18"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+                class="relative z-10 shrink-0">
+                <!-- calendar -->
+                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+                <!-- clock (top-right) -->
+                <circle cx="17" cy="15" r="3.25"/>
+                <path d="M17 14v1.25l.9.55"/>
+            </svg>
+
+            <!-- Text -->
+            <span class="relative z-10">Schedule</span>
+            </button>
             </div>
             
-            <div class="relative mb-4">
-                <input type="text" id="search-history-input" placeholder="Search history..." class="w-full bg-theme-tertiary/50 border border-theme-primary rounded-md pl-10 pr-4 py-2 text-sm text-theme-primary placeholder-theme-quaternary focus:outline-none focus:ring-2 focus:ring-theme-accent">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-theme-quaternary"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <!-- Photo Style Search Bar -->
+            <div class="photo-search-container" id="photo-search-container">
+                <div class="photo-search-overlay"></div>
+                <div class="photo-search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                 </div>
+                <input 
+                    type="text" 
+                    id="search-history-input" 
+                    placeholder="Search Your History..." 
+                    class="photo-search-input"
+                >
             </div>
 
             <div class="flex items-center justify-between mb-2">
@@ -2219,6 +2410,7 @@
         const medicalModeIndicator = document.getElementById('medical-mode-indicator');
         const historyList = document.getElementById('history-list');
         const searchHistoryInput = document.getElementById('search-history-input');
+        const photoSearchContainer = document.getElementById('photo-search-container');
         const clearAllBtn = document.getElementById('clear-all-btn');
         const sidebarOverlay = document.getElementById('sidebar-overlay');
         const deleteModal = document.getElementById('delete-modal');
@@ -2343,6 +2535,29 @@
             recognition.continuous = false;
             recognition.lang = 'en-US';
             recognition.interimResults = false;
+        }
+
+        // --- PHOTO SEARCH FUNCTIONALITY ---
+        
+        function initializePhotoSearch() {
+            searchHistoryInput.addEventListener('focus', () => {
+                photoSearchContainer.classList.add('focused');
+            });
+            
+            searchHistoryInput.addEventListener('blur', () => {
+                photoSearchContainer.classList.remove('focused');
+            });
+            
+            // Update placeholder text based on search activity
+            searchHistoryInput.addEventListener('input', () => {
+                const hasText = searchHistoryInput.value.trim().length > 0;
+                if (hasText) {
+                    searchHistoryInput.placeholder = 'Searching your History...';
+                } else {
+                    searchHistoryInput.placeholder = 'Search Your History...';
+                }
+                renderHistorySidebar();
+            });
         }
 
         // --- SIGNUP SUCCESS ANIMATION FUNCTIONS ---
@@ -5441,7 +5656,6 @@ Respond with helpful, accurate medical information while maintaining appropriate
             chatAiBtn.addEventListener('click', switchToChatAI);
             menuBtn.addEventListener('click', toggleSidebar);
             sidebarOverlay.addEventListener('click', toggleSidebar);
-            searchHistoryInput.addEventListener('input', () => renderHistorySidebar());
             clearAllBtn.addEventListener('click', () => showDeleteModal(null));
             confirmDeleteBtn.addEventListener('click', confirmDeletion);
             cancelDeleteBtn.addEventListener('click', hideDeleteModal);
@@ -5546,6 +5760,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             initializeMonaco();
             initializeTTS();
             initializeScrollHandling();
+            initializePhotoSearch();
             addEventListeners();
             checkAPIStatus();
             checkAuthState();
@@ -5556,4 +5771,3 @@ Respond with helpful, accurate medical information while maintaining appropriate
     </script>
 </body>
 </html>
-
