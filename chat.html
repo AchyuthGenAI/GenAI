@@ -148,6 +148,205 @@
         .hover\:bg-theme-tertiary:hover { background-color: rgb(var(--bg-tertiary)); }
         .hover\:bg-theme-quaternary:hover { background-color: rgb(var(--bg-quaternary)); }
 
+        /* ENHANCED DELETE & EDIT BUTTON STYLES */
+        
+        /* Professional Edit Button Styling */
+        .edit-btn, button[title="Edit message"], button[onclick*="editPrompt"], button[onclick*="editScheduledTask"], .history-item-actions button[title="Rename chat"] {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            padding: 8px;
+            border: 1.5px solid rgba(var(--border-primary), 0.6);
+            border-radius: 10px;
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-secondary), 0.8) 0%, 
+                rgba(var(--bg-tertiary), 0.9) 100%);
+            color: rgba(var(--text-secondary), 0.8);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+        }
+
+        .edit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(var(--bg-accent), 0.1), 
+                transparent);
+            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .edit-btn:hover, button[title="Edit message"]:hover, button[onclick*="editPrompt"]:hover, button[onclick*="editScheduledTask"]:hover, .history-item-actions button[title="Rename chat"]:hover {
+            border-color: rgba(var(--bg-accent), 0.4);
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-accent), 0.08) 0%, 
+                rgba(var(--bg-tertiary), 0.95) 50%,
+                rgba(var(--bg-accent), 0.08) 100%);
+            color: rgb(var(--text-accent));
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(var(--bg-accent), 0.15),
+                        0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .edit-btn:hover::before {
+            left: 100%;
+        }
+
+        .edit-btn:active, button[title="Edit message"]:active, button[onclick*="editPrompt"]:active, button[onclick*="editScheduledTask"]:active, .history-item-actions button[title="Rename chat"]:active {
+            transform: translateY(-1px) scale(1.01);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Professional Delete Button Styling */
+        .delete-btn, button[onclick*="deletePrompt"], button[onclick*="deleteScheduledTask"], .history-item-actions button[title="Delete chat"] {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            padding: 8px;
+            border: 1.5px solid rgba(var(--border-primary), 0.6);
+            border-radius: 10px;
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-secondary), 0.8) 0%, 
+                rgba(var(--bg-tertiary), 0.9) 100%);
+            color: rgba(var(--text-secondary), 0.8);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+        }
+
+        .delete-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(var(--bg-error), 0.1), 
+                transparent);
+            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .delete-btn:hover, button[onclick*="deletePrompt"]:hover, button[onclick*="deleteScheduledTask"]:hover, .history-item-actions button[title="Delete chat"]:hover {
+            border-color: rgba(var(--bg-error), 0.4);
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-error), 0.08) 0%, 
+                rgba(var(--bg-tertiary), 0.95) 50%,
+                rgba(var(--bg-error), 0.08) 100%);
+            color: rgb(var(--text-error));
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(var(--bg-error), 0.15),
+                        0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .delete-btn:hover::before {
+            left: 100%;
+        }
+
+        .delete-btn:active, button[onclick*="deletePrompt"]:active, button[onclick*="deleteScheduledTask"]:active, .history-item-actions button[title="Delete chat"]:active {
+            transform: translateY(-1px) scale(1.01);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Enhanced Action Button Groupings */
+        .action-button-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 4px;
+            border-radius: 12px;
+            background: rgba(var(--bg-secondary), 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(var(--border-primary), 0.3);
+        }
+
+        /* Modal Delete/Edit Button Variants */
+        .modal-edit-btn, .modal-delete-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-edit-btn {
+            border: 1.5px solid rgba(var(--bg-accent), 0.3);
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-accent), 0.05) 0%, 
+                rgba(var(--bg-secondary), 0.9) 100%);
+            color: rgb(var(--text-accent));
+        }
+
+        .modal-edit-btn:hover {
+            border-color: rgba(var(--bg-accent), 0.5);
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-accent), 0.1) 0%, 
+                rgba(var(--bg-accent), 0.05) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(var(--bg-accent), 0.2);
+        }
+
+        .modal-delete-btn {
+            border: 1.5px solid rgba(var(--bg-error), 0.3);
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-error), 0.05) 0%, 
+                rgba(var(--bg-secondary), 0.9) 100%);
+            color: rgb(var(--text-error));
+        }
+
+        .modal-delete-btn:hover {
+            border-color: rgba(var(--bg-error), 0.5);
+            background: linear-gradient(135deg, 
+                rgba(var(--bg-error), 0.1) 0%, 
+                rgba(var(--bg-error), 0.05) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(var(--bg-error), 0.2);
+        }
+
+        /* Icon Styling within Buttons */
+        .edit-btn svg, .delete-btn svg, 
+        button[title="Edit message"] svg, button[onclick*="editPrompt"] svg, button[onclick*="editScheduledTask"] svg,
+        button[onclick*="deletePrompt"] svg, button[onclick*="deleteScheduledTask"] svg,
+        .history-item-actions button svg {
+            width: 18px;
+            height: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .edit-btn:hover svg, button[title="Edit message"]:hover svg, 
+        button[onclick*="editPrompt"]:hover svg, button[onclick*="editScheduledTask"]:hover svg,
+        .history-item-actions button[title="Rename chat"]:hover svg {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .delete-btn:hover svg, button[onclick*="deletePrompt"]:hover svg, 
+        button[onclick*="deleteScheduledTask"]:hover svg,
+        .history-item-actions button[title="Delete chat"]:hover svg {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
         /* Photo Upload Style Search Bar */
         .photo-search-container {
             position: relative;
@@ -1556,6 +1755,24 @@
                 max-width: 95vw;
                 margin: 0.5rem;
             }
+
+            /* Mobile button adjustments */
+            .edit-btn, .delete-btn, 
+            button[title="Edit message"], button[onclick*="editPrompt"], button[onclick*="editScheduledTask"], 
+            button[onclick*="deletePrompt"], button[onclick*="deleteScheduledTask"],
+            .history-item-actions button {
+                width: 32px;
+                height: 32px;
+                padding: 6px;
+            }
+
+            .edit-btn svg, .delete-btn svg,
+            button[title="Edit message"] svg, button[onclick*="editPrompt"] svg, button[onclick*="editScheduledTask"] svg,
+            button[onclick*="deletePrompt"] svg, button[onclick*="deleteScheduledTask"] svg,
+            .history-item-actions button svg {
+                width: 16px;
+                height: 16px;
+            }
         }
 
         /* Photo upload progress styles */
@@ -1856,7 +2073,7 @@
             <div class="flex items-center justify-between mb-2">
                 <h2 class="text-lg font-semibold text-theme-secondary">History</h2>
                 <div class="flex items-center gap-2">
-                    <button id="clear-all-btn" class="p-1 text-theme-quaternary hover:text-theme-error" title="Clear all chats">
+                    <button id="clear-all-btn" class="delete-btn p-1 text-theme-quaternary hover:text-theme-error" title="Clear all chats">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
                 </div>
@@ -2030,7 +2247,10 @@
             <p id="delete-modal-text" class="text-theme-quaternary mb-6">Are you sure?</p>
             <div class="flex justify-end gap-4">
                 <button id="cancel-delete-btn" class="px-4 py-2 rounded-md bg-theme-tertiary hover:bg-theme-quaternary transition-colors">Cancel</button>
-                <button id="confirm-delete-btn" class="px-4 py-2 rounded-md bg-theme-error hover:bg-theme-error transition-colors font-semibold">Delete</button>
+                <button id="confirm-delete-btn" class="modal-delete-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    Delete
+                </button>
             </div>
         </div>
     </div>
@@ -3253,11 +3473,11 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         <h3 class="font-semibold text-theme-primary">${prompt.title}</h3>
                         <div class="flex items-center gap-2">
                             <span class="prompt-category">${prompt.category}</span>
-                            <div class="flex gap-1">
-                                <button class="text-theme-quaternary hover:text-theme-primary" onclick="editPrompt('${prompt.id}')">
+                            <div class="action-button-group">
+                                <button class="edit-btn" onclick="editPrompt('${prompt.id}')" title="Edit prompt">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                 </button>
-                                <button class="text-theme-quaternary hover:text-theme-error" onclick="deletePrompt('${prompt.id}')">
+                                <button class="delete-btn" onclick="deletePrompt('${prompt.id}')" title="Delete prompt">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                                 </button>
                             </div>
@@ -3407,11 +3627,11 @@ Respond with helpful, accurate medical information while maintaining appropriate
                             ${task.repeat !== 'none' ? `• Repeats ${task.repeat}` : ''}
                         </p>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="text-theme-quaternary hover:text-theme-primary" onclick="editScheduledTask('${task.id}')">
+                    <div class="action-button-group">
+                        <button class="edit-btn" onclick="editScheduledTask('${task.id}')" title="Edit task">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         </button>
-                        <button class="text-theme-quaternary hover:text-theme-error" onclick="deleteScheduledTask('${task.id}')">
+                        <button class="delete-btn" onclick="deleteScheduledTask('${task.id}')" title="Delete task">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
                     </div>
@@ -4222,6 +4442,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             if (!actionContainer) return;
 
             const editBtn = document.createElement('button');
+            editBtn.className = 'edit-btn';
             editBtn.title = "Edit message";
             editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
             editBtn.onclick = () => handleEditMessage(messageElement, text);
@@ -5197,16 +5418,16 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 titleContainer.addEventListener('click', () => loadChat(chat.id));
                 
                 const actionsContainer = document.createElement('div');
-                actionsContainer.className = 'history-item-actions flex items-center pr-2';
+                actionsContainer.className = 'history-item-actions action-button-group pr-2';
                 
                 const renameBtn = document.createElement('button');
-                renameBtn.className = 'p-1.5 text-theme-quaternary hover:text-theme-primary';
+                renameBtn.className = 'edit-btn';
                 renameBtn.title = 'Rename chat';
                 renameBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
                 renameBtn.onclick = (e) => { e.stopPropagation(); handleRename(chat.id, titleContainer); };
 
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'p-1.5 text-theme-quaternary hover:text-theme-error';
+                deleteBtn.className = 'delete-btn';
                 deleteBtn.title = 'Delete chat';
                 deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
                 deleteBtn.onclick = (e) => { e.stopPropagation(); showDeleteModal(chat.id); };
