@@ -587,39 +587,89 @@
         /* Theme selector styles */
         .theme-selector {
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .theme-dropdown {
             position: absolute;
-            top: calc(100% + 0.5rem);
+            top: calc(100% + 0.75rem);
             right: 0;
-            background-color: rgb(var(--bg-secondary));
-            border: 1px solid rgb(var(--border-primary));
-            border-radius: 0.5rem;
-            box-shadow: var(--shadow-lg);
-            width: 150px;
+            background: linear-gradient(135deg, rgba(var(--bg-secondary), 0.95), rgba(var(--bg-tertiary), 0.95));
+            border: 1.5px solid rgba(var(--border-accent), 0.15);
+            border-radius: 1rem;
+            box-shadow: 
+                0 4px 20px rgba(var(--bg-accent), 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 180px;
             z-index: 100;
             display: none;
             overflow: hidden;
+            backdrop-filter: blur(10px);
+            transform: translateY(-8px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .theme-dropdown.show { display: block; }
+        
+        .theme-dropdown.show { 
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
 
         .theme-option {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            padding: 0.875rem 1.25rem;
             font-size: 0.875rem;
-            color: rgb(var(--text-secondary));
-            transition: background-color 0.2s;
+            color: rgb(0, 0, 0);
+            transition: all 0.2s;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
+        [data-theme="dark"] .theme-option,
+        [data-theme="midnight"] .theme-option {
+            color: rgb(var(--text-secondary));
+        }
+
+        .theme-option::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, 
+                rgba(var(--bg-accent), 0) 0%,
+                rgba(var(--bg-accent), 0.1) 50%,
+                rgba(var(--bg-accent), 0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
         .theme-option:hover {
-            background-color: rgb(var(--bg-tertiary));
+            background: rgba(var(--bg-accent), 0.08);
+            color: rgb(var(--text-accent));
         }
+
+        .theme-option:hover::before {
+            transform: translateX(100%);
+        }
+
         .theme-option.active {
-            background-color: rgb(var(--bg-accent));
-            color: rgb(var(--text-inverse));
+            background: rgba(var(--bg-accent), 0.15);
+            color: rgb(var(--text-accent));
+            font-weight: 500;
+        }
+
+        .theme-option svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s;
+        }
+
+        .theme-option:hover svg {
+            transform: scale(1.1) rotate(5deg);
         }
 
         /* Custom scrollbar for themed appearance */
@@ -2217,7 +2267,7 @@
                             </div>
                              <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*,.csv,.txt,.py,.js,.java,.c,.cpp">
                              
-                            <textarea id="chat-input" placeholder="Enter Your Prompt or paste code to visualize..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-theme-primary placeholder-theme-quaternary focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
+                            <textarea id="chat-input" placeholder="Enter Your Prompt..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-theme-primary placeholder-theme-quaternary focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
 
                             <div class="help-tooltip">
                                 <button id="mic-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200 disabled:opacity-50">
