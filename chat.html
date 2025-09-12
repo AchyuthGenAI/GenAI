@@ -1909,14 +1909,14 @@
             <!-- Login Form -->
             <form id="login-form" class="bg-theme-secondary p-6 sm:p-8 rounded-2xl shadow-2xl space-y-4 sm:space-y-6">
                 <h2 class="text-2xl font-semibold text-center text-theme-primary">Log In</h2>
-                <div>
-                    <label for="login-email" class="block text-sm font-medium text-theme-secondary mb-2">Email</label>
-                    <input type="email" id="login-email" required class="w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition">
+                <div class="relative">
+                    <input type="email" id="login-email" required class="peer w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition" placeholder=" ">
+                    <label for="login-email" class="absolute text-sm text-theme-secondary duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Email</label>
                 </div>
                 <div class="relative">
-                    <label for="login-password" class="block text-sm font-medium text-theme-secondary mb-2">Password</label>
-                    <input type="password" id="login-password" required class="w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition pr-10">
-                    <button type="button" id="login-password-toggle" class="absolute inset-y-0 right-0 top-7 flex items-center pr-3 text-theme-quaternary hover:text-theme-primary">
+                    <input type="password" id="login-password" required class="peer w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition pr-10" placeholder=" ">
+                    <label for="login-password" class="absolute text-sm text-theme-secondary duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Password</label>
+                    <button type="button" id="login-password-toggle" class="absolute inset-y-0 right-0 flex items-center pr-3 text-theme-quaternary hover:text-theme-primary">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path  stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     </button>
                 </div>
@@ -1932,19 +1932,19 @@
             <!-- Signup Form -->
             <form id="signup-form" class="bg-theme-secondary p-6 sm:p-8 rounded-2xl shadow-2xl space-y-4 sm:space-y-6 hidden">
                 <h2 class="text-2xl font-semibold text-center text-theme-primary">Sign Up</h2>
-                <div>
-                    <label for="signup-name" class="block text-sm font-medium text-theme-secondary mb-2">Full Name</label>
-                    <input type="text" id="signup-name" required class="w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition">
+                <div class="relative">
+                    <input type="text" id="signup-name" required class="peer w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition" placeholder=" ">
+                    <label for="signup-name" class="absolute text-sm text-theme-secondary duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Full Name</label>
                 </div>
-                <div>
-                    <label for="signup-email" class="block text-sm font-medium text-theme-secondary mb-2">Email</label>
-                    <input type="email" id="signup-email" required class="w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition">
+                <div class="relative">
+                    <input type="email" id="signup-email" required class="peer w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition" placeholder=" ">
+                    <label for="signup-email" class="absolute text-sm text-theme-secondary duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Email</label>
                     <p id="email-error" class="text-theme-error text-sm mt-1 hidden"></p>
                 </div>
                 <div class="relative">
-                    <label for="signup-password" class="block text-sm font-medium text-theme-secondary mb-2">Password</label>
-                    <input type="password" id="signup-password" required class="w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition pr-10">
-                     <button type="button" id="signup-password-toggle" class="absolute inset-y-0 right-0 top-7 flex items-center pr-3 text-theme-quaternary hover:text-theme-primary">
+                    <input type="password" id="signup-password" required class="peer w-full bg-theme-tertiary border border-theme-primary rounded-lg px-4 py-3 text-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-accent transition pr-10" placeholder=" ">
+                    <label for="signup-password" class="absolute text-sm text-theme-secondary duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Password</label>
+                     <button type="button" id="signup-password-toggle" class="absolute inset-y-0 right-0 flex items-center pr-3 text-theme-quaternary hover:text-theme-primary">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path  stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     </button>
                 </div>
@@ -3851,8 +3851,12 @@ Respond with helpful, accurate medical information while maintaining appropriate
         }
 
         function showNotification(message, type = 'info') {
-            notificationQueue.push({ message, type });
-            processNotificationQueue();
+            // Only allow 'Welcome back' notification
+            if (typeof message === 'string' && message.toLowerCase().includes('welcome back')) {
+                notificationQueue.push({ message, type });
+                processNotificationQueue();
+            }
+            // All other notifications are suppressed
         }
         
         function processNotificationQueue() {
