@@ -350,26 +350,29 @@
         /* Photo Upload Style Search Bar */
         .photo-search-container {
             position: relative;
-            background: linear-gradient(135deg, rgba(var(--bg-tertiary), 0.8) 0%, rgba(var(--bg-secondary), 0.6) 100%);
-            border: 2px dashed rgb(var(--border-accent));
+            background: rgb(var(--bg-primary));
+            border: 2px solid rgb(var(--border-secondary));
             border-radius: 12px;
             padding: 12px;
             transition: all 0.3s ease;
             margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(var(--border-secondary), 0.4);
         }
 
         .photo-search-container:hover {
-            border-color: rgb(var(--bg-accent));
-            background: linear-gradient(135deg, rgba(var(--bg-accent), 0.1) 0%, rgba(var(--bg-tertiary), 0.8) 100%);
-            box-shadow: 0 4px 12px rgba(var(--bg-accent), 0.15);
+            border-color: rgb(var(--text-accent));
+            border-width: 2px;
+            background: linear-gradient(135deg, rgba(var(--bg-secondary), 0.95) 0%, rgba(var(--bg-tertiary), 0.95) 100%);
+            box-shadow: 0 4px 12px rgba(var(--border-secondary), 0.3);
             transform: translateY(-1px);
         }
 
         .photo-search-container.focused {
-            border-color: rgb(var(--bg-accent));
+            border-color: rgb(var(--text-accent));
             border-style: solid;
-            background: linear-gradient(135deg, rgba(var(--bg-accent), 0.05) 0%, rgba(var(--bg-secondary), 0.9) 100%);
-            box-shadow: 0 0 0 3px rgba(var(--bg-accent), 0.1);
+            border-width: 2px;
+            background: rgba(var(--bg-primary), 0.98);
+            box-shadow: 0 0 0 3px rgba(var(--text-accent), 0.2);
         }
 
         .photo-search-input {
@@ -379,13 +382,15 @@
             outline: none;
             color: rgb(var(--text-primary));
             font-size: 0.875rem;
-            padding-right: 32px;
+            padding: 8px;
+            padding-right: 40px;
             margin-left: 8px;
         }
 
         .photo-search-input::placeholder {
-            color: rgb(var(--text-quaternary));
+            color: rgb(var(--text-tertiary));
             font-style: italic;
+            opacity: 0.8;
         }
 
         .photo-search-icon {
@@ -396,24 +401,33 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, rgb(var(--bg-accent)) 0%, rgba(var(--bg-accent), 0.8) 100%);
+            width: 32px;
+            height: 32px;
+            background: rgb(var(--text-accent));
+            border: 2px solid rgb(var(--text-accent));
             border-radius: 50%;
-            padding: 4px;
+            padding: 6px;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(var(--border-secondary), 0.4);
         }
 
         .photo-search-container:hover .photo-search-icon {
             transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 2px 8px rgba(var(--bg-accent), 0.3);
+            background: rgb(var(--text-accent));
+            box-shadow: 0 4px 12px rgba(var(--text-accent), 0.3);
+            border-color: rgb(var(--text-accent));
         }
 
         .photo-search-icon svg {
-            width: 12px;
-            height: 12px;
-            stroke: white;
+            width: 14px;
+            height: 14px;
+            stroke: rgb(var(--text-secondary));
             stroke-width: 2.5;
+            transition: all 0.3s ease;
+        }
+
+        .photo-search-container:hover .photo-search-icon svg {
+            stroke: white;
         }
 
         .photo-search-overlay {
@@ -902,6 +916,68 @@
             color: rgb(var(--text-primary));
         }
 
+        .like-button, .dislike-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .like-button svg, .dislike-button svg {
+                width: 24px;
+                height: 24px;
+                transition: all 0.3s ease;
+                fill: rgb(var(--text-quaternary));
+            }
+
+            .like-button.active svg {
+                animation: likeAnimation 0.5s ease-out;
+                fill: rgb(34, 197, 94) !important;
+            }
+
+            .dislike-button.active svg {
+                animation: dislikeAnimation 0.5s ease-out;
+                fill: rgb(239, 68, 68) !important;
+            }        .like-button.active::after, .dislike-button.active::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            animation: rippleEffect 0.6s ease-out;
+        }
+
+        .like-button.active::after {
+            background: rgba(var(--text-success), 0.2);
+        }
+
+        .dislike-button.active::after {
+            background: rgba(var(--text-error), 0.2);
+        }
+
+        .like-button:hover svg {
+            transform: scale(1.2) rotate(10deg);
+            fill: rgb(34, 197, 94);
+        }
+
+        .dislike-button:hover svg {
+            transform: scale(1.2) rotate(-10deg);
+            fill: rgb(239, 68, 68);
+        }
+
         /* Enhanced Table Styling */
         .prose table {
             width: 100%;
@@ -1042,6 +1118,34 @@
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
+        }
+
+        @keyframes likeAnimation {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.3) rotate(10deg); }
+            50% { transform: scale(0.9) rotate(-5deg); }
+            70% { transform: scale(1.1) rotate(3deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        
+        @keyframes dislikeAnimation {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.3) rotate(-10deg); }
+            50% { transform: scale(0.9) rotate(5deg); }
+            70% { transform: scale(1.1) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        @keyframes rippleEffect {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @keyframes iconPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
         }
         
         .profile-dropdown .dropdown-item {
@@ -1191,6 +1295,73 @@
         .chat-message.user .action-buttons {
             right: 56px;
             left: auto;
+        }
+        
+        /* Like and Dislike Buttons */
+        .like-btn, .dislike-btn {
+            position: relative;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        
+        .like-btn.active {
+            color: rgb(var(--text-success));
+            animation: likeAnimation 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .dislike-btn.active {
+            color: rgb(var(--text-error));
+            animation: dislikeAnimation 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .like-btn::before, .dislike-btn::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .like-btn::before {
+            background: radial-gradient(circle, 
+                rgba(var(--text-success), 0.15) 0%,
+                transparent 70%
+            );
+        }
+
+        .dislike-btn::before {
+            background: radial-gradient(circle, 
+                rgba(var(--text-error), 0.15) 0%,
+                transparent 70%
+            );
+        }
+        
+        .like-btn.active::before, .dislike-btn.active::before {
+            opacity: 1;
+            animation: rippleEffect 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .like-btn:hover {
+            color: rgb(var(--text-success));
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .dislike-btn:hover {
+            color: rgb(var(--text-error));
+            transform: scale(1.1) rotate(-5deg);
+        }
+        
+        .like-btn.active svg {
+            fill: currentColor;
+            filter: drop-shadow(0 0 2px rgba(var(--text-success), 0.3));
+            animation: iconPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dislike-btn.active svg {
+            fill: currentColor;
+            filter: drop-shadow(0 0 2px rgba(var(--text-error), 0.3));
+            animation: iconPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .chat-message:hover .action-buttons {
@@ -5132,7 +5303,29 @@ Respond with helpful, accurate medical information while maintaining appropriate
             addRegenerateButton(actionContainer, messageElement);
         }
         
-        function addStandardActionButtons(container, text) {
+        function addStandardActionButtons(container, text, messageId) {
+            const likeBtn = document.createElement('button');
+            likeBtn.title = "Like response";
+            likeBtn.className = "like-btn";
+            likeBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                </svg>
+            `;
+            likeBtn.onclick = () => handleLikeDislike(messageId, 'like', likeBtn);
+            container.appendChild(likeBtn);
+
+            const dislikeBtn = document.createElement('button');
+            dislikeBtn.title = "Dislike response";
+            dislikeBtn.className = "dislike-btn";
+            dislikeBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
+                </svg>
+            `;
+            dislikeBtn.onclick = () => handleLikeDislike(messageId, 'dislike', dislikeBtn);
+            container.appendChild(dislikeBtn);
+
             const copyBtn = document.createElement('button');
             copyBtn.title = "Copy response";
             copyBtn.innerHTML = `
@@ -5147,6 +5340,29 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 });
             };
             container.appendChild(copyBtn);
+        }
+
+        function handleLikeDislike(messageId, action, button) {
+            // Remove active class from both buttons
+            const message = document.getElementById(messageId);
+            const likeBtn = message.querySelector('.like-btn');
+            const dislikeBtn = message.querySelector('.dislike-btn');
+            
+            if (action === 'like') {
+                if (button.classList.contains('active')) {
+                    button.classList.remove('active');
+                } else {
+                    button.classList.add('active');
+                    dislikeBtn.classList.remove('active');
+                }
+            } else {
+                if (button.classList.contains('active')) {
+                    button.classList.remove('active');
+                } else {
+                    button.classList.add('active');
+                    likeBtn.classList.remove('active');
+                }
+            }
         }
 
         function addRegenerateButton(container, messageElement) {
