@@ -1286,6 +1286,24 @@
             position: relative;
             padding-bottom: 2.5rem;
         }
+        /* Make message bubbles transparent across all themes EXCEPT user messages */
+        .chat-message:not(.user) > .rounded-lg,
+        .chat-message:not(.user) .rounded-lg,
+        .chat-message:not(.user) > div[class*="bg-"],
+        .chat-message:not(.user) [class*="bg-theme-"] {
+            background: transparent !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* Ensure user message bubbles keep a visible background and subtle shadow */
+        .chat-message.user > .rounded-lg,
+        .chat-message.user .rounded-lg {
+            background: var(--bg-accent, rgba(99,102,241,1)) !important;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18) !important;
+            border: 1px solid rgba(0,0,0,0.06) !important;
+        }
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
