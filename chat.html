@@ -403,31 +403,35 @@
             justify-content: center;
             width: 32px;
             height: 32px;
-            background: rgb(var(--text-accent));
-            border: 2px solid rgb(var(--text-accent));
+            /* Use theme-aware accent background so contrast is preserved across themes */
+            background: rgb(var(--bg-accent));
+            border: 2px solid rgba(var(--border-secondary), 0.6);
             border-radius: 50%;
             padding: 6px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(var(--border-secondary), 0.4);
+            /* Use the accent text color for the icon by default */
+            color: rgb(var(--text-accent));
         }
 
         .photo-search-container:hover .photo-search-icon {
             transform: translateY(-50%) scale(1.1);
+            /* Highlight using the text-accent color so the circle stands out on hover */
             background: rgb(var(--text-accent));
             box-shadow: 0 4px 12px rgba(var(--text-accent), 0.3);
             border-color: rgb(var(--text-accent));
+            /* Make the icon stroke contrast with the new dark background by switching to the bg-accent color */
+            color: rgb(var(--bg-accent));
         }
 
         .photo-search-icon svg {
             width: 14px;
             height: 14px;
-            stroke: rgb(var(--text-secondary));
-            stroke-width: 2.5;
+            /* Use currentColor so the SVG automatically matches the container's color (and adapts on hover) */
+            stroke: currentColor;
+            stroke-width: 2;
             transition: all 0.3s ease;
-        }
-
-        .photo-search-container:hover .photo-search-icon svg {
-            stroke: white;
+            fill: none;
         }
 
         .photo-search-overlay {
