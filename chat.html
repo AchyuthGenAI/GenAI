@@ -2499,6 +2499,8 @@
                     <span class="relative z-10">Prompts</span>
                 </button>
 
+                <!-- image button removed -->
+
 
                 <button id="scheduler-btn"
             class="relative flex items-center justify-center gap-3 w-full
@@ -2976,6 +2978,20 @@
                             </div>
                             <div class="toggle-switch" id="tts-autoplay-toggle"></div>
                         </div>
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">TTS Voice Style</label>
+                                <p class="text-sm text-theme-quaternary">Describe a voice style (e.g., 'warm and friendly', 'formal and clear')</p>
+                            </div>
+                            <input type="text" id="tts-voice-style" class="form-input w-48" placeholder="e.g., warm and friendly">
+                        </div>
+                        <div class="settings-item">
+                            <div>
+                                <label class="font-medium text-theme-primary">Enable Deep Thinking</label>
+                                <p class="text-sm text-theme-quaternary">Use the model's increased thinking_budget for complex reasoning (slower, more thorough)</p>
+                            </div>
+                            <div class="toggle-switch" id="deep-thinking-toggle"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3086,6 +3102,8 @@
                     <!-- Scheduled tasks will be inserted here -->
                 </div>
             </div>
+
+                <!-- Image Generation removed -->
         </div>
     </div>
 
@@ -3257,6 +3275,10 @@
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
         const API_KEY = 'AIzaSyA8h95zYaOe9hpSi3sisLlRJwWeG9GCTjA'; // IMPORTANT: Replace with your actual Gemini API key
+    // Additional endpoints for multimodal, TTS, and code execution (placeholders)
+    const IMAGE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent';
+    const TTS_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateAudio';
+    const CODE_EXEC_API_URL = 'https://your-code-exec.example.com/execute'; // replace with real code execution endpoint
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
@@ -3324,8 +3346,10 @@
             fontSize: 'medium',
             autoSave: true,
             soundEffects: false,
-            ttsAutoplay: false
+            ttsAutoplay: false,
+            deepThinking: false
         };
+
         let currentEditingPrompt = null;
         let currentEditingSchedule = null;
 
@@ -3871,6 +3895,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
             document.getElementById('auto-save-toggle').classList.toggle('active', userSettings.autoSave);
             document.getElementById('sound-effects-toggle').classList.toggle('active', userSettings.soundEffects);
             document.getElementById('tts-autoplay-toggle').classList.toggle('active', userSettings.ttsAutoplay);
+            // Deep Thinking toggle
+            const deepToggle = document.getElementById('deep-thinking-toggle');
+            if (deepToggle) deepToggle.classList.toggle('active', !!userSettings.deepThinking);
             
             profileSettingsModal.classList.remove('hidden');
         }
@@ -3906,6 +3933,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 userSettings.autoSave = document.getElementById('auto-save-toggle').classList.contains('active');
                 userSettings.soundEffects = document.getElementById('sound-effects-toggle').classList.contains('active');
                 userSettings.ttsAutoplay = document.getElementById('tts-autoplay-toggle').classList.contains('active');
+                userSettings.deepThinking = document.getElementById('deep-thinking-toggle').classList.contains('active');
                 
                 // Apply font size setting
                 applyFontSizeSetting(userSettings.fontSize);
@@ -3946,6 +3974,18 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     root.style.fontSize = '16px';
             }
         }
+
+            // Build request payload for Gemini API. If deepThinking is enabled, include a thinking_budget
+            function buildModelRequestPayload(contents) {
+                const payload = { contents };
+                // If deep thinking is enabled, include a thinking_budget (in microseconds).
+                // Increase this value for more complex reasoning (tradeoff: latency/cost).
+                if (userSettings && userSettings.deepThinking) {
+                    // 3 seconds budget as a reasonable default for deeper reasoning
+                    payload.thinking_budget = { microseconds: 3000000 };
+                }
+                return payload;
+            }
 
         async function handleAvatarUpload(event) {
             const file = event.target.files[0];
@@ -4097,6 +4137,65 @@ Respond with helpful, accurate medical information while maintaining appropriate
         function hideAddPrompt() {
             addPromptModal.classList.add('hidden');
             currentEditingPrompt = null;
+        }
+
+        // --- TTS and Code Execution Helpers ---
+        // TTS generation: prefer API, fallback to Web Speech
+        async function generateAndPlayTTS(text) {
+            const voiceStyle = document.getElementById('tts-voice-style')?.value || '';
+            if (API_KEY && TTS_API_URL && !API_KEY.includes('YOUR_API_KEY')) {
+                try {
+                    const payload = { input: text, voice_style: voiceStyle };
+                    const resp = await fetch(`${TTS_API_URL}?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!resp.ok) throw new Error('TTS API error');
+                    const blob = await resp.blob();
+                    const url = URL.createObjectURL(blob);
+                    const audio = new Audio(url);
+                    await audio.play();
+                    return true;
+                } catch (err) {
+                    console.warn('TTS API failed, falling back to Web Speech API', err);
+                }
+            }
+            if ('speechSynthesis' in window) {
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = userSettings.language || 'en-US';
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utter);
+                return true;
+            }
+            return false;
+        }
+
+        // Code execution stub
+        async function executeUserCode(language, code) {
+            try {
+                const resp = await fetch(CODE_EXEC_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language, code }) });
+                if (!resp.ok) throw new Error('Code execution service error');
+                const result = await resp.json();
+                return result;
+            } catch (err) {
+                console.error('Code execution failed:', err);
+                return { error: err.message };
+            }
+        }
+
+        // URL Context helper
+        async function fetchUrlContext(url) {
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('Failed to fetch URL');
+                const text = await resp.text();
+                return text.slice(0, 20000);
+            } catch (err) {
+                console.error('URL fetch error:', err);
+                return null;
+            }
+        }
+
+        // Utility for escaping text in generated SVG
+        function escapeHtml(str) {
+            return (str + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
 
         async function savePrompt() {
@@ -4911,7 +5010,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: apiMessages }),
+                    body: JSON.stringify(buildModelRequestPayload(apiMessages)),
                 });
 
                 removeLoadingIndicator();
@@ -5191,7 +5290,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: apiMessages }),
+                    body: JSON.stringify(buildModelRequestPayload(apiMessages)),
                 });
                 
                 removeLoadingIndicator();
@@ -5417,7 +5516,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: apiMessages }),
+                    body: JSON.stringify(buildModelRequestPayload(apiMessages)),
                 });
                 
                 removeLoadingIndicator();
@@ -6589,6 +6688,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
 
             // Enhanced Features Event Listeners
             promptLibraryBtn.addEventListener('click', showPromptLibrary);
+            const imageGenBtn = document.getElementById('image-gen-btn');
+            if (imageGenBtn) imageGenBtn.addEventListener('click', () => { if (typeof showImageGen === 'function') showImageGen(); });
             schedulerBtn.addEventListener('click', showScheduler);
 
             // Profile Settings Modal
