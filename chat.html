@@ -156,11 +156,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
-            padding: 8px;
+            width: 28px;
+            height: 28px;
+            padding: 6px;
             border: 1.5px solid rgba(var(--border-primary), 0.6);
-            border-radius: 10px;
+            border-radius: 8px;
             background: linear-gradient(135deg, 
                 rgba(var(--bg-secondary), 0.8) 0%, 
                 rgba(var(--bg-tertiary), 0.9) 100%);
@@ -170,6 +170,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(8px);
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .edit-btn::before {
@@ -213,11 +214,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
-            padding: 8px;
+            width: 28px;
+            height: 28px;
+            padding: 6px;
             border: 1.5px solid rgba(var(--border-primary), 0.6);
-            border-radius: 10px;
+            border-radius: 8px;
             background: linear-gradient(135deg, 
                 rgba(var(--bg-secondary), 0.8) 0%, 
                 rgba(var(--bg-tertiary), 0.9) 100%);
@@ -227,6 +228,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(8px);
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .delete-btn::before {
@@ -1070,15 +1072,182 @@
         }
 
         /* Additional UI Components */
-        .history-item-container:hover .history-item-actions { opacity: 1; }
-        .history-item-actions {
-            opacity: 1;
-            transition: opacity 0.2s ease-in-out;
-        }
+.history-item-container:hover .history-item-actions { opacity: 1; }
+.history-item-actions {
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
 
-        .auth-container { background: rgb(var(--bg-primary)); }
-        
-        .profile-dropdown, .export-dropdown {
+/* --- 1. Advanced Glassmorphism Sidebar --- */
+#sidebar {
+    background-color: rgba(var(--bg-secondary), 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(var(--border-primary), 0.3);
+    transition: transform 0.3s ease-in-out;
+    z-index: 50;
+}
+
+/* On large screens (lg:), remove the glass effect and return to a solid background */
+@media (min-width: 1024px) {
+    #sidebar {
+        background-color: rgb(var(--bg-secondary));
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border-right: 1px solid rgb(var(--border-primary));
+    }
+}
+
+/* --- 2. Advanced History List Item Styling --- */
+.history-item-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: 1.5px solid transparent;
+}
+
+.history-item-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.history-item-icon {
+    width: 16px;
+    height: 16px;
+    color: rgb(var(--text-tertiary));
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+/* Default state (non-medical chat, hide icon) */
+.history-item-icon {
+    display: none;
+}
+
+/* Show icon ONLY if it's a medical chat */
+.history-item-wrapper[data-medical="true"] .history-item-icon {
+    display: block;
+    color: rgb(34, 197, 94);
+}
+
+.history-item-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(var(--text-secondary));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+}
+
+/* --- Hover & Active States --- */
+.history-item-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(var(--bg-accent), 0.08) 50%,
+        transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+.history-item-wrapper:hover::before {
+    transform: translateX(100%);
+}
+
+.history-item-wrapper:hover {
+    background-color: rgba(var(--bg-tertiary), 0.7);
+}
+
+.history-item-wrapper:hover .history-item-title {
+    color: rgb(var(--text-primary));
+}
+
+.history-item-wrapper.active {
+    background: rgba(var(--bg-accent), 0.15);
+    border-color: rgba(var(--bg-accent), 0.3);
+}
+
+.history-item-wrapper.active .history-item-title {
+    color: rgb(var(--text-accent));
+    font-weight: 600;
+}
+
+.history-item-wrapper.active .history-item-icon {
+    color: rgb(var(--text-accent));
+}
+
+.history-item-actions {
+    opacity: 0;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-right: 8px;
+    transition: all 0.25s ease;
+    z-index: 2;
+}
+
+.history-item-wrapper:hover .history-item-actions,
+.history-item-wrapper.active .history-item-actions {
+    opacity: 1;
+}
+
+/* --- 3. Collapsible History Sections Styling --- */
+.history-group-summary {
+    display: flex;
+    align-items: center;
+    padding: 8px 6px;
+    margin-top: 8px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgb(var(--text-tertiary));
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.history-group-summary:hover {
+    background-color: rgba(var(--bg-tertiary), 0.5);
+}
+
+.history-group-summary::before {
+    content: '►';
+    font-size: 0.6rem;
+    margin-right: 8px;
+    color: rgb(var(--text-quaternary));
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(1px);
+}
+
+.history-group[open] > .history-group-summary::before {
+    transform: rotate(90deg) translateY(1px);
+}
+
+.history-group-summary::-webkit-details-marker {
+    display: none;
+}
+
+.history-group[open] > ul {
+    padding-left: 10px;
+    border-left: 1.5px solid rgba(var(--border-primary), 0.5);
+    margin-left: 10px;
+}
+
+.auth-container { background: rgb(var(--bg-primary)); }        .profile-dropdown, .export-dropdown {
             position: absolute;
             top: calc(100% + 0.75rem);
             right: 0;
@@ -1324,6 +1493,57 @@
             position: relative;
             transition: transform 0.2s ease, color 0.2s ease;
         }
+
+            /* FAB Button and Icon Visibility Fix for Dark/Midnight Themes */
+            #fab-menu-toggle {
+                background-color: rgb(var(--bg-primary));
+                color: rgb(var(--text-primary));
+            }
+            [data-theme="dark"] #fab-menu-toggle,
+            [data-theme="midnight"] #fab-menu-toggle {
+                background-color: rgb(var(--bg-tertiary));
+                color: rgb(var(--text-secondary));
+            }
+            #fab-menu-toggle svg {
+                color: inherit;
+                stroke: currentColor;
+            }
+            #fab-tool-menu {
+                background-color: rgb(var(--bg-secondary));
+            }
+            [data-theme="dark"] #fab-tool-menu,
+            [data-theme="midnight"] #fab-tool-menu {
+                background-color: rgb(var(--bg-tertiary));
+            }
+
+            /* Modern Typography & Reading Experience */
+            .prose {
+                font-family: 'Inter', sans-serif;
+            }
+            .prose pre {
+                font-family: 'Fira Code', monospace;
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+            .prose code:not(pre code) {
+                font-family: 'Fira Code', monospace;
+                background-color: var(--theme-color-secondary-300, #e2e8f0);
+                padding: 0.1rem 0.3rem;
+                border-radius: 0.3rem;
+                font-size: 0.95em;
+                white-space: nowrap;
+            }
+            .prose blockquote {
+                font-style: italic;
+                border-left: 4px solid var(--theme-color-primary-500, #3b82f6);
+                padding: 0.5rem 1rem;
+                background-color: var(--theme-color-secondary-100, #f1f5f9);
+                border-radius: 0 0.5rem 0.5rem 0;
+                color: var(--theme-color-text-tertiary, #64748b);
+            }
+            .prose blockquote p {
+                margin: 0;
+            }
         
         .like-btn.active {
             color: rgb(var(--text-success));
@@ -1635,10 +1855,44 @@
             position: relative;
             background: rgb(var(--bg-tertiary));
             border-radius: 0.5rem;
+            /* allow horizontal scrolling for many attachments */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
+        /* Preview list layout: side-by-side, wrap when needed */
+        #file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+        #file-preview .relative {
+            flex: 0 0 auto; /* prevent stretching */
+            overflow: visible; /* allow the remove button to sit outside thumbnail bounds */
+        }
+        /* Per-file remove button styling to avoid clipping and improve hit target */
+        #file-preview button[data-file-id] {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            z-index: 40;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background: #ff5f5f; /* visible red fallback */
+            color: #ffffff;
+            border: 2px solid rgba(0,0,0,0.12);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        #file-preview button[data-file-id] svg { width: 12px; height: 12px; }
         #file-preview-container img, #file-preview-container video {
             max-height: 100px;
             border-radius: 0.25rem;
+            display: block;
         }
         #file-preview-container audio {
             width: 100%;
@@ -2331,6 +2585,14 @@
             <span id="notification-text"></span>
         </div>
     </div>
+        <!-- Dropzone Overlay for Drag & Drop -->
+        <div id="dropzone-overlay" class="fixed inset-0 z-50 bg-theme-primary-alpha-90 text-theme-inverse pointer-events-none flex flex-col items-center justify-center opacity-0 transition-opacity duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mb-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            <p class="text-3xl font-bold tracking-wider">Drop Your Files Here</p>
+            <p class="text-lg">Images, audio, video, or documents accepted.</p>
+        </div>
     <!-- Scroll to Bottom Button -->
     <button id="scroll-to-bottom-btn" class="scroll-to-bottom-btn" title="Scroll to bottom">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2419,6 +2681,28 @@
     </div>
 
     <div id="chat-app" class="hidden w-full h-full flex relative">
+            <!-- Floating Action Button Tool Menu -->
+            <div class="absolute bottom-20 right-4 md:right-8 z-20">
+                <button id="fab-menu-toggle" title="Open Tools Menu" class="bg-theme-primary text-theme-inverse p-3 rounded-full shadow-xl hover:bg-theme-primary-hover transition-all duration-200 transform hover:rotate-45">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+                <div id="fab-tool-menu" class="absolute bottom-full right-0 mb-4 w-48 bg-theme-surface rounded-lg shadow-2xl p-2 hidden transition-all duration-300">
+                    <a href="#" id="open-scheduler-fab" class="flex items-center p-2 text-theme-text rounded-md hover:bg-theme-secondary-hover transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-theme-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h.01M9 16h.01M9 12h.01M9 8h.01M15 12h.01M15 16h.01M15 8h.01M4 16h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1z" /></svg>
+                        Scheduler
+                    </a>
+                    <a href="#" id="open-prompt-library-fab" class="flex items-center p-2 text-theme-text rounded-md hover:bg-theme-secondary-hover transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-theme-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
+                        Prompt Library
+                    </a>
+                    <a href="#" id="open-image-gen-fab" class="flex items-center p-2 text-theme-text rounded-md hover:bg-theme-secondary-hover transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-theme-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        Image Generator
+                    </a>
+                </div>
+            </div>
         <!-- Sidebar for Chat History -->
         <aside id="sidebar" class="sidebar bg-theme-secondary w-72 flex-shrink-0 flex flex-col p-4 lg:relative lg:translate-x-0">
             <!-- Sidebar Buttons -->
@@ -2584,10 +2868,35 @@
                     </button>
                 </div>
             </div>
-            <div class="flex-1 overflow-y-auto pr-2">
-                <ul id="history-list" class="space-y-2">
-                    <!-- Chat history items will be injected here -->
-                </ul>
+            <div class="flex-1 overflow-y-auto pr-2" id="history-container">
+                <div class="history-sections">
+                    <details class="history-group" open>
+                        <summary class="history-group-summary">
+                            <span>Today</span>
+                        </summary>
+                        <ul id="history-list-today" class="space-y-1 pt-2">
+                            <!-- Today's chats will be injected here -->
+                        </ul>
+                    </details>
+
+                    <details class="history-group" open>
+                        <summary class="history-group-summary">
+                            <span>Previous 7 Days</span>
+                        </summary>
+                        <ul id="history-list-week" class="space-y-1 pt-2">
+                            <!-- Last week's chats will be injected here -->
+                        </ul>
+                    </details>
+
+                    <details class="history-group">
+                        <summary class="history-group-summary">
+                            <span>Older</span>
+                        </summary>
+                        <ul id="history-list-older" class="space-y-1 pt-2">
+                            <!-- Older chats will be injected here -->
+                        </ul>
+                    </details>
+                </div>
             </div>
         </aside>
 
@@ -2746,34 +3055,35 @@
             <!-- Message Input Form & Controls -->
             <footer class="bg-theme-primary/50 backdrop-blur-sm sticky bottom-0">
                  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-                    <div id="generation-controls" class="text-center pb-2 hidden">
-                        <button id="stop-generating-btn" class="bg-theme-tertiary hover:bg-theme-quaternary text-theme-primary font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
-                             <rect x="6" y="6" width="12" height="12" rx="2"></rect>
-                           </svg>
-                            Stop Generating
-                        </button>
-                    </div>
-                    <form id="chat-form">
-                        <div id="file-preview-container">
-                            <div id="file-preview"></div>
-                            <button type="button" id="remove-file-btn" title="Remove file">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <div id="chat-input-area" class="flex-shrink-0 p-4 bg-theme-surface shadow-lg rounded-t-xl transition-shadow duration-300">
+                        <div id="generation-controls" class="text-center pb-2 hidden">
+                            <button id="stop-generating-btn" class="bg-theme-tertiary hover:bg-theme-quaternary text-theme-primary font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
+                                 <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                               </svg>
+                                Stop Generating
                             </button>
                         </div>
-                        <div class="flex items-end bg-theme-secondary border border-theme-primary rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-accent">
-                            <div class="help-tooltip">
-                                <button id="attach-file-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                        <form id="chat-form">
+                            <div id="file-preview-container">
+                                <div id="file-preview"></div>
+                                <button type="button" id="remove-file-btn" title="Remove file">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                                 </button>
-                                <div class="tooltip-content">Attach File</div>
                             </div>
-                             <input type="file" id="file-input" class="hidden" accept="image/*,audio/*,video/*,.csv,.txt,.py,.js,.java,.c,.cpp">
-                             
-                            <textarea id="chat-input" placeholder="Enter Your Prompt..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-theme-primary placeholder-theme-quaternary focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
+                            <div class="flex items-end bg-theme-secondary border border-theme-primary rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-accent">
+                                <div class="help-tooltip">
+                                    <button id="attach-file-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                    </button>
+                                    <div class="tooltip-content">Attach File</div>
+                                </div>
+                                 <input type="file" id="file-input" class="hidden" multiple accept="image/*,audio/*,video/*,.csv,.txt,.py,.js,.java,.c,.cpp">
+                                 
+                                <textarea id="chat-input" placeholder="Enter Your Prompt..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-theme-primary placeholder-theme-quaternary focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
 
-                            <div class="help-tooltip">
-                                <button id="mic-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200 disabled:opacity-50">
+                                <div class="help-tooltip">
+                                    <button id="mic-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200 disabled:opacity-50">
                                     <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
                                 </button>
                                 <div class="tooltip-content">
@@ -3330,7 +3640,7 @@
         let currentUser = null;
         let notificationQueue = [];
         let isNotificationVisible = false;
-        let attachedFile = null;
+    let attachedFiles = []; // array of { id, base64, mimeType, name }
         let chartInstance = null;
         let isMedicalMode = false;
         
@@ -4851,82 +5161,169 @@ Respond with helpful, accurate medical information while maintaining appropriate
         }
 
         function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const extension = '.' + file.name.split('.').pop();
-            const language = fileExtensionMap[extension];
-            
-            if (language) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const codeContent = event.target.result;
-                    showCodeVisualizationModal(codeContent, language);
-                };
-                reader.readAsText(file);
-                fileInput.value = '';
-                return;
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+
+            for (const file of files) {
+                const extension = '.' + file.name.split('.').pop();
+                const language = fileExtensionMap[extension];
+
+                if (language) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const codeContent = event.target.result;
+                        showCodeVisualizationModal(codeContent, language);
+                    };
+                    reader.readAsText(file);
+                    continue; // skip adding to attachments
+                }
+
+                // handle text files specially to preserve text content
+                if (file.type === "text/plain" || file.type === "text/csv") {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const textContent = event.target.result;
+                        const fileId = `file-${Date.now()}-${Math.random().toString(36).slice(2,9)}`;
+                        attachedFiles.push({ id: fileId, base64: btoa(textContent), mimeType: "text/plain", name: file.name });
+                        displayFilePreview();
+                        updateSendButtonState();
+                    };
+                    reader.readAsText(file);
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const base64Data = event.target.result.split(',')[1];
+                        const fileId = `file-${Date.now()}-${Math.random().toString(36).slice(2,9)}`;
+                        attachedFiles.push({ id: fileId, base64: base64Data, mimeType: file.type, name: file.name });
+                        displayFilePreview();
+                        updateSendButtonState();
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
 
-            if (file.type === "text/plain" || file.type === "text/csv") {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const textContent = event.target.result;
-                    attachedFile = {
-                        base64: btoa(textContent),
-                        mimeType: "text/plain",
-                        name: file.name
-                    };
-                    displayFilePreview();
-                    updateSendButtonState();
-                };
-                reader.readAsText(file);
-            } else {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64Data = event.target.result.split(',')[1];
-                    attachedFile = {
-                        base64: base64Data,
-                        mimeType: file.type,
-                        name: file.name
-                    };
-                    displayFilePreview();
-                    updateSendButtonState();
-                };
-                reader.readAsDataURL(file);
-            }
+            // Clear input so same files can be selected again if needed
+            fileInput.value = '';
         }
 
         function displayFilePreview() {
-            if (!attachedFile) return;
-
-            let previewHtml = '';
-            if (attachedFile.mimeType.startsWith('image/')) {
-                previewHtml = `<img src="data:${attachedFile.mimeType};base64,${attachedFile.base64}" alt="File preview">`;
-            } else if (attachedFile.mimeType.startsWith('audio/')) {
-                previewHtml = `<audio controls src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></audio>`;
-            } else if (attachedFile.mimeType.startsWith('video/')) {
-                previewHtml = `<video controls class="max-w-xs rounded-lg mb-2" src="data:${attachedFile.mimeType};base64,${attachedFile.base64}"></video>`;
-            } else {
-                previewHtml = `<div class="text-sm text-theme-secondary p-2 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${attachedFile.name}</span></div>`;
+            if (!attachedFiles || attachedFiles.length === 0) {
+                filePreviewContainer.style.display = 'none';
+                filePreview.innerHTML = '';
+                return;
             }
 
-            filePreview.innerHTML = previewHtml;
+            filePreview.innerHTML = '';
+            for (const file of attachedFiles) {
+                let previewHtml = '';
+                if (file.mimeType.startsWith('image/')) {
+                    previewHtml = `<img src="data:${file.mimeType};base64,${file.base64}" alt="${file.name}" class="max-h-20 rounded object-cover">`;
+                } else if (file.mimeType.startsWith('audio/')) {
+                    previewHtml = `<div class="p-2 text-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-theme-tertiary" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" /></svg><p class="text-xs truncate w-20">${file.name}</p></div>`;
+                } else if (file.mimeType.startsWith('video/')) {
+                    previewHtml = `<video class="max-h-20 rounded" src="data:${file.mimeType};base64,${file.base64}"></video>`;
+                } else {
+                    previewHtml = `<div class="p-2 text-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-theme-tertiary" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg><p class="text-xs truncate w-20">${file.name}</p></div>`;
+                }
+
+                const previewWrapper = document.createElement('div');
+                previewWrapper.className = 'relative flex items-center justify-center bg-theme-tertiary rounded-lg h-24 w-24 overflow-hidden';
+                previewWrapper.innerHTML = `
+                    ${previewHtml}
+                    <button type="button" class="absolute top-0 right-0 m-1 bg-theme-error text-theme-inverse rounded-full w-5 h-5 flex items-center justify-center border-2 border-theme-secondary opacity-80 hover:opacity-100" title="Remove file" data-file-id="${file.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    </button>
+                `;
+
+                filePreview.appendChild(previewWrapper);
+            }
+
             filePreviewContainer.style.display = 'block';
         }
 
-        function removeAttachedFile() {
-            attachedFile = null;
-            fileInput.value = '';
-            filePreviewContainer.style.display = 'none';
-            filePreview.innerHTML = '';
+        function removeAttachedFile(fileId) {
+            if (fileId) {
+                attachedFiles = attachedFiles.filter(f => f.id !== fileId);
+            } else {
+                attachedFiles = [];
+                fileInput.value = '';
+            }
+            displayFilePreview();
             updateSendButtonState();
+        }
+
+        // --- Tool Definitions for Gemini API (in-file) ---
+        const toolConfig = {
+            functionDeclarations: [
+                {
+                    name: "createScheduledTask",
+                    description: "Schedules a new task, reminder, or event for the user. Use this when the user asks to be reminded of something at a specific date and time.",
+                    parameters: {
+                        type: "OBJECT",
+                        properties: {
+                            name: { type: "STRING", description: "A short, descriptive name for the task or reminder." },
+                            prompt: { type: "STRING", description: "The full prompt or content of the task the user wants to be reminded of." },
+                            date: { type: "STRING", description: "The date for the task in 'YYYY-MM-DD' format." },
+                            time: { type: "STRING", description: "The time for the task in 24-hour 'HH:MM' format." }
+                        },
+                        required: ["name", "prompt", "date", "time"]
+                    }
+                }
+            ]
+        };
+
+        /**
+         * Creates a scheduled task directly from AI-provided arguments.
+         * Uses the existing `scheduledTasks`, `scheduleTask`, `renderScheduledTasks`, and Firestore `setDoc` logic in this file.
+         */
+        async function handleAiScheduleTask(args) {
+            const { name, prompt, date, time } = args || {};
+
+            if (!name || !prompt || !date || !time) {
+                return { error: 'Missing required fields. All fields are required: name, prompt, date, time.' };
+            }
+
+            const task = {
+                id: Date.now().toString(),
+                name,
+                prompt,
+                date,
+                time,
+                repeat: 'none',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                // Add to local state
+                scheduledTasks.push(task);
+                // Schedule execution
+                scheduleTask(task);
+
+                // Persist to Firestore (uses the same pattern elsewhere in this file)
+                if (currentUser) {
+                    await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                        scheduledTasks: scheduledTasks
+                    }, { merge: true });
+                } else {
+                    // Fallback: localStorage
+                    localStorage.setItem('scheduledTasks', JSON.stringify(scheduledTasks));
+                }
+
+                // Re-render if the scheduled tasks UI is open
+                if (typeof renderScheduledTasks === 'function') renderScheduledTasks();
+
+                return { success: true, taskId: task.id, message: `Task '${name}' scheduled for ${date} at ${time}.` };
+            } catch (error) {
+                console.error('Error saving AI scheduled task:', error);
+                return { error: `Failed to save task: ${error?.message || String(error)}` };
+            }
         }
 
         async function handleSendMessage(e) {
             if(e) e.preventDefault();
             const userInput = chatInput.value.trim();
-            
+
             const vizRegex = /^visualize this (\w+\+*\w*) code:/i;
             const match = userInput.match(vizRegex);
             if (match) {
@@ -4940,8 +5337,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     return;
                 }
             }
-            
-            if ((!userInput && !attachedFile) || !currentUser) return;
+
+            if ((!userInput && (!attachedFiles || attachedFiles.length === 0)) || !currentUser) return;
 
             if (!API_KEY || API_KEY.includes('YOUR_API_KEY')) {
                 appendMessage("`Error`: API Key is missing.\n\nPlease add your Google AI Gemini API key in the script section to enable chat functionality.", 'model-error');
@@ -4961,15 +5358,16 @@ Respond with helpful, accurate medical information while maintaining appropriate
             if (!currentChatId) {
                 try {
                      const title = userInput.substring(0, 40) + (userInput.length > 40 ? '...' : '');
+                     const timestamp = new Date();
                      const newChatRef = await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats"), {
                         title: title || 'Multimedia Chat',
-                        createdAt: new Date(),
+                        createdAt: timestamp,
                         isMedical: isMedicalMode
                     });
                     currentChatId = newChatRef.id;
                     allChats[currentChatId] = { 
                         id: currentChatId, 
-                        createdAt: new Date(), 
+                        createdAt: { toDate: () => timestamp },  // Make it compatible with Firestore timestamp
                         title: title || 'Multimedia Chat', 
                         messages: [],
                         isMedical: isMedicalMode
@@ -4987,89 +5385,158 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
 
             const messageParts = [];
-            if (attachedFile) {
+            const filesForMessage = [...attachedFiles]; // copy
+
+            for (const file of filesForMessage) {
                 messageParts.push({
                     inlineData: {
-                        mimeType: attachedFile.mimeType,
-                        data: attachedFile.base64
+                        mimeType: file.mimeType,
+                        data: file.base64
                     }
                 });
             }
-            
+
             let finalUserInput = userInput;
             if (isMedicalMode && userInput) {
                 finalUserInput = createMedicalPrompt(userInput);
             }
-            
+
             if (finalUserInput) {
                 messageParts.push({ text: finalUserInput });
             }
 
-            appendMessage({ text: userInput, file: attachedFile }, 'user');
-            
-            const userMessage = { role: 'user', parts: messageParts, timestamp: new Date() };
+            // Display the user message with the files attached
+            appendMessage({ text: userInput, files: filesForMessage }, 'user');
+
+            const timestamp = new Date();
+            const userMessage = { role: 'user', parts: messageParts, timestamp: { toDate: () => timestamp } };
             allChats[currentChatId].messages.push(userMessage);
-            const firestoreMessage = { role: 'user', parts: [{text: userInput || `[Sent a file: ${attachedFile.name}]`}], timestamp: new Date() };
+            const firestoreMessage = { role: 'user', parts: [{text: userInput || `[Sent ${filesForMessage.length} file(s)]`}], timestamp: timestamp };
             await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), firestoreMessage);
 
             if(allChats[currentChatId].messages.length === 1) {
                 const newTitle = userInput.substring(0, 40) + (userInput.length > 40 ? '...' : '');
-                await updateDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId), { title: newTitle || `Chat about ${attachedFile.name}` });
-                allChats[currentChatId].title = newTitle || `Chat about ${attachedFile.name}`;
+                await updateDoc(doc(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId), { title: newTitle || `Chat about ${filesForMessage[0]?.name}` });
+                allChats[currentChatId].title = newTitle || `Chat about ${filesForMessage[0]?.name}`;
                 renderHistorySidebar();
             }
 
             chatInput.value = '';
-            removeAttachedFile();
+            // clear attachments
+            attachedFiles = [];
+            displayFilePreview();
             autoResizeTextarea(chatInput);
             updateSendButtonState();
             appendLoadingIndicator();
-            
+
             if (!isUserScrolledUp) {
                 scrollToBottomInstant();
             }
 
+            // --- NEW: Tool Use Logic ---
             try {
                 let apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
+
+                // First call: include tools to let the model decide whether to call a function
+                const firstPayload = buildModelRequestPayload(apiMessages);
+                firstPayload.tools = [toolConfig];
 
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(buildModelRequestPayload(apiMessages)),
+                    body: JSON.stringify(firstPayload),
                 });
 
-                removeLoadingIndicator();
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'An unknown API error occurred.');
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.error?.message || 'An unknown API error occurred.');
                 }
-                const data = await response.json();
-                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-                if (aiResponseText) {
+                const data = await response.json();
+                const modelResponsePart = data.candidates?.[0]?.content?.parts?.[0];
+
+                if (modelResponsePart && modelResponsePart.functionCall) {
+                    // --- PATH A: AI wants to use a tool ---
+                    const functionCall = modelResponsePart.functionCall;
+                    const functionName = functionCall.name;
+                    let functionArgs = functionCall.args;
+                    if (typeof functionArgs === 'string') {
+                        try { functionArgs = JSON.parse(functionArgs); } catch (e) { /* leave as-is */ }
+                    }
+
+                    let functionResult;
+
+                    // Add AI "thought" to history
+                    allChats[currentChatId].messages.push({ role: 'model', parts: [modelResponsePart], timestamp: new Date() });
+
+                    if (functionName === 'createScheduledTask') {
+                        functionResult = await handleAiScheduleTask(functionArgs);
+                    } else {
+                        functionResult = { error: `Unknown tool requested: ${functionName}` };
+                    }
+
+                    // 2. Second API Call (Sending Function Response)
+                    const functionResponsePart = { functionResponse: { name: functionName, response: functionResult } };
+                    allChats[currentChatId].messages.push({ role: 'user', parts: [functionResponsePart], timestamp: new Date() });
+
+                    // Get updated messages and ask model for final natural language reply
+                    apiMessages = allChats[currentChatId].messages.map(({ role, parts }) => ({ role, parts }));
+
+                    const finalResponse = await fetch(`${API_URL}?key=${API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(buildModelRequestPayload(apiMessages)),
+                    });
+
+                    if (!finalResponse.ok) {
+                        const errorData = await finalResponse.json().catch(() => null);
+                        throw new Error(errorData?.error?.message || 'Error getting final AI response.');
+                    }
+
+                    const finalData = await finalResponse.json();
+                    const aiResponseText = finalData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    removeLoadingIndicator();
+                    if (aiResponseText) {
+                        const messageId = appendMessage({text: ''}, 'model');
+                        const messageElement = document.getElementById(messageId);
+                        const contentContainer = messageElement.querySelector('.prose');
+                        const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
+
+                        enhanceResponseMessage(messageElement, finalText);
+
+                        // Save final text response to history
+                        const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
+                        allChats[currentChatId].messages.push(aiMessage);
+                        await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
+                    } else {
+                        appendMessage({text: "I've processed your request but have nothing more to say."}, 'model-error');
+                    }
+
+                } else if (modelResponsePart && modelResponsePart.text) {
+                    // --- PATH B: AI just sends text (Normal) ---
+                    removeLoadingIndicator();
+                    const aiResponseText = modelResponsePart.text;
+
                     const messageId = appendMessage({text: ''}, 'model');
                     const messageElement = document.getElementById(messageId);
                     const contentContainer = messageElement.querySelector('.prose');
 
                     const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
-                    
                     enhanceResponseMessage(messageElement, finalText);
 
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
                     allChats[currentChatId].messages.push(aiMessage);
                     await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats", currentChatId, "messages"), aiMessage);
 
-                    // Auto-play TTS if enabled
-                    if (userSettings.ttsAutoplay && window.speechSynthesis) {
+                    if (userSettings.ttsAutoplay) {
                         const ttsButton = messageElement.querySelector('.tts-button');
-                        if (ttsButton) {
-                            setTimeout(() => {
-                                handleTTSButtonClick(ttsButton, finalText);
-                            }, 500);
-                        }
+                        if (ttsButton) setTimeout(() => handleTTSButtonClick(ttsButton, finalText), 500);
                     }
 
                 } else {
+                    // Handle empty or unexpected response
+                    removeLoadingIndicator();
                     appendMessage({text: "I couldn't generate a response. The response was empty."}, 'model-error');
                 }
             } catch (error) {
@@ -5087,17 +5554,23 @@ Respond with helpful, accurate medical information while maintaining appropriate
 
         function appendMessage(content, sender) {
             const messageId = `msg-${sender}-${Date.now()}`;
-            const { text, file } = typeof content === 'object' ? content : { text: content, file: null };
-            
+            const { text, files } = typeof content === 'object' ? content : { text: content, files: [] };
+
             let fileHtml = '';
-            if (file) {
-                 if (file.mimeType.startsWith('image/')) {
-                    fileHtml = `<img src="data:${file.mimeType};base64,${file.base64}" class="max-w-xs rounded-lg mb-2">`;
-                } else if (file.mimeType.startsWith('audio/')) {
-                    fileHtml = `<audio controls src="data:${file.mimeType};base64,${file.base64}" class="w-full my-2"></audio>`;
-                } else if (file.mimeType.startsWith('video/')) {
-                    fileHtml = `<video controls class="max-w-xs rounded-lg mb-2" src="data:${file.mimeType};base64,${file.base64}"></video>`;
+            if (files && files.length > 0) {
+                fileHtml = '<div class="flex flex-wrap gap-2 mb-2">';
+                for (const file of files) {
+                    if (file.mimeType.startsWith('image/')) {
+                        fileHtml += `<img src="data:${file.mimeType};base64,${file.base64}" alt="${file.name}" class="max-h-32 md:max-h-48 rounded-lg object-contain">`;
+                    } else if (file.mimeType.startsWith('audio/')) {
+                        fileHtml += `<div class="w-full"><p class="text-xs mb-1">${file.name}</p><audio controls src="data:${file.mimeType};base64,${file.base64}" class="w-full"></audio></div>`;
+                    } else if (file.mimeType.startsWith('video/')) {
+                        fileHtml += `<video controls class="max-h-32 md:max-h-48 rounded-lg" src="data:${file.mimeType};base64,${file.base64}"></video>`;
+                    } else {
+                        fileHtml += `<div class="text-sm p-2 bg-black/10 rounded">${file.name}</div>`;
+                    }
                 }
+                fileHtml += '</div>';
             }
 
             const isModel = sender === 'model' || sender === 'model-error';
@@ -5124,10 +5597,19 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     </svg>
                 </div>`;
             }
-            
+
+            // --- Advanced contextual spacing logic ---
+            let className = `chat-message flex items-start gap-2 sm:gap-3 ${isUser ? 'justify-end user' : 'model'}`;
+            const lastMessage = chatContainer.lastElementChild;
+            if (lastMessage && !lastMessage.classList.contains('loading-indicator')) {
+                const lastMessageRole = lastMessage.classList.contains('user') ? 'user' : 'model';
+                if (isModel && lastMessageRole === 'model') {
+                    className += ' continuation';
+                }
+            }
             const messageBubbleClasses = isUser ? 'bg-theme-accent text-theme-inverse' : (isError ? 'bg-theme-error/10' : 'bg-theme-secondary');
             const messageHtml = `
-            <div id="${messageId}" class="chat-message flex items-start gap-2 sm:gap-3 ${isUser ? 'justify-end user' : ''}">
+            <div id="${messageId}" class="${className}">
                 ${!isUser ? `<div class="flex-shrink-0">${modelIconHtml}</div>` : ''}
                 <div class="rounded-lg p-3 sm:p-4 max-w-3xl shadow-lg min-w-0 ${messageBubbleClasses}">
                     ${fileHtml}
@@ -6086,9 +6568,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
 
         function updateSendButtonState() {
             const hasText = chatInput.value.trim().length > 0;
-            const hasFile = !!attachedFile;
+            const hasFile = attachedFiles && attachedFiles.length > 0;
             const canSend = hasText || hasFile;
-            
+
             submitButton.disabled = !canSend;
             submitButton.classList.toggle('bg-theme-tertiary', !canSend);
             submitButton.classList.toggle('hover:bg-theme-accent', canSend);
@@ -6166,76 +6648,194 @@ Respond with helpful, accurate medical information while maintaining appropriate
             });
         }
         
+        function createHistoryItemElement(chat, isActive) {
+            const li = document.createElement('li');
+            li.className = 'history-item-wrapper';
+            li.dataset.chatId = chat.id;
+
+            // Set medical attribute for styling
+            if (chat.isMedical) {
+                li.dataset.medical = 'true';
+            }
+            
+            // Set active class
+            if (isActive) {
+                li.classList.add('active');
+            }
+
+            const titleText = chat.title || 'New Chat';
+
+            // 1. Content (Icon + Title)
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'history-item-content';
+            contentDiv.onclick = () => loadChat(chat.id); // Click on content loads chat
+
+            // Medical Icon (conditionally added)
+            if (chat.isMedical) {
+                const icon = document.createElement('svg');
+                icon.className = 'history-item-icon';
+                icon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                icon.setAttribute('width', '16');
+                icon.setAttribute('height', '16');
+                icon.setAttribute('viewBox', '0 0 24 24');
+                icon.setAttribute('fill', 'none');
+                icon.setAttribute('stroke', 'currentColor');
+                icon.setAttribute('stroke-width', '2');
+                icon.setAttribute('stroke-linecap', 'round');
+                icon.setAttribute('stroke-linejoin', 'round');
+                icon.innerHTML = `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>`;
+                contentDiv.appendChild(icon);
+            }
+
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'history-item-title';
+            titleSpan.textContent = titleText;
+            contentDiv.appendChild(titleSpan);
+
+            // 2. Actions
+            const actionsContainer = document.createElement('div');
+            actionsContainer.className = 'history-item-actions'; // Your existing styles will target this
+
+            const renameBtn = document.createElement('button');
+            renameBtn.className = 'edit-btn'; // Use existing style
+            renameBtn.title = 'Rename chat';
+            renameBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+            renameBtn.onclick = (e) => {
+                e.stopPropagation();
+                handleRename(chat.id, contentDiv); // Pass contentDiv to handleRename
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn'; // Use existing style
+            deleteBtn.title = 'Delete chat';
+            deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                showDeleteModal(chat.id);
+            };
+
+            actionsContainer.appendChild(renameBtn);
+            actionsContainer.appendChild(deleteBtn);
+
+            // Assemble the <li>
+            li.appendChild(contentDiv);
+            li.appendChild(actionsContainer);
+
+            return li;
+        }
+
         function renderHistorySidebar() {
             const searchTerm = searchHistoryInput.value.toLowerCase();
-            historyList.innerHTML = '';
             
-            const sortedChats = Object.values(allChats).sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+            // Get references to the new lists and their parent <details> elements
+            const listToday = document.getElementById('history-list-today');
+            const listWeek = document.getElementById('history-list-week');
+            const listOlder = document.getElementById('history-list-older');
+            
+            const groupToday = listToday.closest('.history-group');
+            const groupWeek = listWeek.closest('.history-group');
+            const groupOlder = listOlder.closest('.history-group');
 
-            clearAllBtn.style.display = sortedChats.length > 0 ? 'block' : 'none';
+            // Clear previous items
+            listToday.innerHTML = '';
+            listWeek.innerHTML = '';
+            listOlder.innerHTML = '';
 
-            sortedChats.forEach(chat => {
-                const li = document.createElement('li');
-                li.dataset.chatId = chat.id;
-                const isActive = chat.id === currentChatId;
-                
-                const titleText = chat.title || 'New Chat';
+            // Define time boundaries
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
 
-                if (searchTerm && !titleText.toLowerCase().includes(searchTerm)) {
-                    li.classList.add('hidden');
-                }
-                
-                li.className = `history-item-container flex items-center justify-between rounded-md group ${isActive ? 'bg-theme-tertiary' : 'hover:bg-theme-tertiary/50'} ${li.classList.contains('hidden') ? 'hidden' : ''}`;
-
-                const titleContainer = document.createElement('div');
-                titleContainer.className = 'flex-1 text-left px-3 py-2 truncate flex items-center gap-2';
-                
-                let medicalIndicator = '';
-                if (chat.isMedical) {
-                    medicalIndicator = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 flex-shrink-0">
-                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
-                        <path d="M12 5L8 21l4-7 4 7-4-16"/>
-                    </svg>`;
-                }
-                
-                titleContainer.innerHTML = `${medicalIndicator}<span class="text-sm ${isActive ? 'text-theme-primary' : 'text-theme-secondary group-hover:text-theme-primary'} truncate">${titleText}</span>`;
-                titleContainer.addEventListener('click', () => loadChat(chat.id));
-                
-                const actionsContainer = document.createElement('div');
-                actionsContainer.className = 'history-item-actions action-button-group pr-2';
-                
-                const renameBtn = document.createElement('button');
-                renameBtn.className = 'edit-btn';
-                renameBtn.title = 'Rename chat';
-                renameBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
-                renameBtn.onclick = (e) => { e.stopPropagation(); handleRename(chat.id, titleContainer); };
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.title = 'Delete chat';
-                deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
-                deleteBtn.onclick = (e) => { e.stopPropagation(); showDeleteModal(chat.id); };
-
-                actionsContainer.appendChild(renameBtn);
-                actionsContainer.appendChild(deleteBtn);
-
-                li.appendChild(titleContainer);
-                li.appendChild(actionsContainer);
-                historyList.appendChild(li);
+            // Get chats and sort them (newest first)
+            const sortedChats = Object.values(allChats).sort((a, b) => {
+                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+                return dateB - dateA;
             });
+
+            // Toggle "Clear All" button
+            clearAllBtn.style.display = sortedChats.length > 0 ? 'flex' : 'none';
+
+            let foundToday = 0;
+            let foundWeek = 0;
+            let foundOlder = 0;
+            let foundInSearch = false;
+
+            // Sort chats into lists
+            sortedChats.forEach(chat => {
+                const titleText = chat.title || 'New Chat';
+                const isMatch = searchTerm && !titleText.toLowerCase().includes(searchTerm);
+
+                // Don't render if it doesn't match search
+                if (isMatch) {
+                    return;
+                }
+                
+                foundInSearch = true;
+                const isActive = chat.id === currentChatId;
+                const chatDate = chat.createdAt?.toDate ? chat.createdAt.toDate() : new Date(0);
+                
+                // Create the new list item element
+                const li = createHistoryItemElement(chat, isActive);
+
+                // Append to the correct list
+                if (chatDate >= startOfToday) {
+                    listToday.appendChild(li);
+                    foundToday++;
+                } else if (chatDate >= startOfWeek) {
+                    listWeek.appendChild(li);
+                    foundWeek++;
+                } else {
+                    listOlder.appendChild(li);
+                    foundOlder++;
+                }
+            });
+
+            // Show/hide sections based on whether they have items
+            groupToday.classList.toggle('hidden', foundToday === 0 && !foundInSearch);
+            groupWeek.classList.toggle('hidden', foundWeek === 0 && !foundInSearch);
+            groupOlder.classList.toggle('hidden', foundOlder === 0 && !foundInSearch);
+
+            // If searching and no results, show a message
+            const historyContainer = document.getElementById('history-container');
+            let noResultsEl = historyContainer.querySelector('.no-results-message');
+            if (!foundInSearch && searchTerm) {
+                if (!noResultsEl) {
+                    noResultsEl = document.createElement('p');
+                    noResultsEl.className = 'no-results-message text-theme-quaternary text-sm text-center p-4';
+                    historyContainer.appendChild(noResultsEl);
+                }
+                noResultsEl.textContent = 'No chats found.';
+                noResultsEl.style.display = 'block';
+            } else if (noResultsEl) {
+                noResultsEl.style.display = 'none';
+            }
         }
         
         async function handleRename(chatId, titleContainer) {
             const currentTitle = allChats[chatId].title || 'New Chat';
-            const titleSpan = titleContainer.querySelector('span');
+            
+            // Find the title span within the container
+            const titleSpan = titleContainer.querySelector('.history-item-title');
+            // Find the icon if it exists
+            const icon = titleContainer.querySelector('.history-item-icon');
 
             const input = document.createElement('input');
             input.type = 'text';
             input.value = currentTitle;
-            input.className = 'w-full bg-theme-quaternary text-theme-primary text-sm rounded px-1 py-0';
+            input.className = 'w-full bg-theme-quaternary text-theme-primary text-sm rounded px-1 py-0 flex-1';
             
-            titleSpan.style.display = 'none';
-            titleContainer.appendChild(input);
+            // Hide the title and icon
+            if (titleSpan) titleSpan.style.display = 'none';
+            if (icon) icon.style.display = 'none';
+
+            // Add the input after the icon (if it exists) or at the start
+            if (icon) {
+                icon.after(input);
+            } else {
+                titleContainer.prepend(input);
+            }
+            
             input.focus();
             input.select();
             
@@ -6246,6 +6846,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     allChats[chatId].title = newTitle;
                     showNotification('Chat renamed!', 'success');
                 }
+                // Re-render the whole sidebar to restore structure
                 renderHistorySidebar();
             };
             
@@ -6255,6 +6856,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     e.preventDefault();
                     saveRename();
                 } else if (e.key === 'Escape') {
+                    // Re-render to cancel
                     renderHistorySidebar();
                 }
             });
@@ -6277,8 +6879,27 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
         }
 
-        function startNewChat() {
-            currentChatId = null;
+        async function startNewChat() {
+            if (currentUser) {
+                const timestamp = new Date();
+                const newChatRef = await addDoc(collection(db, "artifacts", appId, "users", currentUser.uid, "chats"), {
+                    title: "New Chat",
+                    createdAt: timestamp,
+                    isMedical: isMedicalMode
+                });
+                
+                currentChatId = newChatRef.id;
+                allChats[currentChatId] = {
+                    id: currentChatId,
+                    createdAt: { toDate: () => timestamp },
+                    title: "New Chat",
+                    messages: [],
+                    isMedical: isMedicalMode
+                };
+            } else {
+                currentChatId = null;
+            }
+
             if (isMedicalMode) {
                 showMedicalWelcomeContent();
             } else {
@@ -6677,12 +7298,42 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 autoResizeTextarea(chatInput);
                 updateSendButtonState();
             });
+
+            // Paste images from clipboard (bonus feature)
+            chatInput.addEventListener('paste', (e) => {
+                const items = e.clipboardData?.items;
+                if (!items) return;
+
+                for (const item of items) {
+                    if (item.type.indexOf('image') === 0) {
+                        e.preventDefault();
+                        const file = item.getAsFile();
+                        if (file) {
+                            const fileId = `file-${Date.now()}-${Math.random().toString(36).slice(2,9)}`;
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                const base64Data = event.target.result.split(',')[1];
+                                attachedFiles.push({ id: fileId, base64: base64Data, mimeType: file.type, name: file.name || 'pasted-image.png' });
+                                displayFilePreview();
+                                updateSendButtonState();
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                }
+            });
             chatInput.addEventListener('keydown', handleTextareaKeydown);
 
             // Multimedia listeners
             attachFileBtn.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', handleFileSelect);
-            removeFileBtn.addEventListener('click', removeAttachedFile);
+            // Delegated listener: catch clicks on dynamic remove buttons inside filePreview
+            filePreview.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('button[data-file-id]');
+                if (removeBtn) {
+                    removeAttachedFile(removeBtn.dataset.fileId);
+                }
+            });
 
             if (recognition) {
                 micBtn.addEventListener('click', toggleVoiceRecognition);
@@ -6714,6 +7365,94 @@ Respond with helpful, accurate medical information while maintaining appropriate
             // Enhanced Features Event Listeners
             promptLibraryBtn.addEventListener('click', showPromptLibrary);
             const imageGenBtn = document.getElementById('image-gen-btn');
+            // --- Dropzone Overlay Drag & Drop Logic ---
+            const dropzoneOverlay = document.getElementById('dropzone-overlay');
+            document.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            document.addEventListener('dragenter', (e) => {
+                if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+                    dropzoneOverlay.style.opacity = '1';
+                    dropzoneOverlay.style.pointerEvents = 'auto';
+                }
+            });
+            document.addEventListener('dragleave', (e) => {
+                if (e.target === document.documentElement) {
+                    dropzoneOverlay.style.opacity = '0';
+                    dropzoneOverlay.style.pointerEvents = 'none';
+                }
+            });
+            document.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzoneOverlay.style.opacity = '0';
+                dropzoneOverlay.style.pointerEvents = 'none';
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileList = new DataTransfer();
+                    for (let i = 0; i < files.length; i++) {
+                        fileList.items.add(files[i]);
+                    }
+                    handleDroppedFiles(fileList.files);
+                }
+            });
+
+            // --- FAB Tool Menu Logic ---
+            function toggleFabMenu() {
+                const menu = document.getElementById('fab-tool-menu');
+                const toggleBtn = document.getElementById('fab-menu-toggle');
+                if (menu.classList.contains('hidden')) {
+                    menu.classList.remove('hidden');
+                    toggleBtn.classList.add('rotate-45');
+                } else {
+                    menu.classList.add('hidden');
+                    toggleBtn.classList.remove('rotate-45');
+                }
+            }
+            document.getElementById('fab-menu-toggle').addEventListener('click', toggleFabMenu);
+            document.getElementById('open-scheduler-fab').addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleFabMenu();
+                if (typeof showScheduler === 'function') showScheduler();
+            });
+            document.getElementById('open-prompt-library-fab').addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleFabMenu();
+                if (typeof showPromptLibrary === 'function') showPromptLibrary();
+            });
+            document.getElementById('open-image-gen-fab').addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleFabMenu();
+                // Future: showImageGenerator();
+            });
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('fab-tool-menu');
+                const toggleBtn = document.getElementById('fab-menu-toggle');
+                if (menu && !menu.contains(e.target) && !toggleBtn.contains(e.target) && !menu.classList.contains('hidden')) {
+                    toggleFabMenu();
+                }
+            });
+
+            // --- Handle Dropped Files ---
+            function handleDroppedFiles(files) {
+                if (!files || files.length === 0) return;
+                for (const file of files) {
+                    const fileId = `file-${Date.now()}-${Math.random()}`;
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const base64Data = event.target.result.split(',')[1];
+                        const fileData = {
+                            id: fileId,
+                            base64: base64Data,
+                            mimeType: file.type,
+                            name: file.name
+                        };
+                        attachedFiles.push(fileData);
+                        displayFilePreview();
+                        updateSendButtonState();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
             if (imageGenBtn) imageGenBtn.addEventListener('click', () => { if (typeof showImageGen === 'function') showImageGen(); });
             schedulerBtn.addEventListener('click', showScheduler);
 
