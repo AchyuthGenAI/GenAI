@@ -2849,7 +2849,7 @@
                 <p class="text-sm text-theme-quaternary text-center">We sent a verification link to <span id="verify-email-address" class="text-theme-primary font-medium"></span>. Please verify your email to continue.</p>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <button type="button" id="resend-verification-btn" class="flex-1 bg-theme-accent text-theme-inverse py-2.5 rounded-lg font-medium">Resend verification email</button>
-                    <button type="button" id="refresh-verification-btn" class="flex-1 bg-theme-tertiary border border-theme-primary text-theme-primary py-2.5 rounded-lg font-medium">Iâ€™ve verified, refresh</button>
+                    <button type="button" id="refresh-verification-btn" class="flex-1 bg-theme-tertiary border border-theme-primary text-theme-primary py-2.5 rounded-lg font-medium">I've verified, refresh</button>
                 </div>
                 <button type="button" id="verify-signout-btn" class="w-full bg-theme-secondary border border-theme-primary text-theme-primary py-2.5 rounded-lg">Sign out</button>
             </div>
@@ -4166,7 +4166,7 @@
                 chatAiBtn.classList.add('hidden');
                 showWelcomeContent();
                 showNotification('Medical AI Mode deactivated', 'info');
-                updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
+                updateInputPlaceholder('Enter Your Prompt...');
             }
         }
 
@@ -4178,7 +4178,7 @@
             chatAiBtn.classList.add('hidden');
             showWelcomeContent();
             showNotification('Switched to Chat@AI mode', 'success');
-            updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
+            updateInputPlaceholder('Enter Your Prompt...');
         }
 
         function updateInputPlaceholder(placeholder) {
@@ -7412,7 +7412,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     medicalAiBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                     medicalAiBtn.classList.remove('bg-green-800', 'hover:bg-green-900');
                     chatAiBtn.classList.add('hidden');
-                    updateInputPlaceholder('Enter Your Prompt or paste code to visualize...');
+                    updateInputPlaceholder('Enter Your Prompt...');
                 }
             }
 
