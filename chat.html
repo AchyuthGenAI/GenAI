@@ -2,7 +2,8 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Ensure true full-height on mobile (safe-area + dynamic viewport) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, viewport-fit=cover" />
     <title>Chat@AI - Your Intelligent Assistant</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,6 +30,28 @@
     <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
 
     <style>
+        /* Fill the entire mobile viewport including dynamic bars */
+        html, body { height: 100%; }
+        /* Use dynamic viewport units with sensible fallbacks */
+        body {
+            min-height: 100svh; /* modern browsers */
+            min-height: 100dvh; /* iOS 16+ / Chrome 108+ */
+            min-height: 100vh;  /* fallback */
+            background-color: rgb(var(--bg-primary));
+            overscroll-behavior: none; /* avoid rubber-banding gaps */
+        }
+        /* iOS Safari older versions */
+        @supports (-webkit-touch-callout: none) {
+            html { height: -webkit-fill-available; }
+            body { min-height: -webkit-fill-available; }
+        }
+        /* Respect device safe areas so content isn't clipped under notches */
+        .safe-area {
+            padding-top: env(safe-area-inset-top);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+        }
         /* Theme CSS Variables */
         /* Emoji-safe font fallback */
         body, input, button, textarea, select {
