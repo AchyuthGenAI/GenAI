@@ -148,6 +148,46 @@
         .border-theme-secondary { border-color: rgb(var(--border-secondary)); }
         .border-theme-accent { border-color: rgb(var(--border-accent)); }
 
+        /* Micro-interactions: smooth transitions for interactive elements */
+        :where(button, .btn, [role="button"], .code-action-btn, .edit-btn, .delete-btn, .tab, .nav-link, a) {
+            transition: background-color 300ms ease-in-out, color 300ms ease-in-out,
+                        box-shadow 300ms ease-in-out, transform 300ms ease-in-out,
+                        opacity 300ms ease-in-out, border-color 300ms ease-in-out;
+        }
+
+        /* Subtle hover scale for buttons */
+        :where(button, .btn, .code-action-btn):not(.no-hover-scale):hover {
+            transform: translateZ(0) scale(1.03);
+        }
+
+        /* Ripple effect */
+        .ripple-container { position: relative; overflow: hidden; }
+        .ripple {
+            position: absolute;
+            border-radius: 9999px;
+            transform: scale(0);
+            opacity: 0.35;
+            background: currentColor;
+            pointer-events: none;
+            animation: ripple 600ms ease-out;
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* Chat history enter animation */
+        .history-animate-enter { opacity: 0; transform: translateY(6px); }
+        .history-animate-active { opacity: 1; transform: translateY(0); }
+
+        /* Respect reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            :where(button, .btn, [role="button"], .code-action-btn, .edit-btn, .delete-btn, .tab, .nav-link, a) {
+                transition: none !important;
+            }
+            .ripple { animation: none !important; display: none !important; }
+            .history-animate-enter, .history-animate-active { transition: none !important; }
+        }
+
         .hover\:bg-theme-accent:hover { background-color: rgb(var(--bg-accent-hover)); }
         .hover\:bg-theme-tertiary:hover { background-color: rgb(var(--bg-tertiary)); }
         .hover\:bg-theme-quaternary:hover { background-color: rgb(var(--bg-quaternary)); }
@@ -1457,7 +1497,7 @@
 
         .chat-message {
             position: relative;
-            padding-bottom: 2.5rem;
+            padding-bottom: 0;
         }
         /* Make message bubbles transparent across all themes EXCEPT user messages */
         .chat-message:not(.user) > .rounded-lg,
@@ -1480,17 +1520,13 @@
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            position: absolute;
-            bottom: 0.5rem;
-            left: 56px;
+            gap: 0.75rem;
+            position: static;
+            margin-top: 0.5rem;
             opacity: 1;
             transition: opacity 0.2s ease-in-out;
         }
-        .chat-message.user .action-buttons {
-            right: 56px;
-            left: auto;
-        }
+        .chat-message.user .action-buttons { justify-content: flex-end; }
         
         /* Like and Dislike Buttons */
         .like-btn, .dislike-btn {
@@ -3835,7 +3871,7 @@
         
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
-        const API_KEY = 'AIzaSyA8h95zYaOe9hpSi3sisLlRJwWeG9GCTjA'; // IMPORTANT: Replace with your actual Gemini API key
+        const API_KEY = 'AIzaSyABhaKzZCAQDzg1LdfQh77z5x7j3pYpXao'; // IMPORTANT: Replace with your actual Gemini API key
     // Additional endpoints for multimodal, TTS, and code execution (placeholders)
     const IMAGE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent';
     const TTS_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateAudio';
@@ -4394,6 +4430,13 @@ Respond with helpful, accurate medical information while maintaining appropriate
             updateScrollButton();
         }
 
+        // Smoothly scrolls to the latest message when new content is appended
+        function scrollToLatestMessage() {
+            const lastMessage = chatContainer?.lastElementChild;
+            if (!lastMessage || isUserScrolledUp) return;
+            lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
         function initializeScrollHandling() {
             chatMainArea.addEventListener('scroll', () => {
                 updateScrollState();
@@ -4536,9 +4579,12 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
         }
 
+            // Global assistant instruction to keep responses general-purpose and use tools only when asked
+            const SYSTEM_INSTRUCTION = `You are Chat@AI, a helpful general-purpose assistant. Always answer the user's request directly and completely (e.g., write code when asked, explain, reason, or summarize). Tools may be available for optional actions like scheduling; only call such tools when the user explicitly asks to schedule, set a reminder, or create an event. Do not claim your capabilities are limited to any single feature.`;
+
             // Build request payload for Gemini API. If deepThinking is enabled, include a thinking_budget
             function buildModelRequestPayload(contents) {
-                const payload = { contents };
+                const payload = { contents, systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] } };
                 // If deep thinking is enabled, include a thinking_budget (in microseconds).
                 // Increase this value for more complex reasoning (tradeoff: latency/cost).
                 if (userSettings && userSettings.deepThinking) {
@@ -5725,7 +5771,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             functionDeclarations: [
                 {
                     name: "createScheduledTask",
-                    description: "Schedules a new task, reminder, or event for the user. Use this when the user asks to be reminded of something at a specific date and time.",
+                    description: "Schedules a new task, reminder, or event for the user. Only call this tool if the user explicitly asks to schedule something, set a reminder, add to calendar, or create an event. For all other requests (e.g., coding help, Q&A, drafting), do not call this tool.",
                     parameters: {
                         type: "OBJECT",
                         properties: {
@@ -5739,6 +5785,19 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 }
             ]
         };
+
+        // Heuristic to decide whether to expose the scheduler tool to the model
+        function shouldOfferSchedulerTool(text = '') {
+            try {
+                const t = String(text).toLowerCase();
+                const keywords = ['remind', 'reminder', 'schedule', 'scheduling', 'calendar', 'event', 'appointment', 'meeting', 'alert'];
+                if (keywords.some(k => t.includes(k))) return true;
+                // Phrases indicating explicit scheduling intent
+                const intentRegex = /(set (an )?alarm|add to (my )?calendar|create (an )?event|schedule (it|this))/i;
+                if (intentRegex.test(text)) return true;
+            } catch {}
+            return false;
+        }
 
         /**
          * Creates a scheduled task directly from AI-provided arguments.
@@ -5907,7 +5966,10 @@ Respond with helpful, accurate medical information while maintaining appropriate
 
                 // First call: include tools to let the model decide whether to call a function
                 const firstPayload = buildModelRequestPayload(apiMessages);
-                firstPayload.tools = [toolConfig];
+                // Only expose the scheduler tool if the user's latest input suggests scheduling intent
+                if (shouldOfferSchedulerTool(userInput)) {
+                    firstPayload.tools = [toolConfig];
+                }
 
                 const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                     method: 'POST',
@@ -5969,7 +6031,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         const messageId = appendMessage({text: ''}, 'model');
                         const messageElement = document.getElementById(messageId);
                         const contentContainer = messageElement.querySelector('.prose');
-                        const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
+                        const finalText = await streamResponseSafe(contentContainer, aiResponseText, messageId);
 
                         enhanceResponseMessage(messageElement, finalText);
 
@@ -5990,7 +6052,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const messageElement = document.getElementById(messageId);
                     const contentContainer = messageElement.querySelector('.prose');
 
-                    const finalText = await streamResponse(contentContainer, aiResponseText, messageId);
+                        const finalText = await streamResponseSafe(contentContainer, aiResponseText, messageId);
                     enhanceResponseMessage(messageElement, finalText);
 
                     const aiMessage = { role: 'model', parts: [{ text: finalText }], timestamp: new Date() };
@@ -6019,6 +6081,22 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 updateScrollButton();
             }
         }
+
+        // Markdown helpers to avoid truncated or invisible output
+        function fixUnclosedCodeFences(md) {
+            try {
+                const count = (md.match(/```/g) || []).length;
+                if (count % 2 !== 0) return md + "\n```\n";
+            } catch {}
+            return md;
+        }
+        function escapeHtmlOutsideCode(md) {
+            try {
+                const parts = md.split(/(```[\s\S]*?```)/g);
+                return parts.map(p => p.startsWith('```') ? p : p.replace(/</g,'&lt;').replace(/>/g,'&gt;')).join('');
+            } catch { return md; }
+        }
+        function prepMarkdown(md) { return escapeHtmlOutsideCode(fixUnclosedCodeFences(md)); }
 
         function appendMessage(content, sender) {
             const messageId = `msg-${sender}-${Date.now()}`;
@@ -6082,11 +6160,11 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 <div class="rounded-lg p-3 sm:p-4 max-w-3xl shadow-lg min-w-0 ${messageBubbleClasses}">
                     ${fileHtml}
                     <div class="prose max-w-none ${isUser ? 'text-theme-inverse' : 'text-theme-primary'}">
-                        ${marked.parse(text || '')}
+                        ${marked.parse(text ? prepMarkdown(text) : '')}
                     </div>
+                    <div class="action-buttons"></div>
                 </div>
                 ${isUser ? `<div class="flex-shrink-0">${userAvatarHtml}</div>` : ''}
-                <div class="action-buttons"></div>
             </div>`;
 
             chatContainer.insertAdjacentHTML('beforeend', messageHtml);
@@ -6102,9 +6180,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 addUserActionButtons(messageElement, text);
             }
 
-            if (!isUserScrolledUp) {
-                scrollToBottomInstant();
-            }
+            scrollToLatestMessage();
             
             return messageId;
         }
@@ -6283,7 +6359,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const aiMessageElement = document.getElementById(aiMessageId);
                     const contentContainer = aiMessageElement.querySelector('.prose');
                     
-                    const finalText = await streamResponse(contentContainer, aiResponseText, aiMessageId);
+                    const finalText = await streamResponseSafe(contentContainer, aiResponseText, aiMessageId);
                     
                     enhanceResponseMessage(aiMessageElement, finalText);
                     
@@ -6308,6 +6384,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
         }
 
+        // Keep original function for reference but not used; see streamResponseSafe.
         async function streamResponse(contentContainer, fullText, messageId) {
             return new Promise((resolve) => {
                 let currentText = '';
@@ -6320,6 +6397,8 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         contentContainer.innerHTML = finalHtml;
                         makeTablesResponsive(contentContainer);
                         enhanceCodeBlocks(messageId);
+                        // Smoothly bring the latest message into view at the end
+                        scrollToLatestMessage();
                         resolve(currentText);
                         return;
                     }
@@ -6338,6 +6417,45 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 type();
             });
         }
+
+        // Safer streaming that avoids mid-stream Markdown parsing
+        async function streamResponseSafe(contentContainer, fullText, messageId) {
+            return new Promise((resolve) => {
+                let currentText = '';
+                let index = 0;
+                const typingSpeed = 1;
+
+                function type() {
+                    if (stopGenerationFlag || index >= fullText.length) {
+                        try {
+                            const finalHtml = marked.parse(prepMarkdown(currentText));
+                            contentContainer.innerHTML = finalHtml;
+                        } catch {
+                            const safe = currentText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                            contentContainer.innerHTML = `<pre class="whitespace-pre-wrap break-words">${safe}</pre>`;
+                        }
+                        makeTablesResponsive(contentContainer);
+                        enhanceCodeBlocks(messageId);
+                        scrollToLatestMessage();
+                        resolve(currentText);
+                        return;
+                    }
+
+                    currentText += fullText[index++];
+                    try {
+                        const previewHtml = marked.parse(prepMarkdown(currentText));
+                        // Append a subtle typing cursor at the end to mimic ChatGPT
+                        contentContainer.innerHTML = previewHtml + '<span class="typing-cursor"></span>';
+                    } catch {
+                        const safePreview = currentText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                        contentContainer.innerHTML = `<pre class="whitespace-pre-wrap break-words">${safePreview}</pre>`;
+                    }
+                    if (!isUserScrolledUp) scrollToBottomInstant();
+                    setTimeout(type, typingSpeed);
+                }
+                type();
+            });
+        }
         
         function enhanceResponseMessage(messageElement, textContent) {
             const actionContainer = messageElement.querySelector('.action-buttons');
@@ -6348,6 +6466,33 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
 
             addStandardActionButtons(actionContainer, textContent);
+
+            // Add emoji reaction panel that toggles from Dislike
+            try {
+                actionContainer.classList.add('relative');
+                const panel = document.createElement('div');
+                panel.className = 'emoji-reaction-panel hidden absolute bottom-8 left-0 flex gap-2 bg-theme-secondary p-2 rounded-lg border border-theme-primary shadow-md';
+                panel.innerHTML = `
+                  <button class="emoji-btn text-lg">😊</button>
+                  <button class="emoji-btn text-lg">😐</button>
+                  <button class="emoji-btn text-lg">😞</button>
+                `;
+                actionContainer.appendChild(panel);
+                const dislikeBtn = actionContainer.querySelector('.dislike-btn');
+                if (dislikeBtn) {
+                    dislikeBtn.addEventListener('click', () => {
+                        panel.classList.toggle('hidden');
+                    });
+                }
+                panel.querySelectorAll('.emoji-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const emoji = btn.textContent.trim();
+                        localStorage.setItem('feedback-' + Date.now(), emoji);
+                        panel.innerHTML = `<span class="text-theme-success text-sm">Thanks for your feedback!</span>`;
+                        setTimeout(() => panel.classList.add('hidden'), 1500);
+                    });
+                });
+            } catch {}
 
             const table = messageElement.querySelector('table');
             if (table) {
@@ -6379,6 +6524,35 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
 
             addRegenerateButton(actionContainer, messageElement);
+
+            // Append "Was this helpful?" feedback row at the bottom of the assistant message
+            try {
+                const bubble = messageElement.querySelector('.rounded-lg');
+                if (bubble) {
+                    const helpful = document.createElement('div');
+                    helpful.className = 'helpful-feedback mt-3 text-sm text-theme-tertiary flex gap-3 items-center';
+                    helpful.innerHTML = `
+                      <span>Was this helpful?</span>
+                      <button class="help-btn px-3 py-1 rounded-md bg-theme-tertiary hover:bg-theme-quaternary">👍 Yes</button>
+                      <button class="help-btn px-3 py-1 rounded-md bg-theme-tertiary hover:bg-theme-quaternary">👎 No</button>
+                    `;
+                    bubble.appendChild(helpful);
+
+                    helpful.querySelectorAll('.help-btn').forEach((btn) => {
+                        btn.addEventListener('click', () => {
+                            const isYes = btn.textContent.includes('Yes') || btn.textContent.includes('👍');
+                            localStorage.setItem('helpful-feedback-' + Date.now(), isYes ? 'yes' : 'no');
+                            helpful.innerHTML = `<span class="text-theme-success">Thanks for your feedback!</span>`;
+                        });
+                    });
+
+                    // Ensure action buttons render below the helpful row
+                    const actionContainer = messageElement.querySelector('.action-buttons');
+                    if (actionContainer) {
+                        bubble.appendChild(actionContainer);
+                    }
+                }
+            } catch {}
         }
         
         function addStandardActionButtons(container, text, messageId) {
@@ -6509,7 +6683,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     const aiMessageElement = document.getElementById(aiMessageId);
                     const contentContainer = aiMessageElement.querySelector('.prose');
                     
-                    const finalText = await streamResponse(contentContainer, aiResponseText, aiMessageId);
+                    const finalText = await streamResponseSafe(contentContainer, aiResponseText, aiMessageId);
                     
                     enhanceResponseMessage(aiMessageElement, finalText);
                     
@@ -7112,6 +7286,33 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 });
                 btnWrapper.appendChild(copyBtn);
 
+                // Add Run button for JavaScript snippets (sandboxed)
+                if (language === 'js' || language === 'javascript') {
+                    const runBtn = document.createElement('button');
+                    runBtn.className = 'code-action-btn';
+                    runBtn.innerHTML = `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      <span>Run</span>
+                    `;
+                    runBtn.addEventListener('click', () => {
+                        const iframe = document.createElement('iframe');
+                        iframe.sandbox = 'allow-scripts';
+                        iframe.style.width = '100%';
+                        iframe.style.height = '120px';
+                        iframe.style.border = '1px solid rgba(200,200,200,0.3)';
+                        iframe.style.borderRadius = '8px';
+                        iframe.style.marginTop = '8px';
+                        block.appendChild(iframe);
+                        const doc = iframe.contentDocument || iframe.contentWindow.document;
+                        doc.open();
+                        doc.write(`<script>try {${codeText}} catch(err) {document.body.innerHTML = '<pre style="color:red">'+err+'</pre>';}<\/script>`);
+                        doc.close();
+                    });
+                    btnWrapper.appendChild(runBtn);
+                }
+
                 block.appendChild(btnWrapper);
             });
         }
@@ -7278,6 +7479,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
             } else if (noResultsEl) {
                 noResultsEl.style.display = 'none';
             }
+
+            // Animate history lists after render
+            animateHistoryLists();
         }
         
         async function handleRename(chatId, titleContainer) {
@@ -7660,6 +7864,53 @@ Respond with helpful, accurate medical information while maintaining appropriate
         function removeLoadingIndicator() {
             const indicator = document.getElementById('loading-indicator');
             if (indicator) indicator.remove();
+        }
+
+        // --- MICRO-ANIMATIONS & RIPPLE ---
+        function attachRipple() {
+            document.addEventListener('click', (e) => {
+                const target = e.target.closest('button, .btn, [data-ripple], .code-action-btn, .edit-btn, .delete-btn');
+                if (!target || target.classList.contains('no-ripple')) return;
+                target.classList.add('ripple-container');
+
+                const rect = target.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.width = ripple.style.height = size + 'px';
+                const x = (e.clientX - rect.left) - size / 2;
+                const y = (e.clientY - rect.top) - size / 2;
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                target.appendChild(ripple);
+                ripple.addEventListener('animationend', () => ripple.remove());
+            }, { capture: false });
+        }
+
+        function animateHistoryLists() {
+            const ids = ['history-list-today', 'history-list-week', 'history-list-older'];
+            ids.forEach((id) => {
+                const list = document.getElementById(id);
+                if (!list) return;
+                const items = Array.from(list.children);
+                items.forEach((li, idx) => {
+                    if (li.dataset.animated === 'true') return;
+                    li.dataset.animated = 'true';
+                    li.classList.add('history-animate-enter');
+                    // Staggered enter
+                    setTimeout(() => {
+                        li.style.transition = 'opacity 300ms ease, transform 300ms ease';
+                        li.classList.add('history-animate-active');
+                        li.classList.remove('history-animate-enter');
+                    }, 40 * idx);
+                });
+            });
+        }
+
+        function initializeMicroAnimations() {
+            attachRipple();
+            // Run a first pass for any pre-rendered history items
+            animateHistoryLists();
         }
 
         // --- SKELETON LOADER FUNCTIONS ---
@@ -8089,6 +8340,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             initializeScrollHandling();
             initializePhotoSearch();
             addEventListeners();
+            initializeMicroAnimations();
             checkAPIStatus();
             checkAuthState();
         }
