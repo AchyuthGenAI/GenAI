@@ -152,7 +152,7 @@
         .bg-theme-secondary { background-color: rgb(var(--bg-secondary)); }
         .bg-theme-tertiary { background-color: rgb(var(--bg-tertiary)); }
         .bg-theme-quaternary { background-color: rgb(var(--bg-quaternary)); }
-        .bg-theme-accent { background-color: rgb(var(--bg-accent)); }
+        .bg-theme-accent { background-color:  rgb(34 197 96 / 48%);}
         .bg-theme-success { background-color: rgb(var(--bg-success)); }
         .bg-theme-error { background-color: rgb(var(--bg-error)); }
         .bg-theme-warning { background-color: rgb(var(--bg-warning)); }
@@ -501,6 +501,17 @@
             stroke-width: 2;
             transition: all 0.3s ease;
             fill: none;
+        }
+
+        /* Dark theme: ensure icon color is always light */
+        [data-theme="dark"] .photo-search-icon,
+        [data-theme="midnight"] .photo-search-icon {
+            color: rgb(var(--text-primary));
+        }
+
+        [data-theme="dark"] .photo-search-container:hover .photo-search-icon,
+        [data-theme="midnight"] .photo-search-container:hover .photo-search-icon {
+            color: rgb(var(--bg-primary));
         }
 
         .photo-search-overlay {
@@ -1557,28 +1568,6 @@
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-            /* FAB Button and Icon Visibility Fix for Dark/Midnight Themes */
-            #fab-menu-toggle {
-                background-color: rgb(var(--bg-primary));
-                color: rgb(var(--text-primary));
-            }
-            [data-theme="dark"] #fab-menu-toggle,
-            [data-theme="midnight"] #fab-menu-toggle {
-                background-color: rgb(var(--bg-tertiary));
-                color: rgb(var(--text-secondary));
-            }
-            #fab-menu-toggle svg {
-                color: inherit;
-                stroke: currentColor;
-            }
-            #fab-tool-menu {
-                background-color: rgb(var(--bg-secondary));
-            }
-            [data-theme="dark"] #fab-tool-menu,
-            [data-theme="midnight"] #fab-tool-menu {
-                background-color: rgb(var(--bg-tertiary));
-            }
-
             /* Modern Typography & Reading Experience */
             .prose {
                 font-family: 'Inter', sans-serif;
@@ -2160,49 +2149,432 @@
         }
 
         /* Prompt Library Styles */
-        .prompt-card {
-            background: rgb(var(--bg-secondary));
-            border: 1px solid rgb(var(--border-primary));
-            border-radius: 0.5rem;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .prompt-card:hover {
-            background: rgb(var(--bg-tertiary));
-            border-color: rgb(var(--border-secondary));
-            transform: translateY(-1px);
-        }
-        
-        .prompt-category {
-            background: rgb(var(--bg-accent));
-            color: rgb(var(--text-inverse));
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        /* Scheduler Styles */
-        .scheduled-task {
-            background: rgb(var(--bg-warning));
-            color: rgb(var(--text-inverse));
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
+        #prompt-tag-filter-bar {
             gap: 0.5rem;
         }
-        
-        .time-picker {
-            background: rgb(var(--bg-tertiary));
-            border: 1px solid rgb(var(--border-primary));
-            border-radius: 0.375rem;
-            padding: 0.5rem;
+        .prompt-card {
+            background: rgb(var(--bg-secondary));
+            border: 1px solid rgba(var(--border-primary), 0.6);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 8px 20px -12px rgba(15, 23, 42, 0.5);
+        }
+        .prompt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -20px rgba(15, 23, 42, 0.8);
+        }
+        .prompt-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .prompt-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgb(var(--text-primary));
+            margin-bottom: 0.1rem;
+        }
+        .prom  pt-card-meta {
+            font-size: 0.8rem;
+            color: rgb(var(--text-quaternary));
+        }
+        .prompt-card-preview {
+            font-size: 0.95rem;
+            color: rgb(var(--text-secondary));
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .prompt-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+        }
+        .prompt-chip {
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            background: rgba(var(--bg-accent), 0.1);
+            border: 1px solid rgba(var(--border-primary), 0.6);
+            color: rgb(var(--text-secondary));
+        }
+        .prompt-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .prompt-card-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: rgb(var(--text-quaternary));
+        }
+        .prompt-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .prompt-quick-btn {
+            border-radius: 999px;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.8rem;
+            border: 1px solid transparent;
+            transition: all 0.25s ease;
+        }
+        .prompt-quick-btn.use {
+            background: rgb(var(--bg-accent));
+            color: rgb(var(--text-inverse));
+        }
+        .prompt-quick-btn.secondary {
+            background: transparent;
+            color: rgb(var(--text-secondary));
+            border-color: rgba(var(--border-primary), 0.5);
+        }
+        .prompt-favorite-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(var(--bg-quaternary), 0.8);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+        .prompt-favorite-btn.active {
+            background: linear-gradient(135deg, #f97316, #facc15);
+            color: rgb(var(--text-inverse));
+        }
+
+        /* History Filter & Quick Access */
+        .history-filter-bar {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+        .history-filter-btn {
+            padding: 0.45rem 1rem;
+            border-radius: 999px;
+            border: 1.5px solid rgba(var(--border-secondary), 0.4);
+            background: rgba(var(--bg-secondary), 0.6);
+            color: rgb(var(--text-tertiary));
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .history-filter-btn:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 0, 0, 0.5);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transform: translateY(-1px);
+        }
+        .history-filter-btn.active {
+            border-color: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 12px rgba(var(--bg-accent), 0.25);
+            font-weight: 700;
+        }
+        .history-quick-access {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .history-quick-item {
+            padding: 0.65rem 0.9rem;
+            border-radius: 0.875rem;
+            background: rgba(var(--bg-secondary), 0.5);
+            border: 1.5px solid rgba(var(--border-secondary), 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .history-quick-item:hover {
+            background: rgba(var(--bg-accent), 0.12);
+            border-color: rgba(var(--bg-accent), 0.5);
+            box-shadow: 0 4px 12px rgba(var(--bg-accent), 0.2);
+            transform: translateX(2px);
+        }
+        .history-quick-item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgb(var(--text-secondary));
+        }
+        .history-quick-item-meta {
+            font-size: 0.7rem;
+            color: rgb(var(--text-tertiary));
+        }
+        .pin-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--bg-secondary), 0.8);
+            cursor: pointer;
+            transition: background 0.2s ease, border 0.2s ease;
+        }
+        .pin-btn.active {
+            border-color: rgba(var(--bg-accent), 0.6);
+            background: rgba(var(--bg-accent), 0.4);
             color: rgb(var(--text-primary));
         }
-        
+        .pin-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Scheduler Styles */
+        .schedule-bulk-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .schedule-bulk-controls button {
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(var(--border-primary), 0.5);
+            background: rgba(var(--bg-secondary), 0.9);
+            color: rgb(var(--text-secondary));
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .schedule-bulk-controls button.primary {
+            background: linear-gradient(135deg, rgb(var(--bg-accent)), rgba(var(--bg-accent-hover), 0.9));
+            color: rgb(var(--text-inverse));
+            border-color: transparent;
+        }
+        .schedule-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .timeline-card {
+            padding: 0.9rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(var(--border-primary), 0.4);
+            background: rgb(var(--bg-secondary));
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+        }
+        .timeline-card.is-next {
+            border-color: rgba(var(--bg-success), 0.8);
+            box-shadow: 0 0 0 1px rgba(var(--bg-success), 0.4);
+        }
+        .timeline-card h4 {
+            font-size: 0.9rem;
+            margin: 0;
+            color: rgb(var(--text-primary));
+        }
+        .timeline-card .timeline-meta {
+            color: rgb(var(--text-tertiary));
+        }
+
+        /* Analytics Panel */
+        .analytics-panel {
+            width: 280px;
+            border-left: 1px solid rgba(var(--border-primary), 0.4);
+            background: rgba(var(--bg-secondary), 0.9);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 0.75rem;
+        }
+        .analytics-panel h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgb(var(--text-primary));
+            margin: 0;
+        }
+        .analytics-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+        }
+        .analytics-stat {
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background: rgba(var(--bg-primary), 0.6);
+            border: 1px solid rgba(var(--border-primary), 0.4);
+            font-size: 0.75rem;
+        }
+        .analytics-stat strong {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 1.1rem;
+            color: rgb(var(--text-accent));
+        }
+        .analytics-last-chart {
+            border-radius: 1rem;
+            border: 1px dashed rgba(var(--border-primary), 0.5);
+            padding: 0.75rem;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        .analytics-last-chart p {
+            margin: 0;
+            color: rgb(var(--text-secondary));
+            font-size: 0.8rem;
+        }
+        .analytics-pin-btn {
+            align-self: flex-start;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(var(--border-primary), 0.4);
+            background: transparent;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .analytics-widget-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+        .analytics-widget {
+            border-radius: 0.75rem;
+            border: 1px solid rgba(var(--border-primary), 0.4);
+            padding: 0.75rem;
+            background: rgba(var(--bg-primary), 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-height: 110px;
+        }
+        .analytics-widget h4 {
+            margin: 0;
+            font-size: 0.85rem;
+            color: rgb(var(--text-tertiary));
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .analytics-progress-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(var(--border-primary), 0.2);
+            overflow: hidden;
+        }
+        .analytics-progress-fill {
+            height: 100%;
+            background: linear-gradient(120deg, rgb(var(--bg-accent)), rgb(var(--bg-success)));
+            transition: width 0.3s ease;
+        }
+        .analytics-widget-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgb(var(--text-primary));
+        }
+        .sources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .sources-list a {
+            color: rgb(var(--text-accent));
+            text-decoration: underline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .followup-suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .followup-suggestions button {
+            width: 100%;
+            border: 1px solid rgba(var(--border-primary), 0.5);
+            background: rgba(var(--bg-secondary), 0.7);
+            border-radius: 999px;
+            padding: 0.3rem 0.65rem;
+            font-size: 0.75rem;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .followup-suggestions button:hover {
+            background: rgba(var(--bg-accent), 0.3);
+        }
+
+        /* TTS / Voice Queue */
+        .tts-settings {
+            border-top: 1px solid rgba(var(--border-primary), 0.3);
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .tts-settings label {
+            font-size: 0.85rem;
+            color: rgb(var(--text-tertiary));
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .tts-preview-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .voice-queue {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+        .voice-queue-item {
+            padding: 0.45rem 0.65rem;
+            border-radius: 0.5rem;
+            background: rgba(var(--bg-tertiary), 0.6);
+            border: 1px solid rgba(var(--border-primary), 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        .voice-queue-item button {
+            border: none;
+            background: transparent;
+            color: rgb(var(--text-secondary));
+            cursor: pointer;
+        }
+
         /* Profile Settings Styles */
         .settings-section {
             background: rgb(var(--bg-secondary));
@@ -2843,7 +3215,7 @@
                     </label>
                     <a href="#" id="forgot-password-link" class="hover:text-theme-accent">Forgot password?</a>
                 </div>
-                <button type="submit" class="w-full bg-theme-accent hover:bg-theme-accent text-theme-inverse font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" class="w-full bg-theme-accent hover:bg-green-500 text-theme-inverse hover:text-black font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
                     <span class="button-text">Log In</span>
                     <svg class="animate-spin h-5 w-5 ml-3 hidden button-loader" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </button>
@@ -2894,7 +3266,7 @@
                     <span>I agree to the <a href="#" class="text-theme-accent hover:underline">Terms</a> and <a href="#" class="text-theme-accent hover:underline">Privacy Policy</a>.</span>
                 </label>
 
-                <button type="submit" class="w-full bg-theme-accent hover:bg-theme-accent text-theme-inverse font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" class="w-full bg-theme-accent hover:bg-green-500 hover:text-black text-theme-inverse font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
                     <span class="button-text">Sign Up</span>
                     <svg class="animate-spin h-5 w-5 ml-3 hidden button-loader" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </button>
@@ -2916,28 +3288,6 @@
     </div>
 
     <div id="chat-app" class="hidden w-full h-full flex relative">
-            <!-- Floating Action Button Tool Menu -->
-            <div class="absolute bottom-20 right-4 md:right-8 z-20">
-                <button id="fab-menu-toggle" title="Open Tools Menu" class="bg-theme-primary text-theme-inverse p-3 rounded-full shadow-xl hover:bg-theme-primary-hover transition-all duration-200 transform hover:rotate-45">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                </button>
-                <div id="fab-tool-menu" class="absolute bottom-full right-0 mb-4 w-48 bg-theme-surface rounded-lg shadow-2xl p-2 hidden transition-all duration-300">
-                    <a href="#" id="open-scheduler-fab" class="flex items-center p-2 text-theme-text rounded-md hover:bg-theme-secondary-hover transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-theme-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h.01M9 16h.01M9 12h.01M9 8h.01M15 12h.01M15 16h.01M15 8h.01M4 16h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1z" /></svg>
-                        Scheduler
-                    </a>
-                    <a href="#" id="open-prompt-library-fab" class="flex items-center p-2 text-theme-text rounded-md hover:bg-theme-secondary-hover transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-theme-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
-                        Prompt Library
-                    </a>
-                    <a href="#" id="open-image-gen-fab" class="flex items-center p-2 text-theme-text rounded-md hover:bg-theme-secondary-hover transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-theme-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        Image Generator
-                    </a>
-                </div>
-            </div>
         <!-- Sidebar for Chat History -->
         <aside id="sidebar" class="sidebar bg-theme-secondary w-72 flex-shrink-0 flex flex-col p-4 lg:relative lg:translate-x-0">
             <!-- Sidebar Buttons -->
@@ -3103,12 +3453,30 @@
                 >
             </div>
 
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="text-lg font-semibold text-theme-secondary">History</h2>
-                <div class="flex items-center gap-2">
-                    <button id="clear-all-btn" class="delete-btn p-1 text-theme-quaternary hover:text-theme-error" title="Clear all chats">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    </button>
+            <div class="flex flex-col gap-2 mb-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-theme-secondary">History</h2>
+                    <div class="flex items-center gap-2">
+                        <button id="clear-all-btn" class="delete-btn p-1 text-theme-quaternary hover:text-theme-error" title="Clear all chats">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="history-enhancements">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-theme-tertiary">Filters & quick access</p>
+                        </div>
+                        <button id="reset-history-filters" class="history-filter-btn text-xs">Reset Filters</button>
+                    </div>
+                    <div id="history-filter-bar" class="history-filter-bar"></div>
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm font-semibold text-theme-secondary">Quick Access</p>
+                        <span class="text-xs text-theme-tertiary">Pinned chats stay here</span>
+                    </div>
+                    <div id="history-quick-access" class="history-quick-access">
+                        <!-- Pinned chats rendered here -->
+                    </div>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto pr-2" id="history-container">
@@ -3288,60 +3656,117 @@
                 </div>
             </header>
 
-            <!-- Main Chat Area -->
-            <main id="chat-main-area" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-                <div id="chat-container" class="max-w-4xl mx-auto space-y-6">
-                    <!-- Welcome content will be shown here initially -->
-                </div>
-            </main>
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <!-- Main Chat Area -->
+                <main id="chat-main-area" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                    <div id="chat-container" class="max-w-4xl mx-auto space-y-6">
+                        <!-- Welcome content will be shown here initially -->
+                    </div>
+                </main>
 
-            <!-- Message Input Form & Controls -->
-            <footer class="bg-theme-primary/50 backdrop-blur-sm sticky bottom-0">
-                 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-                    <div id="chat-input-area" class="flex-shrink-0 p-4 bg-theme-surface shadow-lg rounded-t-xl transition-shadow duration-300">
-                        <div id="generation-controls" class="text-center pb-2 hidden">
-                            <button id="stop-generating-btn" class="bg-theme-tertiary hover:bg-theme-quaternary text-theme-primary font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
-                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
-                                 <rect x="6" y="6" width="12" height="12" rx="2"></rect>
-                               </svg>
-                                Stop Generating
-                            </button>
-                        </div>
-                        <form id="chat-form">
-                            <div id="file-preview-container">
-                                <div id="file-preview"></div>
-                                <button type="button" id="remove-file-btn" title="Remove file">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                <!-- Message Input Form & Controls -->
+                <footer class="bg-theme-primary/50 backdrop-blur-sm sticky bottom-0">
+                     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+                        <div id="chat-input-area" class="flex-shrink-0 p-4 bg-theme-surface shadow-lg rounded-t-xl transition-shadow duration-300">
+                            <div id="generation-controls" class="text-center pb-2 hidden">
+                                <button id="stop-generating-btn" class="bg-theme-tertiary hover:bg-theme-quaternary text-theme-primary font-semibold rounded-lg px-4 py-2 transition duration-300 flex items-center mx-auto">
+                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
+                                     <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                                   </svg>
+                                    Stop Generating
                                 </button>
                             </div>
-                            <div class="flex items-end bg-theme-secondary border border-theme-primary rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-accent">
-                                <div class="help-tooltip">
-                                    <button id="attach-file-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                            <form id="chat-form">
+                                <div id="file-preview-container">
+                                    <div id="file-preview"></div>
+                                    <button type="button" id="remove-file-btn" title="Remove file">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                                     </button>
-                                    <div class="tooltip-content">Attach File</div>
                                 </div>
-                                 <input type="file" id="file-input" class="hidden" multiple accept="image/*,audio/*,video/*,.csv,.txt,.py,.js,.java,.c,.cpp">
-                                 
-                                <textarea id="chat-input" placeholder="Enter Your Prompt..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-theme-primary placeholder-theme-quaternary focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
+                                <div class="flex items-end bg-theme-secondary border border-theme-primary rounded-2xl p-2 transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-accent">
+                                    <div class="help-tooltip">
+                                        <button id="attach-file-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                        </button>
+                                        <div class="tooltip-content">Attach File</div>
+                                    </div>
+                                     <input type="file" id="file-input" class="hidden" multiple accept="image/*,audio/*,video/*,.csv,.txt,.py,.js,.java,.c,.cpp">
+                                     
+                                    <textarea id="chat-input" placeholder="Enter Your Prompt..." autocomplete="off" rows="1" class="flex-1 bg-transparent px-4 py-2 text-theme-primary placeholder-theme-quaternary focus:outline-none disabled:bg-transparent disabled:cursor-not-allowed"></textarea>
 
-                                <div class="help-tooltip">
-                                    <button id="mic-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200 disabled:opacity-50">
-                                    <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
+                                    <div class="help-tooltip">
+                                        <button id="mic-btn" type="button" class="text-theme-quaternary hover:text-theme-primary p-2 rounded-full hover:bg-theme-tertiary transition-colors duration-200 disabled:opacity-50">
+                                        <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
+                                    </button>
+                                    <div class="tooltip-content">
+                                        Voice input (click to start)
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="bg-theme-quaternary text-theme-primary rounded-full p-2 ml-1 transition-colors duration-300 flex items-center justify-center disabled:bg-theme-tertiary disabled:cursor-not-allowed w-10 h-10 flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
                                 </button>
-                                <div class="tooltip-content">
-                                    Voice input (click to start)
-                                </div>
                             </div>
-
-                            <button type="submit" class="bg-theme-quaternary text-theme-primary rounded-full p-2 ml-1 transition-colors duration-300 flex items-center justify-center disabled:bg-theme-tertiary disabled:cursor-not-allowed w-10 h-10 flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-                            </button>
-                        </div>
-                    </form>
-                    
+                        </form>
+                        
+                    </div>
+                </footer>
+            </div>
+            <aside id="analytics-panel" class="analytics-panel hidden lg:flex">
+                <div class="flex items-center justify-between">
+                    <h3>Insights</h3>
+                    <button id="pin-last-chart-btn" class="analytics-pin-btn">Pin Chart</button>
                 </div>
-            </footer>
+            <div class="analytics-stats">
+                <div class="analytics-stat">
+                    Chats
+                    <strong id="analytics-total-chats">0</strong>
+                </div>
+                <div class="analytics-stat">
+                    Messages
+                    <strong id="analytics-total-messages">0</strong>
+                </div>
+                <div class="analytics-stat">
+                    Avg response
+                    <strong id="analytics-avg-response">0</strong>
+                </div>
+                <div class="analytics-stat">
+                    Attachments
+                    <strong id="analytics-attachment-count">0</strong>
+                </div>
+            </div>
+            <div class="analytics-widget-grid">
+                <div class="analytics-widget">
+                    <h4>Confidence</h4>
+                    <div class="analytics-widget-value" id="widget-confidence-value">--</div>
+                    <div class="analytics-progress-track">
+                        <div id="widget-confidence-bar" class="analytics-progress-fill"></div>
+                    </div>
+                    <p class="text-xs text-theme-tertiary" id="widget-confidence-note">Confidence is computed from the assistant’s tone and certainty.</p>
+                </div>
+                <div class="analytics-widget">
+                    <h4>Sentiment</h4>
+                    <div class="analytics-widget-value" id="widget-sentiment-label">Neutral</div>
+                    <p class="text-xs text-theme-tertiary" id="widget-sentiment-note">Analyzed from cues in the latest response.</p>
+                </div>
+                <div class="analytics-widget" style="grid-column: span 2;">
+                    <h4>Sources</h4>
+                    <div class="sources-list" id="widget-sources-list">
+                        <span class="text-xs text-theme-tertiary">No sources detected.</span>
+                    </div>
+                </div>
+                <div class="analytics-widget" style="grid-column: span 2;">
+                    <h4>Follow-up Suggestions</h4>
+                    <div class="followup-suggestions" id="widget-followups">
+                        <span class="text-xs text-theme-tertiary">Awaiting the next assistant response.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="analytics-last-chart" id="analytics-last-chart">
+                <p id="analytics-chart-caption">Pin a response containing a table or chart to keep it here.</p>
+                <div id="analytics-chart-preview" class="text-xs text-theme-tertiary">No chart pinned yet.</div>
+            </div>
+        </aside>
         </div>
         <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/50 backdrop-blur-sm hidden lg:hidden"></div>
     </div>
@@ -3558,17 +3983,34 @@
                         </div>
                         <div class="settings-item">
                             <div>
-                                <label class="font-medium text-theme-primary">TTS Voice Style</label>
-                                <p class="text-sm text-theme-quaternary">Describe a voice style (e.g., 'warm and friendly', 'formal and clear')</p>
-                            </div>
-                            <input type="text" id="tts-voice-style" class="form-input w-48" placeholder="e.g., warm and friendly">
-                        </div>
-                        <div class="settings-item">
-                            <div>
                                 <label class="font-medium text-theme-primary">Enable Deep Thinking</label>
                                 <p class="text-sm text-theme-quaternary">Use the model's increased thinking_budget for complex reasoning (slower, more thorough)</p>
                             </div>
                             <div class="toggle-switch" id="deep-thinking-toggle"></div>
+                        </div>
+                        <div class="tts-settings">
+                            <div>
+                                <label for="tts-voice-dropdown">Voice Language / Accent</label>
+                                <select id="tts-voice-dropdown" class="form-input">
+                                    <option value="">Auto select voice</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="tts-voice-style" class="font-medium text-theme-primary">TTS Voice Style</label>
+                                <p class="text-sm text-theme-quaternary">Describe how you want the voice to sound (e.g., warm, formal, playful).</p>
+                                <input type="text" id="tts-voice-style" class="form-input w-full" placeholder="e.g., warm and friendly">
+                            </div>
+                            <div class="tts-preview-controls">
+                                <button type="button" id="tts-preview-btn" class="btn btn-secondary">Preview Voice</button>
+                                <button type="button" id="tts-queue-add-btn" class="btn btn-primary">Add to Playback Queue</button>
+                                <button type="button" id="tts-clear-queue-btn" class="btn btn-secondary">Clear Queue</button>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-theme-primary mb-1">Playback Queue</p>
+                                <div id="voice-queue-list" class="voice-queue">
+                                    <p class="text-xs text-theme-quaternary">No queued snippets yet.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3667,6 +4109,13 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="schedule-bulk-controls">
+                    <button id="pause-all-schedules-btn" class="secondary">Pause All</button>
+                    <button id="resume-all-schedules-btn" class="secondary">Resume All</button>
+                    <button id="duplicate-all-schedules-btn" class="secondary">Duplicate Next Run</button>
+                    <button id="view-today-schedules-btn" class="primary">Focus Timeline</button>
+                </div>
+                <div id="schedule-timeline" class="schedule-timeline"></div>
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-theme-primary">Scheduled Tasks</h3>
                     <button id="add-schedule-btn" class="btn btn-primary">
@@ -3885,12 +4334,47 @@
         const schedulerBtn = document.getElementById('scheduler-btn');
         const profileSettingsBtn = document.getElementById('profile-settings-btn');
 
+        // History Enhancements
+        const historyFilterBar = document.getElementById('history-filter-bar');
+        const historyQuickAccess = document.getElementById('history-quick-access');
+        const resetHistoryFiltersBtn = document.getElementById('reset-history-filters');
+
         // Modal Elements
         const profileSettingsModal = document.getElementById('profile-settings-modal');
         const promptLibraryModal = document.getElementById('prompt-library-modal');
         const addPromptModal = document.getElementById('add-prompt-modal');
         const schedulerModal = document.getElementById('scheduler-modal');
         const addScheduleModal = document.getElementById('add-schedule-modal');
+
+        // Analytics Panel
+        const analyticsTotalChats = document.getElementById('analytics-total-chats');
+        const analyticsTotalMessages = document.getElementById('analytics-total-messages');
+        const analyticsAvgResponse = document.getElementById('analytics-avg-response');
+        const analyticsAttachmentCount = document.getElementById('analytics-attachment-count');
+        const analyticsChartPreview = document.getElementById('analytics-chart-preview');
+        const analyticsChartCaption = document.getElementById('analytics-chart-caption');
+        const pinLastChartBtn = document.getElementById('pin-last-chart-btn');
+        const widgetConfidenceValue = document.getElementById('widget-confidence-value');
+        const widgetConfidenceBar = document.getElementById('widget-confidence-bar');
+        const widgetConfidenceNote = document.getElementById('widget-confidence-note');
+        const widgetSentimentLabel = document.getElementById('widget-sentiment-label');
+        const widgetSentimentNote = document.getElementById('widget-sentiment-note');
+        const widgetSourcesList = document.getElementById('widget-sources-list');
+        const widgetFollowups = document.getElementById('widget-followups');
+
+        // Scheduler helpers
+        const pauseAllSchedulesBtn = document.getElementById('pause-all-schedules-btn');
+        const resumeAllSchedulesBtn = document.getElementById('resume-all-schedules-btn');
+        const duplicateAllSchedulesBtn = document.getElementById('duplicate-all-schedules-btn');
+        const viewTodaySchedulesBtn = document.getElementById('view-today-schedules-btn');
+        const scheduleTimeline = document.getElementById('schedule-timeline');
+
+        // TTS / Voice Queue Controls
+        const ttsVoiceDropdown = document.getElementById('tts-voice-dropdown');
+        const ttsPreviewBtn = document.getElementById('tts-preview-btn');
+        const ttsQueueAddBtn = document.getElementById('tts-queue-add-btn');
+        const ttsClearQueueBtn = document.getElementById('tts-clear-queue-btn');
+        const voiceQueueList = document.getElementById('voice-queue-list');
         
         // --- API & Firebase Configuration ---
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
@@ -3972,6 +4456,18 @@
 
         let currentEditingPrompt = null;
         let currentEditingSchedule = null;
+        const historyFiltersConfig = [
+            { id: 'all', label: 'All' },
+            { id: 'pinned', label: 'Pinned' },
+            { id: 'medical', label: 'Medical' },
+            { id: 'multimedia', label: 'Media' }
+        ];
+        let currentHistoryFilter = 'all';
+        let pinnedChatIds = new Set(getStoredPinnedChats());
+        let timelineFilterMode = 'all';
+        let lastChartPreviewHtml = '';
+        let analyticsPinnedChartHtml = '';
+        let voiceQueue = [];
 
         // --- Speech Recognition ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -4028,12 +4524,86 @@
                 console.warn('Speech synthesis not supported in this browser');
                 return false;
             }
-            
+            populateVoiceDropdown();
             window.speechSynthesis.onvoiceschanged = () => {
-                console.log('TTS voices loaded:', window.speechSynthesis.getVoices().length);
+                populateVoiceDropdown();
             };
             
+            renderVoiceQueue();
+            
             return true;
+        }
+
+        function populateVoiceDropdown() {
+            if (!window.speechSynthesis || !ttsVoiceDropdown) return;
+            const voices = window.speechSynthesis.getVoices();
+            if (!voices || voices.length === 0) return;
+            const options = voices.map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`).join('');
+            ttsVoiceDropdown.innerHTML = `<option value="">Auto select voice</option>${options}`;
+        }
+
+        function getSelectedVoice() {
+            if (!window.speechSynthesis) return getPreferredVoice();
+            const voices = window.speechSynthesis.getVoices();
+            const preferredName = ttsVoiceDropdown?.value;
+            if (preferredName) {
+                const matched = voices.find(voice => voice.name === preferredName);
+                if (matched) return matched;
+            }
+            return getPreferredVoice();
+        }
+
+        function previewTTSVoice() {
+            const sampleText = chatInput.value.trim() || 'This is a quick preview of your selected voice.';
+            if (!sampleText) {
+                showNotification('Enter prompt text for voice preview', 'info');
+                return;
+            }
+            speakText(sampleText, null);
+        }
+
+        function queueLatestAssistantResponse() {
+            const assistantResponses = chatContainer.querySelectorAll('.chat-message:not(.user) .prose');
+            const latestElement = assistantResponses[assistantResponses.length - 1];
+            const queueText = latestElement?.textContent?.trim() || chatInput.value.trim();
+            if (!queueText) {
+                showNotification('No text available to queue', 'info');
+                return;
+            }
+            voiceQueue.push({
+                id: `voice-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+                text: queueText
+            });
+            renderVoiceQueue();
+            showNotification('Added to voice queue', 'success');
+        }
+
+        function renderVoiceQueue() {
+            if (!voiceQueueList) return;
+            if (voiceQueue.length === 0) {
+                voiceQueueList.innerHTML = '<p class="text-xs text-theme-quaternary">No queued snippets yet.</p>';
+                return;
+            }
+            voiceQueueList.innerHTML = voiceQueue.map(item => `
+                <div class="voice-queue-item">
+                    <span class="text-xs">${escapeHtml(item.text).slice(0, 80)}${item.text.length > 80 ? '…' : ''}</span>
+                    <div class="flex gap-1">
+                        <button type="button" data-play-id="${item.id}" class="text-theme-primary text-xs">Play</button>
+                        <button type="button" data-remove-id="${item.id}" class="text-theme-error text-xs">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function playVoiceQueueItem(id) {
+            const item = voiceQueue.find(entry => entry.id === id);
+            if (!item) return;
+            speakText(item.text, null);
+        }
+
+        function removeVoiceQueueItem(id) {
+            voiceQueue = voiceQueue.filter(entry => entry.id !== id);
+            renderVoiceQueue();
         }
 
         function getPreferredVoice() {
@@ -4096,7 +4666,7 @@
             currentTTSUtterance = new SpeechSynthesisUtterance(cleanText);
             currentTTSButton = button;
             
-            const preferredVoice = getPreferredVoice();
+            const preferredVoice = getSelectedVoice();
             if (preferredVoice) {
                 currentTTSUtterance.voice = preferredVoice;
             }
@@ -4748,27 +5318,38 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
 
             grid.innerHTML = filteredPrompts.map(prompt => {
+                const safeTitle = escapeHtml(prompt.title || 'Untitled Prompt');
+                const safeText = escapeHtml(prompt.text || '');
+                const safeDescription = escapeHtml(prompt.description || '');
                 const tagsHtml = renderTagChips(getPromptTags(prompt));
-                const lastUsed = prompt.lastUsed ? new Date((prompt.lastUsed.seconds ? prompt.lastUsed.seconds * 1000 : Date.parse(prompt.lastUsed))).toLocaleDateString() : 'Never';
+                const lastUsedDate = prompt.lastUsed ? new Date((prompt.lastUsed.seconds ? prompt.lastUsed.seconds * 1000 : Date.parse(prompt.lastUsed))) : null;
+                const lastUsed = lastUsedDate && !isNaN(lastUsedDate.getTime()) ? lastUsedDate.toLocaleDateString() : 'Never';
+                const usageCount = prompt.usageCount || 0;
+                const category = prompt.category ? prompt.category.charAt(0).toUpperCase() + prompt.category.slice(1) : 'General';
+                const favoriteActive = prompt.isFavorite ? 'active' : '';
+                const safeId = (prompt.id || '').replace(/'/g, "\\'");
                 return `
-                    <div class="bg-theme-secondary p-4 rounded-xl shadow-lg border border-theme-primary/50 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-theme-accent/50">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="text-lg font-semibold text-theme-primary leading-tight">${prompt.title}</h4>
-                            <button title="Use Prompt" onclick="usePrompt('${prompt.id}')" class="edit-btn ml-3 w-8 h-8 p-1.5 transform hover:scale-105" style="border-color: rgba(var(--bg-accent), 0.3); background: rgba(var(--bg-accent), 0.1);">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <div class="prompt-card">
+                        <div class="prompt-card-header">
+                            <div>
+                                <p class="prompt-card-title">${safeTitle}</p>
+                                <p class="prompt-card-meta">${category} • Last Used: ${lastUsed}</p>
+                            </div>
+                            <button type="button" title="${prompt.isFavorite ? 'Unfavorite prompt' : 'Favorite prompt'}" class="prompt-favorite-btn ${favoriteActive}" onclick="togglePromptFavorite('${safeId}')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                             </button>
                         </div>
-                        <div class="flex flex-wrap mb-2">${tagsHtml}</div>
-                        <div class="prompt-content-fade text-sm text-theme-secondary mb-3">${prompt.text}</div>
-                        <div class="flex justify-between items-end border-t border-theme-primary/10 pt-3">
-                            <span class="text-xs text-theme-tertiary">Last Used: ${lastUsed}</span>
-                            <div class="flex space-x-2">
-                                <button title="Edit Prompt" onclick="editPrompt('${prompt.id}')" class="edit-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                                </button>
-                                <button title="Delete Prompt" onclick="deletePrompt('${prompt.id}')" class="delete-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                                </button>
+                        <div class="prompt-card-preview">${safeText}</div>
+                        <div class="prompt-card-tags">${tagsHtml}</div>
+                        <div class="prompt-card-footer">
+                            <div class="prompt-card-stats">
+                                <span>Used ${usageCount}x</span>
+                                ${safeDescription ? `<span>${safeDescription}</span>` : ''}
+                            </div>
+                            <div class="prompt-card-actions">
+                                <button type="button" class="prompt-quick-btn use" onclick="usePrompt('${safeId}')">Use</button>
+                                <button type="button" class="prompt-quick-btn secondary" onclick="editPrompt('${safeId}')">Edit</button>
+                                <button type="button" class="prompt-quick-btn secondary" onclick="deletePrompt('${safeId}')">Delete</button>
                             </div>
                         </div>
                     </div>`;
@@ -4936,7 +5517,35 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 hidePromptLibrary();
                 showNotification('Prompt loaded', 'success');
                 chatInput.focus();
+                trackPromptUsage(prompt);
             }
+        }
+
+        async function persistPrompts() {
+            if (!currentUser) return;
+            try {
+                await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                    prompts: userPrompts
+                }, { merge: true });
+            } catch (error) {
+                console.error('Error persisting prompts:', error);
+            }
+        }
+
+        async function trackPromptUsage(prompt) {
+            if (!prompt) return;
+            prompt.usageCount = (prompt.usageCount || 0) + 1;
+            prompt.lastUsed = new Date();
+            await persistPrompts();
+            renderPromptLibrary();
+        }
+
+        async function togglePromptFavorite(id) {
+            const prompt = userPrompts.find(p => p.id === id);
+            if (!prompt) return;
+            prompt.isFavorite = !prompt.isFavorite;
+            await persistPrompts();
+            renderPromptLibrary();
         }
 
         // Make functions globally available
@@ -4980,6 +5589,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         </button>
                     </div>
                 `;
+                renderScheduleTimeline();
                 return;
             }
             
@@ -5013,6 +5623,9 @@ Respond with helpful, accurate medical information while maintaining appropriate
                             <p class="text-xs text-theme-secondary">${repeatDetails}</p>
                         </div>
                         <div class="flex space-x-2">
+                            <button title="Duplicate Schedule" onclick="duplicateScheduledTask('${task.id}')" class="edit-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12"/><path d="M4 11h12"/><path d="M4 15h9"/><path d="M16 9l5-5m0 0L16-1m5 5h-5v5"/></svg>
+                            </button>
                             <button title="Edit Schedule" onclick="editScheduledTask('${task.id}')" class="edit-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                             </button>
@@ -5023,6 +5636,101 @@ Respond with helpful, accurate medical information while maintaining appropriate
                     </div>
                 </div>`;
             }).join('');
+
+            renderScheduleTimeline();
+        }
+
+        function renderScheduleTimeline() {
+            if (!scheduleTimeline) return;
+            if (scheduledTasks.length === 0) {
+                scheduleTimeline.innerHTML = '<p class="text-xs text-theme-quaternary">Add scheduled prompts to build a timeline.</p>';
+                return;
+            }
+            const now = new Date();
+            const todayKey = now.toISOString().split('T')[0];
+            const timelineItems = scheduledTasks
+                .map(task => {
+                    const nextRun = task.date && task.time ? new Date(`${task.date} ${task.time}`) : null;
+                    return { task, nextRun };
+                })
+                .filter(item => !item.nextRun || !isNaN(item.nextRun.getTime()))
+                .sort((a, b) => ((a.nextRun?.getTime() || 0) - (b.nextRun?.getTime() || 0)));
+
+            const filteredItems = timelineFilterMode === 'today'
+                ? timelineItems.filter(item => item.nextRun && item.nextRun.toISOString().split('T')[0] === todayKey)
+                : timelineItems;
+
+            if (filteredItems.length === 0) {
+                scheduleTimeline.innerHTML = '<p class="text-xs text-theme-quaternary">No events match the selected timeline filter.</p>';
+                return;
+            }
+
+            scheduleTimeline.innerHTML = filteredItems.slice(0, 6).map(({ task, nextRun }) => {
+                const nextLabel = nextRun ? nextRun.toLocaleString() : 'Scheduled';
+                return `
+                    <div class="timeline-card ${nextRun && nextRun >= now && nextRun <= new Date(now.getTime() + 86400000) ? 'is-next' : ''}">
+                        <h4>${task.name}</h4>
+                        <p class="timeline-meta">${nextLabel}</p>
+                        <p class="timeline-meta text-xs">${escapeHtml((task.prompt || '').slice(0, 80))}${(task.prompt || '').length > 80 ? '…' : ''}</p>
+                    </div>`;
+            }).join('');
+
+            updateTimelineFilterLabel();
+        }
+
+        function pauseAllSchedules() {
+            scheduledTasks.forEach(task => task.isActive = false);
+            persistScheduledState('All schedules paused', 'info');
+        }
+
+        function resumeAllSchedules() {
+            scheduledTasks.forEach(task => task.isActive = true);
+            persistScheduledState('Schedules resumed', 'success');
+        }
+
+        function duplicateAllSchedules() {
+            const clones = scheduledTasks.map(task => ({
+                ...task,
+                id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+                name: `${task.name} Copy`,
+                date: getNextScheduledDate(task),
+                createdAt: new Date(),
+                isActive: task.isActive
+            }));
+            scheduledTasks.push(...clones);
+            persistScheduledState('Scheduled tasks duplicated', 'success');
+        }
+
+        function toggleTimelineFilterMode() {
+            timelineFilterMode = timelineFilterMode === 'today' ? 'all' : 'today';
+            renderScheduleTimeline();
+        }
+
+        function updateTimelineFilterLabel() {
+            if (!viewTodaySchedulesBtn) return;
+            viewTodaySchedulesBtn.textContent = timelineFilterMode === 'today' ? 'Show Full Timeline' : 'Focus Today';
+        }
+
+        function getNextScheduledDate(task) {
+            const baseDate = task.date ? new Date(task.date) : new Date();
+            baseDate.setDate(baseDate.getDate() + 1);
+            return baseDate.toISOString().split('T')[0];
+        }
+
+        async function persistScheduledState(notificationMessage = 'Scheduled list updated', notificationType = 'success') {
+            if (currentUser) {
+                try {
+                    await setDoc(doc(db, "artifacts", appId, "users", currentUser.uid), {
+                        scheduledTasks: scheduledTasks
+                    }, { merge: true });
+                } catch (error) {
+                    console.error('Error updating scheduled tasks:', error);
+                    showNotification('Error saving scheduled tasks', 'error');
+                    return;
+                }
+            }
+            renderScheduledTasks();
+            showNotification(notificationMessage, notificationType);
         }
 
         function showAddSchedule(editingId = null) {
@@ -6739,6 +7447,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
              chartBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><span>Visualize</span>`;
              chartBtn.onclick = () => showChartModal(tableElement);
              container.appendChild(chartBtn);
+             captureChartPreview(tableElement.outerHTML, 'Latest table preview');
         }
 
         function addJsonExplorerButton(container, jsonText) {
@@ -7388,6 +8097,17 @@ Respond with helpful, accurate medical information while maintaining appropriate
             const actionsContainer = document.createElement('div');
             actionsContainer.className = 'history-item-actions'; // Your existing styles will target this
 
+            const pinBtn = document.createElement('button');
+            pinBtn.type = 'button';
+            pinBtn.className = pinnedChatIds.has(chat.id) ? 'pin-btn active' : 'pin-btn';
+            pinBtn.title = pinnedChatIds.has(chat.id) ? 'Unpin chat' : 'Pin chat';
+            pinBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9l-5 4.87L17.18 22 12 18.27 6.82 22 8 13.87 3 9l6.91-.74L12 2z"/></svg>`;
+            pinBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                togglePinChat(chat.id);
+            });
+            actionsContainer.appendChild(pinBtn);
+
             const renameBtn = document.createElement('button');
             renameBtn.className = 'edit-btn'; // Use existing style
             renameBtn.title = 'Rename chat';
@@ -7416,61 +8136,159 @@ Respond with helpful, accurate medical information while maintaining appropriate
             return li;
         }
 
+        function getStoredPinnedChats() {
+            try {
+                const stored = JSON.parse(localStorage.getItem('pinnedChats') || '[]');
+                return Array.isArray(stored) ? stored : [];
+            } catch (error) {
+                console.warn('Failed to parse pinned chats from storage', error);
+                return [];
+            }
+        }
+
+        function persistPinnedChats() {
+            if (!window?.localStorage) return;
+            try {
+                localStorage.setItem('pinnedChats', JSON.stringify(Array.from(pinnedChatIds)));
+            } catch (error) {
+                console.warn('Error persisting pinned chats', error);
+            }
+        }
+
+        function chatHasMedia(chat) {
+            if (!chat || !Array.isArray(chat.messages)) return false;
+            return chat.messages.some(msg => {
+                return msg.parts?.some(part => part.inlineData);
+            });
+        }
+
+        function matchesHistoryFilter(chat) {
+            if (!chat) return false;
+            if (currentHistoryFilter === 'pinned') return pinnedChatIds.has(chat.id);
+            if (currentHistoryFilter === 'medical') return Boolean(chat.isMedical);
+            if (currentHistoryFilter === 'multimedia') return chatHasMedia(chat);
+            return true;
+        }
+
+        function renderHistoryFilters() {
+            if (!historyFilterBar) return;
+            historyFilterBar.innerHTML = historyFiltersConfig.map(filter => `
+                <button type="button" class="history-filter-btn ${currentHistoryFilter === filter.id ? 'active' : ''}" data-filter="${filter.id}">
+                    ${filter.label}
+                </button>
+            `).join('');
+        }
+
+        function renderHistoryQuickAccess(sortedChats) {
+            if (!historyQuickAccess) return;
+            historyQuickAccess.innerHTML = '';
+            const pinnedChats = sortedChats.filter(chat => pinnedChatIds.has(chat.id));
+            if (pinnedChats.length === 0) {
+                historyQuickAccess.innerHTML = '<p class="text-xs text-theme-tertiary"></p>';
+                return;
+            }
+
+            pinnedChats.slice(0, 4).forEach(chat => {
+                const quickItem = document.createElement('div');
+                quickItem.className = 'history-quick-item';
+                quickItem.setAttribute('role', 'button');
+                quickItem.tabIndex = 0;
+                quickItem.addEventListener('click', () => loadChat(chat.id));
+
+                const textWrapper = document.createElement('div');
+                const titleEl = document.createElement('span');
+                titleEl.className = 'history-quick-item-title';
+                titleEl.textContent = chat.title || 'New Chat';
+                const metaEl = document.createElement('span');
+                metaEl.className = 'history-quick-item-meta';
+                metaEl.textContent = formatChatDate(chat.createdAt);
+                textWrapper.appendChild(titleEl);
+                textWrapper.appendChild(metaEl);
+
+                const pinBtn = document.createElement('button');
+                pinBtn.type = 'button';
+                pinBtn.className = pinnedChatIds.has(chat.id) ? 'pin-btn active' : 'pin-btn';
+                pinBtn.title = pinnedChatIds.has(chat.id) ? 'Unpin chat' : 'Pin chat';
+                pinBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9l-5 4.87L17.18 22 12 18.27 6.82 22 8 13.87 3 9l6.91-0.74L12 2z"/></svg>`;
+                pinBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    togglePinChat(chat.id);
+                });
+
+                quickItem.appendChild(textWrapper);
+                quickItem.appendChild(pinBtn);
+                historyQuickAccess.appendChild(quickItem);
+            });
+        }
+
+        function formatChatDate(timestamp) {
+            if (!timestamp) return 'No date';
+            const date = timestamp?.toDate ? timestamp.toDate() : new Date(timestamp);
+            if (isNaN(date.getTime())) return 'No date';
+            return date.toLocaleDateString();
+        }
+
+        function togglePinChat(chatId) {
+            if (!chatId) return;
+            if (pinnedChatIds.has(chatId)) {
+                pinnedChatIds.delete(chatId);
+            } else {
+                pinnedChatIds.add(chatId);
+            }
+            persistPinnedChats();
+            renderHistoryFilters();
+            renderHistorySidebar();
+        }
+
         function renderHistorySidebar() {
             const searchTerm = searchHistoryInput.value.toLowerCase();
             
-            // Get references to the new lists and their parent <details> elements
             const listToday = document.getElementById('history-list-today');
             const listWeek = document.getElementById('history-list-week');
             const listOlder = document.getElementById('history-list-older');
-            
             const groupToday = listToday.closest('.history-group');
             const groupWeek = listWeek.closest('.history-group');
             const groupOlder = listOlder.closest('.history-group');
+            const historyContainer = document.getElementById('history-container');
 
-            // Clear previous items
             listToday.innerHTML = '';
             listWeek.innerHTML = '';
             listOlder.innerHTML = '';
 
-            // Define time boundaries
-            const now = new Date();
-            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-
-            // Get chats and sort them (newest first)
             const sortedChats = Object.values(allChats).sort((a, b) => {
                 const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
                 const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
                 return dateB - dateA;
             });
 
-            // Toggle "Clear All" button
+            renderHistoryFilters();
+            renderHistoryQuickAccess(sortedChats);
+
             clearAllBtn.style.display = sortedChats.length > 0 ? 'flex' : 'none';
+
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
 
             let foundToday = 0;
             let foundWeek = 0;
             let foundOlder = 0;
-            let foundInSearch = false;
+            let foundMatchingFilter = false;
 
-            // Sort chats into lists
             sortedChats.forEach(chat => {
                 const titleText = chat.title || 'New Chat';
-                const isMatch = searchTerm && !titleText.toLowerCase().includes(searchTerm);
+                const matchesSearch = !searchTerm || titleText.toLowerCase().includes(searchTerm) || (chat.messages || [])
+                    .map(msg => (msg.parts?.map(p => p.text || '').join(' ') || '').toLowerCase())
+                    .join(' ')
+                    .includes(searchTerm);
+                const passesFilter = matchesHistoryFilter(chat);
+                if (!matchesSearch || !passesFilter) return;
 
-                // Don't render if it doesn't match search
-                if (isMatch) {
-                    return;
-                }
-                
-                foundInSearch = true;
+                foundMatchingFilter = true;
                 const isActive = chat.id === currentChatId;
                 const chatDate = chat.createdAt?.toDate ? chat.createdAt.toDate() : new Date(0);
-                
-                // Create the new list item element
-                const li = createHistoryItemElement(chat, isActive);
 
-                // Append to the correct list
+                const li = createHistoryItemElement(chat, isActive);
                 if (chatDate >= startOfToday) {
                     listToday.appendChild(li);
                     foundToday++;
@@ -7483,15 +8301,13 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 }
             });
 
-            // Show/hide sections based on whether they have items
-            groupToday.classList.toggle('hidden', foundToday === 0 && !foundInSearch);
-            groupWeek.classList.toggle('hidden', foundWeek === 0 && !foundInSearch);
-            groupOlder.classList.toggle('hidden', foundOlder === 0 && !foundInSearch);
+            groupToday.classList.toggle('hidden', foundToday === 0);
+            groupWeek.classList.toggle('hidden', foundWeek === 0);
+            groupOlder.classList.toggle('hidden', foundOlder === 0);
 
-            // If searching and no results, show a message
-            const historyContainer = document.getElementById('history-container');
             let noResultsEl = historyContainer.querySelector('.no-results-message');
-            if (!foundInSearch && searchTerm) {
+            const shouldShowNoResults = !foundMatchingFilter && (searchTerm || currentHistoryFilter !== 'all');
+            if (shouldShowNoResults) {
                 if (!noResultsEl) {
                     noResultsEl = document.createElement('p');
                     noResultsEl.className = 'no-results-message text-theme-quaternary text-sm text-center p-4';
@@ -7503,8 +8319,53 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 noResultsEl.style.display = 'none';
             }
 
-            // Animate history lists after render
             animateHistoryLists();
+            updateAnalyticsPanel();
+        }
+
+        function updateAnalyticsPanel() {
+            if (!analyticsTotalChats) return;
+            const chats = Object.values(allChats);
+            const totalChats = chats.length;
+            const totalMessages = chats.reduce((sum, chat) => sum + (chat.messages?.length || 0), 0);
+            let attachmentCount = 0;
+            const responseLengths = [];
+            chats.forEach(chat => {
+                (chat.messages || []).forEach(msg => {
+                    if (msg.role === 'model') {
+                        const text = (msg.parts || []).map(part => part.text || '').join('');
+                        responseLengths.push(text.length);
+                    }
+                    attachmentCount += (msg.parts || []).filter(part => part.inlineData).length;
+                });
+            });
+            const avgResponse = responseLengths.length ? Math.round(responseLengths.reduce((a, b) => a + b, 0) / responseLengths.length) : 0;
+
+            analyticsTotalChats.textContent = String(totalChats);
+            analyticsTotalMessages.textContent = String(totalMessages);
+            analyticsAvgResponse.textContent = `${avgResponse} chars`;
+            analyticsAttachmentCount.textContent = String(attachmentCount);
+        }
+
+        function captureChartPreview(html, label = 'Latest chart preview') {
+            if (!analyticsChartPreview) return;
+            lastChartPreviewHtml = html || '';
+            analyticsChartCaption.textContent = label;
+            analyticsChartPreview.innerHTML = lastChartPreviewHtml || '<p class="text-xs text-theme-quaternary">No chart preview available.</p>';
+            if (pinLastChartBtn) {
+                pinLastChartBtn.disabled = !lastChartPreviewHtml;
+            }
+        }
+
+        function pinLastChart() {
+            if (!lastChartPreviewHtml) {
+                showNotification('No chart to pin', 'info');
+                return;
+            }
+            analyticsPinnedChartHtml = lastChartPreviewHtml;
+            analyticsChartCaption.textContent = 'Pinned chart';
+            analyticsChartPreview.innerHTML = analyticsPinnedChartHtml;
+            showNotification('Chart pinned', 'success');
         }
         
         async function handleRename(chatId, titleContainer) {
@@ -8251,41 +9112,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 }
             });
 
-            // --- FAB Tool Menu Logic ---
-            function toggleFabMenu() {
-                const menu = document.getElementById('fab-tool-menu');
-                const toggleBtn = document.getElementById('fab-menu-toggle');
-                if (menu.classList.contains('hidden')) {
-                    menu.classList.remove('hidden');
-                    toggleBtn.classList.add('rotate-45');
-                } else {
-                    menu.classList.add('hidden');
-                    toggleBtn.classList.remove('rotate-45');
-                }
-            }
-            document.getElementById('fab-menu-toggle').addEventListener('click', toggleFabMenu);
-            document.getElementById('open-scheduler-fab').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleFabMenu();
-                if (typeof showScheduler === 'function') showScheduler();
-            });
-            document.getElementById('open-prompt-library-fab').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleFabMenu();
-                if (typeof showPromptLibrary === 'function') showPromptLibrary();
-            });
-            document.getElementById('open-image-gen-fab').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleFabMenu();
-                // Future: showImageGenerator();
-            });
-            document.addEventListener('click', (e) => {
-                const menu = document.getElementById('fab-tool-menu');
-                const toggleBtn = document.getElementById('fab-menu-toggle');
-                if (menu && !menu.contains(e.target) && !toggleBtn.contains(e.target) && !menu.classList.contains('hidden')) {
-                    toggleFabMenu();
-                }
-            });
+            // FAB removed: related JS was removed to prevent errors from missing FAB elements.
 
             // --- Handle Dropped Files ---
             function handleDroppedFiles(files) {
@@ -8344,6 +9171,44 @@ Respond with helpful, accurate medical information while maintaining appropriate
             document.getElementById('close-add-schedule-btn').addEventListener('click', hideAddSchedule);
             document.getElementById('cancel-add-schedule-btn').addEventListener('click', hideAddSchedule);
             document.getElementById('save-schedule-btn').addEventListener('click', saveScheduledTask);
+
+            historyFilterBar?.addEventListener('click', (e) => {
+                const filterBtn = e.target.closest('.history-filter-btn[data-filter]');
+                if (filterBtn) {
+                    currentHistoryFilter = filterBtn.dataset.filter;
+                    renderHistoryFilters();
+                    renderHistorySidebar();
+                }
+            });
+
+            resetHistoryFiltersBtn?.addEventListener('click', () => {
+                currentHistoryFilter = 'all';
+                renderHistoryFilters();
+                renderHistorySidebar();
+            });
+
+            pauseAllSchedulesBtn?.addEventListener('click', pauseAllSchedules);
+            resumeAllSchedulesBtn?.addEventListener('click', resumeAllSchedules);
+            duplicateAllSchedulesBtn?.addEventListener('click', duplicateAllSchedules);
+            viewTodaySchedulesBtn?.addEventListener('click', toggleTimelineFilterMode);
+            pinLastChartBtn?.addEventListener('click', pinLastChart);
+
+            ttsPreviewBtn?.addEventListener('click', previewTTSVoice);
+            ttsQueueAddBtn?.addEventListener('click', queueLatestAssistantResponse);
+            ttsClearQueueBtn?.addEventListener('click', () => {
+                voiceQueue = [];
+                renderVoiceQueue();
+                showNotification('Voice queue cleared', 'info');
+            });
+            voiceQueueList?.addEventListener('click', (e) => {
+                const playBtn = e.target.closest('[data-play-id]');
+                const removeBtn = e.target.closest('[data-remove-id]');
+                if (playBtn) {
+                    playVoiceQueueItem(playBtn.dataset.playId);
+                } else if (removeBtn) {
+                    removeVoiceQueueItem(removeBtn.dataset.removeId);
+                }
+            });
         }
 
         // --- INITIALIZATION ---
@@ -8364,6 +9229,7 @@ Respond with helpful, accurate medical information while maintaining appropriate
             initializePhotoSearch();
             addEventListeners();
             initializeMicroAnimations();
+            if (pinLastChartBtn) pinLastChartBtn.disabled = true;
             checkAPIStatus();
             checkAuthState();
         }
