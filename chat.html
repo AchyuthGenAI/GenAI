@@ -951,7 +951,7 @@
             font-weight: 500;
         }
 
-        /* Enhanced Pre/Code Block Styling */
+        /* Enhanced Pre/Code Block Styling with Syntax Highlighting */
         .prose pre {
             background-color: rgb(var(--bg-quaternary));
             border-radius: 0.75rem;
@@ -965,11 +965,34 @@
         .prose pre code { 
             font-family: 'Fira Code', monospace;
             font-size: 0.875rem;
-            background: none;
+            background: none !important;
             color: rgb(var(--text-primary));
             padding: 0;
             border: none;
             border-radius: 0;
+        }
+
+        /* Highlight.js syntax highlighting colors */
+        .hljs-attr, .hljs-attribute { color: rgb(var(--text-accent)); }
+        .hljs-string { color: #98c379; }
+        .hljs-number { color: #d19a66; }
+        .hljs-literal { color: #56b6c2; }
+        .hljs-type { color: #61afef; }
+        .hljs-keyword { color: #c678dd; }
+        .hljs-function { color: #61afef; }
+        .hljs-title { color: #61afef; }
+        .hljs-comment { color: #5c6370; opacity: 0.8; }
+
+        /* Override theme colors for syntax highlighting */
+        [data-theme="dark"] .hljs,
+        [data-theme="midnight"] .hljs {
+            background: rgb(var(--bg-quaternary)) !important;
+            color: rgb(var(--text-primary)) !important;
+        }
+
+        [data-theme="light"] .hljs {
+            background: rgb(var(--bg-quaternary)) !important;
+            color: rgb(var(--text-primary)) !important;
         }
 
         /* Code Action Buttons */
@@ -1533,23 +1556,41 @@
             position: relative;
             padding-bottom: 0;
         }
-        /* Make message bubbles transparent across all themes EXCEPT user messages */
-        .chat-message:not(.user) > .rounded-lg,
+        /* Fixed: AI message bubbles with proper visibility and contrast */
         .chat-message:not(.user) .rounded-lg,
-        .chat-message:not(.user) > div[class*="bg-"],
-        .chat-message:not(.user) [class*="bg-theme-"] {
-            background: transparent !important;
-            background-color: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
+        .chat-message:not(.user) .prose {
+            background-color: rgba(var(--bg-tertiary), 0.7) !important;
+            border: 1px solid rgba(var(--border-primary), 0.5) !important;
+            border-radius: 12px !important;
+            padding: 1rem !important;
+            margin: 0.5rem 0 !important;
         }
 
-        /* Ensure user message bubbles keep a visible background and subtle shadow */
+        /* Dark theme: Better contrast for AI messages */
+        [data-theme="dark"] .chat-message:not(.user) .prose,
+        [data-theme="dark"] .chat-message:not(.user) .rounded-lg {
+            background-color: rgba(var(--bg-secondary), 0.9) !important;
+            border-color: rgba(var(--bg-accent), 0.3) !important;
+        }
+
+        /* Midnight theme: Better contrast */
+        [data-theme="midnight"] .chat-message:not(.user) .prose,
+        [data-theme="midnight"] .chat-message:not(.user) .rounded-lg {
+            background-color: rgba(var(--bg-secondary), 0.95) !important;
+            border-color: rgba(var(--bg-accent), 0.4) !important;
+        }
+
+        /* Ensure user message bubbles remain visible */
         .chat-message.user > .rounded-lg,
         .chat-message.user .rounded-lg {
-            background: var(--bg-accent, rgba(99,102,241,1)) !important;
+            background: rgb(99, 102, 241) !important;
             box-shadow: 0 6px 18px rgba(0,0,0,0.18) !important;
             border: 1px solid rgba(0,0,0,0.06) !important;
+            color: white !important;
+        }
+
+        .chat-message.user .prose {
+            color: white !important;
         }
         .action-buttons {
             display: flex;
@@ -5172,8 +5213,18 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
         }
 
-            // Global assistant instruction to keep responses general-purpose and use tools only when asked
-            const SYSTEM_INSTRUCTION = `You are Chat@AI, a helpful general-purpose assistant. Always answer the user's request directly and completely (e.g., write code when asked, explain, reason, or summarize). Tools may be available for optional actions like scheduling; only call such tools when the user explicitly asks to schedule, set a reminder, or create an event. Do not claim your capabilities are limited to any single feature.`;
+            // Enhanced system instruction for better structured responses
+            const SYSTEM_INSTRUCTION = `You are Chat@AI, a helpful, intelligent assistant. 
+
+When responding:
+1. **Start with clarity**: Begin with a clear, concise summary of your response
+2. **Use structure**: Organize content with headers, bullet points, and numbered lists
+3. **Provide code**: When asked for code, wrap it properly in markdown code blocks with language specification
+4. **Explain thoroughly**: After code/technical content, provide clear explanations
+5. **Format well**: Use markdown formatting (bold, italics, lists) for better readability
+6. **End clearly**: Summarize key points at the end
+
+Always respond directly and completely. Use professional, clear language. Tools may be available for scheduling; only call them when explicitly requested.`;
 
             // Build request payload for Gemini API. If deepThinking is enabled, include a thinking_budget
             function buildModelRequestPayload(contents) {
@@ -7079,11 +7130,31 @@ Respond with helpful, accurate medical information while maintaining appropriate
                 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'An unknown API error occurred.');
+                    const errorMessage = errorData.error?.message || `API Error: HTTP ${response.status}`;
+                    console.error('API Error:', errorData);
+                    throw new Error(errorMessage);
                 }
                 
                 const data = await response.json();
-                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                // Validate response structure with detailed error handling
+                if (!data.candidates || !Array.isArray(data.candidates) || data.candidates.length === 0) {
+                    console.error('Invalid response structure:', data);
+                    throw new Error('API returned no valid response. Please try again.');
+                }
+
+                const candidate = data.candidates[0];
+                if (!candidate.content || !candidate.content.parts || !Array.isArray(candidate.content.parts) || candidate.content.parts.length === 0) {
+                    console.error('Invalid candidate structure:', candidate);
+                    throw new Error('API response missing content. Please try again.');
+                }
+
+                const aiResponseText = candidate.content.parts[0].text;
+
+                // Validate response content
+                if (!aiResponseText || typeof aiResponseText !== 'string' || aiResponseText.trim().length === 0) {
+                    throw new Error('Received empty response from API. Please try again.');
+                }
                 
                 if (aiResponseText) {
                     const aiMessageId = appendMessage({text: ''}, 'model');
@@ -7115,53 +7186,23 @@ Respond with helpful, accurate medical information while maintaining appropriate
             }
         }
 
-        // Keep original function for reference but not used; see streamResponseSafe.
-        async function streamResponse(contentContainer, fullText, messageId) {
-            return new Promise((resolve) => {
-                let currentText = '';
-                let index = 0;
-                const typingSpeed = 1;
-
-                function type() {
-                    if (stopGenerationFlag || index >= fullText.length) {
-                        const finalHtml = marked.parse(currentText);
-                        contentContainer.innerHTML = finalHtml;
-                        makeTablesResponsive(contentContainer);
-                        enhanceCodeBlocks(messageId);
-                        // Smoothly bring the latest message into view at the end
-                        scrollToLatestMessage();
-                        resolve(currentText);
-                        return;
-                    }
-
-                    currentText += fullText[index];
-                    index++;
-                    const tempHtml = marked.parse(currentText + 'â–‹');
-                    contentContainer.innerHTML = tempHtml;
-                    
-                    if (!isUserScrolledUp) {
-                        scrollToBottomInstant();
-                    }
-                    
-                    setTimeout(type, typingSpeed);
-                }
-                type();
-            });
-        }
-
-        // Safer streaming that avoids mid-stream Markdown parsing
+        // Optimized streaming with batched updates for better performance
         async function streamResponseSafe(contentContainer, fullText, messageId) {
             return new Promise((resolve) => {
                 let currentText = '';
                 let index = 0;
-                const typingSpeed = 1;
+                let lastRenderTime = Date.now();
+                const batchUpdateInterval = 50; // Batch updates every 50ms for performance
 
                 function type() {
                     if (stopGenerationFlag || index >= fullText.length) {
+                        // Final render
                         try {
                             const finalHtml = marked.parse(prepMarkdown(currentText));
                             contentContainer.innerHTML = finalHtml;
-                        } catch {
+                            hljs.highlightAll(); // Apply syntax highlighting
+                        } catch (error) {
+                            console.error('Markdown parse error:', error);
                             const safe = currentText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
                             contentContainer.innerHTML = `<pre class="whitespace-pre-wrap break-words">${safe}</pre>`;
                         }
@@ -7172,20 +7213,40 @@ Respond with helpful, accurate medical information while maintaining appropriate
                         return;
                     }
 
-                    currentText += fullText[index++];
-                    try {
-                        const previewHtml = marked.parse(prepMarkdown(currentText));
-                        // Append a subtle typing cursor at the end to mimic ChatGPT
-                        contentContainer.innerHTML = previewHtml + '<span class="typing-cursor"></span>';
-                    } catch {
-                        const safePreview = currentText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                        contentContainer.innerHTML = `<pre class="whitespace-pre-wrap break-words">${safePreview}</pre>`;
+                    // Batch read 10 characters at a time for smoother rendering
+                    let batchText = '';
+                    const batchSize = 10;
+                    for (let i = 0; i < batchSize && index < fullText.length; i++) {
+                        batchText += fullText[index++];
                     }
+                    currentText += batchText;
+
+                    // Update rendering only periodically to reduce DOM operations
+                    const now = Date.now();
+                    if (now - lastRenderTime > batchUpdateInterval) {
+                        try {
+                            const previewHtml = marked.parse(prepMarkdown(currentText));
+                            // Add typing cursor
+                            contentContainer.innerHTML = previewHtml + '<span class="typing-cursor"></span>';
+                            hljs.highlightAll(); // Highlight code blocks
+                        } catch (error) {
+                            // Fallback to plain text on parse error
+                            const safePreview = currentText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                            contentContainer.innerHTML = `<pre class="whitespace-pre-wrap break-words">${safePreview}</pre>`;
+                        }
+                        lastRenderTime = now;
+                    }
+                    
                     if (!isUserScrolledUp) scrollToBottomInstant();
-                    setTimeout(type, typingSpeed);
+                    setTimeout(type, 1); // Minimal delay for next batch
                 }
                 type();
             });
+        }
+
+        // Deprecated: kept for reference only
+        async function streamResponse(contentContainer, fullText, messageId) {
+            return streamResponseSafe(contentContainer, fullText, messageId);
         }
         
         function enhanceResponseMessage(messageElement, textContent) {
